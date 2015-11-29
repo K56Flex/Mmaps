@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_box"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/search_box_height"
+    android:layout_margin="@dimen/card_view_padding"
+    android:background="@drawable/card"
+    android:fitsSystemWindows="true"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/opendrawer_or_back"
+        style="@style/ButtonBorderless"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/action_back"
+        android:src="@drawable/ic_menu" />
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/search_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:hint="@string/search_in_maps"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/edit_text_clear"
+            style="@style/ButtonBorderless"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/ic_clear"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</LinearLayout>

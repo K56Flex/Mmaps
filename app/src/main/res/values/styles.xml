@@ -1,0 +1,11 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+    </style>
+
+    <style name="ButtonBorderless" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:gravity">center</item>
+    </style>
+
+</resources>

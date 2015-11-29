@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Mmaps</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_back">Back</string>
+    <string name="action_search">Search</string>
+    <string name="search_in_maps">Search Maps</string>
+    <string name="directions_from">From</string>
+    <string name="directions_to">To</string>
+    <string name="directions">Directions</string>
+    <string name="my_location">My Location</string>
+    <string name="searching">Searching...</string>
+    <string name="no_result">Sorry,no result</string>
+    <string name="reverse">Reverse</string>
+    <string name="route_options">Route options</string>
+    <string name="done">DONE</string>
+    <string name="cancel">CANCEL</string>
+    <string name="ok">OK</string>
+    <string name="back">BACK</string>
+
+    <string-array name="route_options_drive">
+        <item>Save Money</item>
+        <item>Avoid Congestion</item>
+        <item>No Highways</item>
+    </string-array>
+
+    <string-array name="route_options_bus">
+        <item>Default</item>
+        <item>Less money</item>
+        <item>Fewer transfers</item>
+        <item>Less walking</item>
+        <item>More comfortable</item>
+        <item>No subway</item>
+    </string-array>
+
+    <string-array name="route_options_walk">
+        <item>Default</item>
+        <item>Multi paths</item>
+    </string-array>
+
+    <string name="hour">hr</string>
+    <string name="minute">min</string>
+    <string name="second">sec</string>
+
+    <string name="choose_on_map">Choose on map</string>
+    <string name="chosen_on_map">Chosen on map</string>
+    <string name="map_under_pin">Pan &amp; zoom map under pin</string>
+</resources>
