@@ -143,13 +143,13 @@ public class MapsFragment extends Fragment
     public void changeMyLocationBtnState(int state) {
         if (state == MapsModule.MY_LOCATION_LOCATE) { //仅定位
             mMyLocationBtn.setImageResource(R.drawable.ic_my_location);
-            mMyLocationBtn.setBackgroundResource(R.drawable.circle_btn_background);
+            mMyLocationBtn.clearColorFilter();
         } else if (state == MapsModule.MY_LOCATION_FOLLOW) { //跟随
             mMyLocationBtn.setImageResource(R.drawable.ic_my_location);
-            mMyLocationBtn.setBackgroundResource(R.drawable.circle_btn_colored_background);
+            mMyLocationBtn.setColorFilter(getResources().getColor(R.color.primary_color));
         } else if (state == MapsModule.MY_LOCATION_ROTATE) { //跟随旋转
             mMyLocationBtn.setImageResource(R.drawable.ic_explore);
-            mMyLocationBtn.setBackgroundResource(R.drawable.circle_btn_colored_background);
+            mMyLocationBtn.setColorFilter(getResources().getColor(R.color.primary_color));
         }
     }
 
