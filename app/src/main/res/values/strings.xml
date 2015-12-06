@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Mmaps</string>
+    <string name="app_name_debug">Mmaps (debug)</string>
     <string name="action_settings">Settings</string>
     <string name="action_back">Back</string>
     <string name="action_search">Search</string>

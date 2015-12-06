@@ -10,9 +10,19 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [APP_NAME: '@string/app_name']
     }
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [
+                    APP_NAME    : '@string/app_name_debug',
+                    AMAP_API_KEY: '9bd8891a0164e53487338f7968909e7c'
+            ]
+        }
+
         release {
+            manifestPlaceholders = [AMAP_API_KEY: '926388b1a68e9c26af2b6275c424c027']
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

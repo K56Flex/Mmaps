@@ -18,17 +18,17 @@
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="${APP_NAME}"
         android:theme="@style/AppTheme">
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="926388b1a68e9c26af2b6275c424c027" />
+            android:value="${AMAP_API_KEY}" />
 
         <activity
             android:name=".ui.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name">
+            android:label="${APP_NAME}">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
