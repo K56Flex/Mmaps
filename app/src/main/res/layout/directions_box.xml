@@ -3,8 +3,7 @@
     android:id="@+id/directions_box"
     android:layout_width="match_parent"
     android:layout_height="@dimen/directions_box_height"
-    android:background="@color/primary_color"
-    android:fitsSystemWindows="true">
+    android:background="@color/primary_color">
 
     <ImageButton
         android:id="@+id/action_back"

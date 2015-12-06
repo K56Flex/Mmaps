@@ -21,6 +21,7 @@ import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.views.Directions;
 import dg.shenm233.mmaps.ui.maps.views.SearchBox;
+import dg.shenm233.mmaps.ui.widget.StatusBarView;
 
 public class MapsFragment extends Fragment
         implements IMapsFragment, IDrawerView, View.OnClickListener, SearchBox.OnSearchItemClickListener {
@@ -34,6 +35,7 @@ public class MapsFragment extends Fragment
 
     private View mMapsMask;
 
+    private StatusBarView mStatusBarView;
     private ImageButton mMyLocationBtn;
     private ImageButton mDirectionsBtn;
 
@@ -48,28 +50,31 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onViewCreated(View rootView, @Nullable Bundle savedInstanceState) {
+        mStatusBarView = (StatusBarView) rootView.findViewById(R.id.status_bar_view);
+
         mMapView = (MapView) rootView.findViewById(R.id.mapview);
         mMapView.onCreate(savedInstanceState);
         mMapsModule = new MapsModule(getActivity(), this, mMapView.getMap());
 
         mMapsMask = rootView.findViewById(R.id.view_mask);
+        ViewGroup viewContainer = (ViewGroup) rootView.findViewById(R.id.view_container);
 
-        mDirectionsBtn = (ImageButton) rootView.findViewById(R.id.action_directions);
+        mDirectionsBtn = (ImageButton) viewContainer.findViewById(R.id.action_directions);
         mDirectionsBtn.setOnClickListener(this);
-        mMyLocationBtn = (ImageButton) rootView.findViewById(R.id.action_my_location);
+        mMyLocationBtn = (ImageButton) viewContainer.findViewById(R.id.action_my_location);
         mMyLocationBtn.setOnClickListener(this);
 
         ViewContainerManager viewContainerManager = new ViewContainerManager();
         mViewContainerManager = viewContainerManager;
 
-        ViewContainerManager.ViewContainer searchBox = new SearchBox((ViewGroup) rootView, this);
+        ViewContainerManager.ViewContainer searchBox = new SearchBox(viewContainer, this);
         mSearchBox = searchBox;
         Map<String, Object> searchBoxArgs = new HashMap<>();
         searchBoxArgs.put(SearchBox.BACK_BTN_AS_DRAWER, true);
         searchBoxArgs.put(SearchBox.ONLY_SEARCH_BOX, true);
         viewContainerManager.putViewContainer(searchBox, searchBoxArgs, SearchBox.SEARCH_BOX_ID);
 
-        mDirections = new Directions((ViewGroup) rootView, this);
+        mDirections = new Directions(viewContainer, this);
     }
 
     @Override
@@ -175,6 +180,11 @@ public class MapsFragment extends Fragment
     @Override
     public void setDirectionsBtnVisibility(int visibility) {
         mDirectionsBtn.setVisibility(visibility);
+    }
+
+    @Override
+    public void setStatusBarColor(int color) {
+        mStatusBarView.setBackgroundColor(color);
     }
 
     @Override

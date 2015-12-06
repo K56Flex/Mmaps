@@ -2,6 +2,7 @@ package dg.shenm233.mmaps.ui.maps.views;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -183,6 +184,7 @@ public class Directions extends ViewContainerManager.ViewContainer
     @Override
     public void show() {
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
+        mMapsFragment.setStatusBarColor(mContext.getResources().getColor(R.color.primary_color));
         mDirectionsBoxView.setVisibility(View.VISIBLE);
         mResultViewContainer.setVisibility(View.VISIBLE);
     }
@@ -193,6 +195,7 @@ public class Directions extends ViewContainerManager.ViewContainer
         mDirectionsBoxView.setVisibility(View.GONE);
         mResultViewContainer.setVisibility(View.GONE);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
+        mMapsFragment.setStatusBarColor(Color.TRANSPARENT);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package dg.shenm233.mmaps.ui.maps.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +50,7 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
     @Override
     public void show() {
         rootView.addView(mainView);
+        mMapsFragment.setStatusBarColor(mContext.getResources().getColor(R.color.primary_color));
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mMapsFragment.setMapViewVisibility(View.VISIBLE);
 
@@ -67,6 +69,7 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
     @Override
     public void exit() {
         marker.destroy();
+        mMapsFragment.setStatusBarColor(Color.TRANSPARENT);
         mMapsFragment.setMapViewVisibility(View.INVISIBLE);
         rootView.removeView(mainView);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);

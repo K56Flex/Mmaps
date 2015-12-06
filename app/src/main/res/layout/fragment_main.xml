@@ -9,33 +9,46 @@
 
     </com.amap.api.maps.MapView>
 
-    <ImageButton
-        android:id="@+id/action_my_location"
-        android:layout_width="@dimen/fab_d"
-        android:layout_height="@dimen/fab_d"
-        android:layout_gravity="right|bottom"
-        android:layout_marginBottom="100dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/circle_btn_background"
-        android:contentDescription="@string/my_location"
-        android:src="@drawable/ic_my_location" />
-
-    <ImageButton
-        android:id="@+id/action_directions"
-        android:layout_width="@dimen/fab_d"
-        android:layout_height="@dimen/fab_d"
-        android:layout_gravity="right|bottom"
-        android:layout_margin="20dp"
-        android:background="@drawable/circle_btn_background"
-        android:backgroundTint="@color/primary_color"
-        android:contentDescription="@string/directions"
-        android:src="@drawable/ic_directions" />
-
     <View
         android:id="@+id/view_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#EEEEEE"
         android:visibility="gone" />
+
+    <dg.shenm233.mmaps.ui.widget.StatusBarView
+        android:id="@+id/status_bar_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:id="@+id/view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <ImageButton
+            android:id="@+id/action_my_location"
+            android:layout_width="@dimen/fab_d"
+            android:layout_height="@dimen/fab_d"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="100dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/circle_btn_background"
+            android:contentDescription="@string/my_location"
+            android:src="@drawable/ic_my_location" />
+
+        <ImageButton
+            android:id="@+id/action_directions"
+            android:layout_width="@dimen/fab_d"
+            android:layout_height="@dimen/fab_d"
+            android:layout_gravity="right|bottom"
+            android:layout_margin="20dp"
+            android:background="@drawable/circle_btn_background"
+            android:backgroundTint="@color/primary_color"
+            android:contentDescription="@string/directions"
+            android:src="@drawable/ic_directions" />
+
+    </FrameLayout>
 
 </FrameLayout>

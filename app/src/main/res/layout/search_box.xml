@@ -5,7 +5,6 @@
     android:layout_height="@dimen/search_box_height"
     android:layout_margin="@dimen/card_view_padding"
     android:background="@drawable/card"
-    android:fitsSystemWindows="true"
     android:orientation="horizontal">
 
     <ImageButton

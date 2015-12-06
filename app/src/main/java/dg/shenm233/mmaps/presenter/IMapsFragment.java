@@ -16,4 +16,6 @@ public interface IMapsFragment {
     void setMapViewVisibility(int visibility);
 
     void setDirectionsBtnVisibility(int visibility);
+
+    void setStatusBarColor(int color);
 }
