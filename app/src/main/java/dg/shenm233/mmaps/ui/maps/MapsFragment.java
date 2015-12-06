@@ -173,6 +173,11 @@ public class MapsFragment extends Fragment
     }
 
     @Override
+    public void setDirectionsBtnVisibility(int visibility) {
+        mDirectionsBtn.setVisibility(visibility);
+    }
+
+    @Override
     public void onSearchItemClick(Tip tip) {
         ViewContainerManager vm = mViewContainerManager;
         ViewContainerManager.ViewContainer v = vm.peek();

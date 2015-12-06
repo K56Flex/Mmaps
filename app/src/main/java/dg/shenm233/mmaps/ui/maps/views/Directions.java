@@ -182,6 +182,7 @@ public class Directions extends ViewContainerManager.ViewContainer
 
     @Override
     public void show() {
+        mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mDirectionsBoxView.setVisibility(View.VISIBLE);
         mResultViewContainer.setVisibility(View.VISIBLE);
     }
@@ -191,6 +192,7 @@ public class Directions extends ViewContainerManager.ViewContainer
         clearAllOverlays();
         mDirectionsBoxView.setVisibility(View.GONE);
         mResultViewContainer.setVisibility(View.GONE);
+        mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
     }
 
     @Override

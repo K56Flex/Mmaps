@@ -49,6 +49,7 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
     @Override
     public void show() {
         rootView.addView(mainView);
+        mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mMapsFragment.setMapViewVisibility(View.VISIBLE);
 
         Marker marker = mMapsFragment.getMapsModule().addMarker();
@@ -68,6 +69,7 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
         marker.destroy();
         mMapsFragment.setMapViewVisibility(View.INVISIBLE);
         rootView.removeView(mainView);
+        mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
     }
 
     @Override
