@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -73,7 +72,7 @@ public class SearchBox extends ViewContainerManager.ViewContainer
         mBackBtn = btn;
         btn.setOnClickListener(this);
 
-        final Button editTextClearBtn = (Button) searchBox.findViewById(R.id.edit_text_clear);
+        final ImageButton editTextClearBtn = (ImageButton) searchBox.findViewById(R.id.edit_text_clear);
         editTextClearBtn.setOnClickListener(this);
 
         EditText searchEditText = (EditText) searchBox.findViewById(R.id.search_edittext);
