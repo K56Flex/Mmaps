@@ -4,8 +4,13 @@
 
     </style>
 
-    <style name="ButtonBorderless" parent="Base.Widget.AppCompat.Button.Borderless">
+    <style name="ImageButtonBorderless" parent="Base.Widget.AppCompat.ImageButton">
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/color_accent</item>
     </style>
 
 </resources>
