@@ -106,7 +106,15 @@ public class MapsFragment extends Fragment
     public void onClick(View v) {
         int viewId = v.getId();
         if (viewId == R.id.action_directions) {
-            mViewContainerManager.putViewContainer(mDirections, null, false, Directions.DIRECTIONS_ID);
+            Map<String, Object> args = new HashMap<>();
+
+            Tip tip = new Tip();
+            tip.setName(getString(R.string.my_location));
+            tip.setPostion(mMapsModule.getMyLatLonPoint());
+
+            args.put(Directions.CLEAR_ALL, true);
+            args.put(Directions.STARTING_POINT, tip);
+            mViewContainerManager.putViewContainer(mDirections, args, false, Directions.DIRECTIONS_ID);
         } else if (viewId == R.id.action_my_location) {
             mMapsModule.changeMyLocationMode();
         }

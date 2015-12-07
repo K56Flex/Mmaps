@@ -46,6 +46,7 @@ import dg.shenm233.mmaps.util.AMapUtils;
 public class Directions extends ViewContainerManager.ViewContainer
         implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, SearchBox.OnSearchItemClickListener {
     public final static int DIRECTIONS_ID = 1;
+    public final static String CLEAR_ALL = "clear_all"; // boolean
     public final static String STARTING_POINT = "starting_point"; // TIP
     public final static String DESTINATION = "destination"; // TIP
 
@@ -183,6 +184,20 @@ public class Directions extends ViewContainerManager.ViewContainer
 
     @Override
     public void show() {
+        Object arg = args.get(CLEAR_ALL);
+        if (arg != null && (boolean) arg) {
+            startingPointText.setText("");
+            startingPointText.setTag(null);
+            destinationText.setText("");
+            destinationText.setTag(null);
+            ((BusRouteResultAdapter) mBusListView.getAdapter()).clearAllData();
+        }
+        arg = args.get(STARTING_POINT);
+        if (arg != null) {
+            Tip tip = (Tip) arg;
+            startingPointText.setText(tip.getName());
+            startingPointText.setTag(tip.getPoint());
+        }
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mMapsFragment.setStatusBarColor(mContext.getResources().getColor(R.color.primary_color));
         mDirectionsBoxView.setVisibility(View.VISIBLE);
@@ -366,6 +381,7 @@ public class Directions extends ViewContainerManager.ViewContainer
     private class RouteResult implements IDirectionsResultView {
         @Override
         public void showDriveRouteResult(DriveRouteResult result) {
+            mProgressBar.setVisibility(View.GONE);
             List<DrivePath> drivePaths = result.getPaths();
             if (drivePaths.size() > 0) {
                 mMapsFragment.setMapViewVisibility(View.VISIBLE);
@@ -392,6 +408,7 @@ public class Directions extends ViewContainerManager.ViewContainer
 
         @Override
         public void showWalkRouteResult(WalkRouteResult result) {
+            mProgressBar.setVisibility(View.GONE);
             List<WalkPath> walkPaths = result.getPaths();
             if (walkPaths.size() > 0) {
                 mMapsFragment.setMapViewVisibility(View.VISIBLE);
