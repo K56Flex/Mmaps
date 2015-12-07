@@ -211,7 +211,7 @@ public class SearchBox extends ViewContainerManager.ViewContainer
             }
         } else if (viewId == R.id.search_choose_on_map) {
             mMapsFragment.getViewContainerManager().putViewContainer(
-                    new ChooseOnMap(rootView, mMapsFragment), null, ChooseOnMap.CHOOSE_ON_MAP_ID);
+                    new ChooseOnMap(rootView, mMapsFragment), null, false, ChooseOnMap.CHOOSE_ON_MAP_ID);
         }
     }
 

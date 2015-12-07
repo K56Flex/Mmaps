@@ -232,7 +232,7 @@ public class Directions extends ViewContainerManager.ViewContainer
             exit();
             Map<String, Object> args = new HashMap<>();
             args.put(SearchBox.SHOW_CHOOSE_ON_MAP, true);
-            vm.putViewContainer(searchBox, args, SearchBox.SEARCH_BOX_ID);
+            vm.putViewContainer(searchBox, args, true, SearchBox.SEARCH_BOX_ID);
         } else if (viewId == R.id.action_more) {
             PopupMenu popupMenu = new PopupMenu(mContext, mMoreBtn);
             popupMenu.inflate(R.menu.directions_more);

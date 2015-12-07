@@ -72,7 +72,7 @@ public class MapsFragment extends Fragment
         Map<String, Object> searchBoxArgs = new HashMap<>();
         searchBoxArgs.put(SearchBox.BACK_BTN_AS_DRAWER, true);
         searchBoxArgs.put(SearchBox.ONLY_SEARCH_BOX, true);
-        viewContainerManager.putViewContainer(searchBox, searchBoxArgs, SearchBox.SEARCH_BOX_ID);
+        viewContainerManager.putViewContainer(searchBox, searchBoxArgs, true, SearchBox.SEARCH_BOX_ID);
 
         mDirections = new Directions(viewContainer, this);
     }
@@ -106,7 +106,7 @@ public class MapsFragment extends Fragment
     public void onClick(View v) {
         int viewId = v.getId();
         if (viewId == R.id.action_directions) {
-            mViewContainerManager.putViewContainer(mDirections, null, Directions.DIRECTIONS_ID);
+            mViewContainerManager.putViewContainer(mDirections, null, false, Directions.DIRECTIONS_ID);
         } else if (viewId == R.id.action_my_location) {
             mMapsModule.changeMyLocationMode();
         }

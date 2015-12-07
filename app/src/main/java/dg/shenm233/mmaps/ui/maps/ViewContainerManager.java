@@ -44,10 +44,11 @@ public class ViewContainerManager {
      *
      * @param view 要进栈的ViewContainer
      * @param args 要进栈的ViewContainer的参数
+     * @param save 是否保存参数进栈
      * @param id   该ViewContainer的id
      */
-    public void putViewContainer(ViewContainer view, Map<String, Object> args, int id) {
-        ViewContainerWithId v = new ViewContainerWithId(view, args, id);
+    public void putViewContainer(ViewContainer view, Map<String, Object> args, boolean save, int id) {
+        ViewContainerWithId v = new ViewContainerWithId(view, save ? args : null, id);
         view.setArguments(args);
         if (!mBackStack.isEmpty()) {
             ViewContainerWithId old = mBackStack.peek();
