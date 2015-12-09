@@ -37,7 +37,6 @@ public class SearchMapsPresenter implements PoiSearch.OnPoiSearchListener, Input
     private Inputtips mInputTips;
 
     private PoiSearch.Query curQuery;
-    private List<PoiItem> lastPoiItems;
 
     public SearchMapsPresenter(Context context, MapsModule mapsModule) {
         mContext = context;
@@ -82,10 +81,6 @@ public class SearchMapsPresenter implements PoiSearch.OnPoiSearchListener, Input
         poiSearch.searchPOIAsyn();
     }
 
-    public PoiItem getPoiItemFromLastSearch(Integer i) {
-        return lastPoiItems.get(i);
-    }
-
     public void setOnTipsListener(OnTipsListener l) {
         mOnTipsListener = l;
     }
@@ -107,7 +102,6 @@ public class SearchMapsPresenter implements PoiSearch.OnPoiSearchListener, Input
             if (poiResult != null && poiResult.getQuery() != null) { // 搜索poi的结果
                 if (poiResult.getQuery().equals(curQuery)) { // 是否查找同一条
                     poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
-                    lastPoiItems = poiItems;
                 }
             }
         }

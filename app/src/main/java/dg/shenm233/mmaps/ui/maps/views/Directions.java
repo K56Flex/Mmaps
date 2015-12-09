@@ -198,6 +198,12 @@ public class Directions extends ViewContainerManager.ViewContainer
             startingPointText.setText(tip.getName());
             startingPointText.setTag(tip.getPoint());
         }
+        arg = args.get(DESTINATION);
+        if (arg != null) {
+            Tip tip = (Tip) arg;
+            destinationText.setText(tip.getName());
+            destinationText.setTag(tip.getPoint());
+        }
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mMapsFragment.setStatusBarColor(mContext.getResources().getColor(R.color.primary_color));
         mDirectionsBoxView.setVisibility(View.VISIBLE);

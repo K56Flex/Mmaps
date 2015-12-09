@@ -8,23 +8,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.help.Tip;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
+import dg.shenm233.mmaps.presenter.SearchMapsPresenter;
 import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.views.Directions;
+import dg.shenm233.mmaps.ui.maps.views.PoiItems;
 import dg.shenm233.mmaps.ui.maps.views.SearchBox;
 import dg.shenm233.mmaps.ui.widget.StatusBarView;
 
 public class MapsFragment extends Fragment
         implements IMapsFragment, IDrawerView, View.OnClickListener, SearchBox.OnSearchItemClickListener {
+    private ViewGroup mViewContainer;
     private MapView mMapView;
     private MapsModule mMapsModule;
 
@@ -58,6 +64,7 @@ public class MapsFragment extends Fragment
 
         mMapsMask = rootView.findViewById(R.id.view_mask);
         ViewGroup viewContainer = (ViewGroup) rootView.findViewById(R.id.view_container);
+        mViewContainer = viewContainer;
 
         mDirectionsBtn = (ImageButton) viewContainer.findViewById(R.id.action_directions);
         mDirectionsBtn.setOnClickListener(this);
@@ -149,7 +156,10 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onMarkerClick(Marker marker) {
-
+        ViewContainerManager.ViewContainer v = mViewContainerManager.peek();
+        if (v instanceof AMap.OnMarkerClickListener) {
+            ((AMap.OnMarkerClickListener) v).onMarkerClick(marker);
+        }
     }
 
     @Override
@@ -197,13 +207,27 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onSearchItemClick(Tip tip) {
-        ViewContainerManager vm = mViewContainerManager;
+        final ViewContainerManager vm = mViewContainerManager;
         ViewContainerManager.ViewContainer v = vm.peek();
         Map<String, Object> args = v.getArguments();
         Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
         if (arg != null && (boolean) arg) { // 只显示搜索框，一般认为当前是主界面
             args.put(SearchBox.BACK_BTN_AS_DRAWER, true);
             v.show();
+            SearchMapsPresenter presenter = new SearchMapsPresenter(getContext(), mMapsModule);
+            presenter.searchPoi(tip.getName(), tip.getAdcode(),
+                    new SearchMapsPresenter.OnPoiSearchListener() {
+                        @Override
+                        public void onSearchPoiResult(@Nullable List<PoiItem> poiItems) {
+                            if (poiItems != null) {
+                                Map<String, Object> args = new HashMap<>();
+                                args.put(PoiItems.POI_ITEM_LIST, poiItems);
+                                vm.putViewContainer(new PoiItems(mViewContainer, MapsFragment.this),
+                                        args, true, PoiItems.POI_ITEMS_ID);
+                            }
+                        }
+                    }
+            );
         } else {
             //TODO
             vm.popBackStack(Directions.DIRECTIONS_ID);
