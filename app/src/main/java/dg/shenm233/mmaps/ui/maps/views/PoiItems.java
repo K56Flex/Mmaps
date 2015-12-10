@@ -79,7 +79,15 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
     public void show() {
         IMapsFragment mapsFragment = mMapsFragment;
         mapsFragment.setDirectionsBtnVisibility(View.GONE);
-        mapsFragment.getViewContainerManager().getViewContainer(SearchBox.SEARCH_BOX_ID).show();
+
+        // Hack: 显示搜索条
+        ViewContainerManager.ViewContainer searchBox =
+                mapsFragment.getViewContainerManager().getViewContainer(SearchBox.SEARCH_BOX_ID);
+        Map<String, Object> searchBoxArguments = searchBox.getArguments();
+        searchBoxArguments.put(SearchBox.BACK_BTN_AS_DRAWER, true);
+        searchBoxArguments.put(SearchBox.ONLY_SEARCH_BOX, true);
+        searchBox.show();
+
         poiItems = (List) args.get(POI_ITEM_LIST);
         (curPoiOverlay = mapsFragment.getMapsModule().addPoiOverlay(poiItems)).zoomToSpan();
         rootView.addView(mPoiDetailBinding.getRoot(), 0);
