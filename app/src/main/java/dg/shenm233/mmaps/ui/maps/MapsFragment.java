@@ -208,30 +208,42 @@ public class MapsFragment extends Fragment
     @Override
     public void onSearchItemClick(Tip tip) {
         final ViewContainerManager vm = mViewContainerManager;
-        ViewContainerManager.ViewContainer v = vm.peek();
-        Map<String, Object> args = v.getArguments();
-        Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
-        if (arg != null && (boolean) arg) { // 只显示搜索框，一般认为当前是主界面
-            args.put(SearchBox.BACK_BTN_AS_DRAWER, true);
-            v.show();
-            SearchMapsPresenter presenter = new SearchMapsPresenter(getContext(), mMapsModule);
-            presenter.searchPoi(tip.getName(), tip.getAdcode(),
-                    new SearchMapsPresenter.OnPoiSearchListener() {
-                        @Override
-                        public void onSearchPoiResult(@Nullable List<PoiItem> poiItems) {
-                            if (poiItems != null) {
-                                Map<String, Object> args = new HashMap<>();
-                                args.put(PoiItems.POI_ITEM_LIST, poiItems);
-                                vm.putViewContainer(new PoiItems(mViewContainer, MapsFragment.this),
-                                        args, true, PoiItems.POI_ITEMS_ID);
-                            }
-                        }
-                    }
-            );
-        } else {
-            //TODO
+        // 优先给其他调用过SearchBox/ChooseOnMap的ViewContainer处理
+        if (vm.getViewContainer(Directions.DIRECTIONS_ID) != null) { // 栈中有Directions这个ViewContainer,直接给它处理
             vm.popBackStack(Directions.DIRECTIONS_ID);
             ((SearchBox.OnSearchItemClickListener) vm.peek()).onSearchItemClick(tip);
+            return;
         }
+
+        ViewContainerManager.ViewContainer v = vm.peek();
+        if (v instanceof SearchBox) {
+            Map<String, Object> args = v.getArguments();
+            Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
+            if (arg != null && (boolean) arg) { // 只显示搜索框，一般认为当前是主界面
+                args.put(SearchBox.BACK_BTN_AS_DRAWER, true);
+                v.show();
+                showPoiItems(tip);
+            }
+        } else if (v instanceof PoiItems) {
+            vm.popBackStack();
+            showPoiItems(tip);
+        }
+    }
+
+    private void showPoiItems(Tip tip) {
+        SearchMapsPresenter presenter = new SearchMapsPresenter(getContext(), mMapsModule);
+        presenter.searchPoi(tip.getName(), tip.getAdcode(),
+                new SearchMapsPresenter.OnPoiSearchListener() {
+                    @Override
+                    public void onSearchPoiResult(@Nullable List<PoiItem> poiItems) {
+                        if (poiItems != null) {
+                            Map<String, Object> args = new HashMap<>();
+                            args.put(PoiItems.POI_ITEM_LIST, poiItems);
+                            getViewContainerManager().putViewContainer(new PoiItems(mViewContainer, MapsFragment.this),
+                                    args, true, PoiItems.POI_ITEMS_ID);
+                        }
+                    }
+                }
+        );
     }
 }
