@@ -96,7 +96,12 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
 
     @Override
     public void exit() {
+        // Hack: 隐藏搜索框
+        ViewContainerManager.ViewContainer searchBox =
+                mMapsFragment.getViewContainerManager().getViewContainer(SearchBox.SEARCH_BOX_ID);
+        searchBox.exit();
         rootView.removeView(mPoiDetailBinding.getRoot());
+
         curPoiOverlay.removeFromMap();
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
     }
