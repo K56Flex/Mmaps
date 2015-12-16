@@ -3,10 +3,11 @@ package dg.shenm233.mmaps.ui.maps.views;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.support.design.widget.CoordinatorLayout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.Marker;
@@ -25,7 +26,9 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
     private IMapsFragment mMapsFragment;
 
     private ViewGroup rootView;
-    private ViewGroup mainView;
+    private ViewGroup titleView;
+    private ViewGroup buttonBarView;
+
     private Marker marker;
 
     public ChooseOnMap(ViewGroup rootView, IMapsFragment mapsFragment) {
@@ -39,17 +42,22 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
     @Override
     public void onCreateView() {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        ViewGroup mainView = (ViewGroup) inflater.inflate(R.layout.search_choose_on_map, rootView, false);
-        this.mainView = mainView;
-        Button ok = (Button) mainView.findViewById(R.id.action_ok);
-        ok.setOnClickListener(this);
-        Button back = (Button) mainView.findViewById(R.id.action_back);
-        back.setOnClickListener(this);
+        titleView = (ViewGroup) inflater.inflate(R.layout.search_choose_on_map_title, rootView, false);
+
+        ViewGroup buttonBarView = (ViewGroup) inflater.inflate(R.layout.button_bar, rootView, false);
+        ((CoordinatorLayout.LayoutParams) buttonBarView.getLayoutParams()).gravity = Gravity.BOTTOM;
+        this.buttonBarView = buttonBarView;
+        buttonBarView.findViewById(R.id.action_ok).setOnClickListener(this);
+        buttonBarView.findViewById(R.id.action_back).setOnClickListener(this);
+        buttonBarView.setTag(R.id.action_my_location, true);
     }
 
     @Override
     public void show() {
-        rootView.addView(mainView);
+        ViewGroup rootView = this.rootView;
+        rootView.addView(titleView);
+        rootView.addView(buttonBarView);
+
         mMapsFragment.setStatusBarColor(mContext.getResources().getColor(R.color.primary_color));
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mMapsFragment.setMapViewVisibility(View.VISIBLE);
@@ -71,7 +79,8 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
         marker.destroy();
         mMapsFragment.setStatusBarColor(Color.TRANSPARENT);
         mMapsFragment.setMapViewVisibility(View.INVISIBLE);
-        rootView.removeView(mainView);
+        rootView.removeView(titleView);
+        rootView.removeView(buttonBarView);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
     }
 

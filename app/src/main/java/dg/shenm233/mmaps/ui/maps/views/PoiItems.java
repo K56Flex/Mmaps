@@ -1,11 +1,11 @@
 package dg.shenm233.mmaps.ui.maps.views;
 
 import android.content.Context;
+import android.support.design.widget.CoordinatorLayout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.Marker;
@@ -48,9 +48,10 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
         LayoutInflater inflater = LayoutInflater.from(mContext);
         mPoiDetailBinding = PoiDetailBinding.inflate(inflater, rootView, false);
         ViewGroup v = (ViewGroup) mPoiDetailBinding.getRoot();
-        FrameLayout.LayoutParams layoutParams =
-                (FrameLayout.LayoutParams) v.getLayoutParams();
+        CoordinatorLayout.LayoutParams layoutParams =
+                (CoordinatorLayout.LayoutParams) v.getLayoutParams();
         layoutParams.gravity = Gravity.BOTTOM;
+        layoutParams.anchorGravity = Gravity.BOTTOM;
         mPoiDetailBinding.setHandler(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +73,9 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
                         args, false, Directions.DIRECTIONS_ID);
             }
         });
+
+        // 设置本View被action_my_location这个View ID依赖,即定位按钮将向上移动,使它和PoiDetail视图不重合
+        v.setTag(R.id.action_my_location, true);
     }
 
     @SuppressWarnings("unchecked")
