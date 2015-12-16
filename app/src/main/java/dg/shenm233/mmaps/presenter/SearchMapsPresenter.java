@@ -18,7 +18,7 @@ import java.util.List;
 
 import dg.shenm233.mmaps.R;
 
-public class SearchMapsPresenter implements PoiSearch.OnPoiSearchListener, Inputtips.InputtipsListener {
+public class SearchMapsPresenter {
     public interface OnPoiSearchListener {
         void onSearchPoiResult(@Nullable List<PoiItem> poiItems);
     }
@@ -77,7 +77,7 @@ public class SearchMapsPresenter implements PoiSearch.OnPoiSearchListener, Input
         showProgress();
 
         PoiSearch poiSearch = new PoiSearch(mContext, curQuery);
-        poiSearch.setOnPoiSearchListener(this);
+        poiSearch.setOnPoiSearchListener(onPoiSearchListener);
         poiSearch.searchPOIAsyn();
     }
 
@@ -87,7 +87,7 @@ public class SearchMapsPresenter implements PoiSearch.OnPoiSearchListener, Input
 
     public void requestInputTips(String string, String city) {
         if (mInputTips == null)
-            mInputTips = new Inputtips(mContext, this);
+            mInputTips = new Inputtips(mContext, inputTipsListener);
         try {
             mInputTips.requestInputtips(string, city);
         } catch (AMapException e) {
@@ -95,36 +95,42 @@ public class SearchMapsPresenter implements PoiSearch.OnPoiSearchListener, Input
         }
     }
 
-    @Override
-    public void onPoiSearched(PoiResult poiResult, int rCode) {
-        List<PoiItem> poiItems = null;
-        if (rCode == 0) {
-            if (poiResult != null && poiResult.getQuery() != null) { // 搜索poi的结果
-                if (poiResult.getQuery().equals(curQuery)) { // 是否查找同一条
-                    poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
+    private PoiSearch.OnPoiSearchListener onPoiSearchListener =
+            new PoiSearch.OnPoiSearchListener() {
+                @Override
+                public void onPoiSearched(PoiResult poiResult, int rCode) {
+                    List<PoiItem> poiItems = null;
+                    if (rCode == 0) {
+                        if (poiResult != null && poiResult.getQuery() != null) { // 搜索poi的结果
+                            if (poiResult.getQuery().equals(curQuery)) { // 是否查找同一条
+                                poiItems = poiResult.getPois();// 取得第一页的poiItem数据，页数从数字0开始
+                            }
+                        }
+                    }
+                    if (poiItems == null || poiItems.size() == 0) {
+                        Toast.makeText(mContext, R.string.no_result, Toast.LENGTH_SHORT).show();
+                    }
+                    hideProgress();
+                    if (mOnPoiSearchListener != null) {
+                        mOnPoiSearchListener.onSearchPoiResult(poiItems);
+                        mOnPoiSearchListener = null;
+                    }
                 }
-            }
-        }
-        if (poiItems == null || poiItems.size() == 0) {
-            Toast.makeText(mContext, R.string.no_result, Toast.LENGTH_SHORT).show();
-        }
-        hideProgress();
-        if (mOnPoiSearchListener != null) {
-            mOnPoiSearchListener.onSearchPoiResult(poiItems);
-            mOnPoiSearchListener = null;
-        }
-    }
 
-    @Override
-    public void onPoiItemDetailSearched(PoiItemDetail poiItemDetail, int rCode) {
+                @Override
+                public void onPoiItemDetailSearched(PoiItemDetail poiItemDetail, int rCode) {
 
-    }
+                }
+            };
 
-    @Override
-    public void onGetInputtips(List<Tip> list, int rCode) {
-        if (rCode == 0) {
-            if (mOnTipsListener != null)
-                mOnTipsListener.onGetInputTips(list);
-        }
-    }
+    private Inputtips.InputtipsListener inputTipsListener =
+            new Inputtips.InputtipsListener() {
+                @Override
+                public void onGetInputtips(List<Tip> list, int rCode) {
+                    if (rCode == 0) {
+                        if (mOnTipsListener != null)
+                            mOnTipsListener.onGetInputTips(list);
+                    }
+                }
+            };
 }

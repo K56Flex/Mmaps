@@ -19,7 +19,7 @@ import com.amap.api.services.route.WalkRouteResult;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
-public class DirectionsPresenter implements RouteSearch.OnRouteSearchListener {
+public class DirectionsPresenter {
     private final static int BUS_ROUTE_RESULT = 0;
 
     private Context mContext;
@@ -42,7 +42,7 @@ public class DirectionsPresenter implements RouteSearch.OnRouteSearchListener {
         mContext = context;
         mDirectionsResultView = directionsResultView;
         mRouteSearch = new RouteSearch(context);
-        mRouteSearch.setRouteSearchListener(this);
+        mRouteSearch.setRouteSearchListener(onRouteSearchListener);
     }
 
     public void queryDriveRoute(LatLonPoint startPoint, LatLonPoint endPoint, int drivingMode) {
@@ -95,28 +95,31 @@ public class DirectionsPresenter implements RouteSearch.OnRouteSearchListener {
 
     private void onBusRouteSearched(Message msg) {
         Bundle bundle = msg.getData();
-        onBusRouteSearched((BusRouteResult) bundle.getParcelable("result"),
+        onRouteSearchListener.onBusRouteSearched((BusRouteResult) bundle.getParcelable("result"),
                 bundle.getInt("errorCode"));
     }
 
-    @Override
-    public void onBusRouteSearched(BusRouteResult busRouteResult, int rCode) {
-        if (rCode == 0) {
-            mDirectionsResultView.showBusRouteResult(busRouteResult);
-        }
-    }
+    private RouteSearch.OnRouteSearchListener onRouteSearchListener =
+            new RouteSearch.OnRouteSearchListener() {
+                @Override
+                public void onBusRouteSearched(BusRouteResult busRouteResult, int rCode) {
+                    if (rCode == 0) {
+                        mDirectionsResultView.showBusRouteResult(busRouteResult);
+                    }
+                }
 
-    @Override
-    public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int rCode) {
-        if (rCode == 0) {
-            mDirectionsResultView.showDriveRouteResult(driveRouteResult);
-        }
-    }
+                @Override
+                public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int rCode) {
+                    if (rCode == 0) {
+                        mDirectionsResultView.showDriveRouteResult(driveRouteResult);
+                    }
+                }
 
-    @Override
-    public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int rCode) {
-        if (rCode == 0) {
-            mDirectionsResultView.showWalkRouteResult(walkRouteResult);
-        }
-    }
+                @Override
+                public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int rCode) {
+                    if (rCode == 0) {
+                        mDirectionsResultView.showWalkRouteResult(walkRouteResult);
+                    }
+                }
+            };
 }

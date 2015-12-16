@@ -7,7 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.annotation.Nullable;
 
-public class Compass implements SensorEventListener {
+public class Compass {
 
     public interface OnRotateListener {
         void onRotate(float degree);
@@ -26,22 +26,24 @@ public class Compass implements SensorEventListener {
     }
 
     public void start() {
-        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+        mSensorManager.registerListener(mInternalListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_GAME);
     }
 
     public void stop() {
-        mSensorManager.unregisterListener(this);
+        mSensorManager.unregisterListener(mInternalListener);
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (mListener != null)
-            mListener.onRotate(-event.values[0]);
-    }
+    private SensorEventListener mInternalListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if (mListener != null)
+                mListener.onRotate(-event.values[0]);
+        }
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-    }
+        }
+    };
 }

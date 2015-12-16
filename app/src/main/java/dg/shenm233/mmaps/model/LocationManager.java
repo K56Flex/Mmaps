@@ -10,7 +10,7 @@ import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps.LocationSource;
 
-public class LocationManager implements AMapLocationListener {
+public class LocationManager {
     private static LocationManager mLocationManager;
     private LocationManagerProxy mLocationManagerProxy;
 
@@ -46,32 +46,34 @@ public class LocationManager implements AMapLocationListener {
 			 */
         //TODO: 需要判断选择定位方式
         mLocationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork,
-                REQUEST_LOCATION_MIN_TIME, REQUEST_LOCATION_MIN_DISTANCE, this);
+                REQUEST_LOCATION_MIN_TIME, REQUEST_LOCATION_MIN_DISTANCE, mInternalListener);
     }
 
-    @Override
-    public void onLocationChanged(AMapLocation aMapLocation) {
-        if (mListener != null)
-            mListener.onLocationChanged(aMapLocation);
-    }
+    private AMapLocationListener mInternalListener = new AMapLocationListener() {
+        @Override
+        public void onLocationChanged(AMapLocation aMapLocation) {
+            if (mListener != null)
+                mListener.onLocationChanged(aMapLocation);
+        }
 
-    @Override
-    public void onLocationChanged(Location location) {
+        @Override
+        public void onLocationChanged(Location location) {
 
-    }
+        }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
 
-    }
+        }
 
-    @Override
-    public void onProviderEnabled(String provider) {
+        @Override
+        public void onProviderEnabled(String provider) {
 
-    }
+        }
 
-    @Override
-    public void onProviderDisabled(String provider) {
+        @Override
+        public void onProviderDisabled(String provider) {
 
-    }
+        }
+    };
 }
