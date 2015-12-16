@@ -17,10 +17,10 @@
         android:background="#EEEEEE"
         android:visibility="gone" />
 
-    <dg.shenm233.mmaps.ui.widget.StatusBarView
-        android:id="@+id/status_bar_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <!--<dg.shenm233.mmaps.ui.widget.StatusBarView-->
+    <!--android:id="@+id/status_bar_view"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content" />-->
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/view_container"

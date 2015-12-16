@@ -1,7 +1,9 @@
 package dg.shenm233.mmaps.ui.maps;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,11 +28,10 @@ import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.views.Directions;
 import dg.shenm233.mmaps.ui.maps.views.PoiItems;
 import dg.shenm233.mmaps.ui.maps.views.SearchBox;
-import dg.shenm233.mmaps.ui.widget.StatusBarView;
 
 public class MapsFragment extends Fragment
         implements IMapsFragment, IDrawerView, View.OnClickListener, SearchBox.OnSearchItemClickListener {
-    private ViewGroup mViewContainer;
+    private CoordinatorLayout mViewContainer;
     private MapView mMapView;
     private MapsModule mMapsModule;
 
@@ -41,7 +42,7 @@ public class MapsFragment extends Fragment
 
     private View mMapsMask;
 
-    private StatusBarView mStatusBarView;
+    //    private StatusBarView mStatusBarView;
     private ImageButton mMyLocationBtn;
     private ImageButton mDirectionsBtn;
 
@@ -56,15 +57,17 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onViewCreated(View rootView, @Nullable Bundle savedInstanceState) {
-        mStatusBarView = (StatusBarView) rootView.findViewById(R.id.status_bar_view);
+//        mStatusBarView = (StatusBarView) rootView.findViewById(R.id.status_bar_view);
 
         mMapView = (MapView) rootView.findViewById(R.id.mapview);
         mMapView.onCreate(savedInstanceState);
         mMapsModule = new MapsModule(getActivity(), this, mMapView.getMap());
 
         mMapsMask = rootView.findViewById(R.id.view_mask);
-        ViewGroup viewContainer = (ViewGroup) rootView.findViewById(R.id.view_container);
+        CoordinatorLayout viewContainer = (CoordinatorLayout) rootView.findViewById(R.id.view_container);
         mViewContainer = viewContainer;
+
+        viewContainer.setStatusBarBackgroundColor(Color.TRANSPARENT); // remove status bar color
 
         mDirectionsBtn = (ImageButton) viewContainer.findViewById(R.id.action_directions);
         mDirectionsBtn.setOnClickListener(this);
@@ -202,7 +205,8 @@ public class MapsFragment extends Fragment
 
     @Override
     public void setStatusBarColor(int color) {
-        mStatusBarView.setBackgroundColor(color);
+        mViewContainer.setStatusBarBackgroundColor(color);
+//        mStatusBarView.setBackgroundColor(color);
     }
 
     @Override
