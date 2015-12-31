@@ -126,7 +126,16 @@ public class MapsFragment extends Fragment
             args.put(Directions.STARTING_POINT, tip);
             mViewContainerManager.putViewContainer(mDirections, args, false, Directions.DIRECTIONS_ID);
         } else if (viewId == R.id.action_my_location) {
-            mMapsModule.changeMyLocationMode();
+            int myLocationMode = mMapsModule.getMyLocationMode();
+            if (!isMain()) {
+                myLocationMode = MapsModule.MY_LOCATION_LOCATE;
+            } else {
+                if (++myLocationMode > MapsModule.MY_LOCATION_ROTATE) {
+                    myLocationMode = MapsModule.MY_LOCATION_LOCATE;
+                }
+            }
+
+            mMapsModule.changeMyLocationMode(myLocationMode);
         }
     }
 
@@ -147,10 +156,8 @@ public class MapsFragment extends Fragment
         if (v != null && v.onBackPressed()) {
             return true;
         } else {
-            if (v instanceof SearchBox) {
-                Object arg = v.getArguments().get(SearchBox.ONLY_SEARCH_BOX);
-                if (arg != null && (boolean) arg) // 只显示搜索框，一般认为当前是主界面
-                    return false;
+            if (isMain()) {
+                return false;
             }
             vm.popBackStack();
             return true;
@@ -220,14 +227,11 @@ public class MapsFragment extends Fragment
         }
 
         ViewContainerManager.ViewContainer v = vm.peek();
-        if (v instanceof SearchBox) {
+        if (isMain()) {
             Map<String, Object> args = v.getArguments();
-            Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
-            if (arg != null && (boolean) arg) { // 只显示搜索框，一般认为当前是主界面
-                args.put(SearchBox.BACK_BTN_AS_DRAWER, true);
-                v.show();
-                showPoiItems(tip);
-            }
+            args.put(SearchBox.BACK_BTN_AS_DRAWER, true);
+            v.show();
+            showPoiItems(tip);
         } else if (v instanceof PoiItems) {
             vm.popBackStack();
             showPoiItems(tip);
@@ -249,5 +253,18 @@ public class MapsFragment extends Fragment
                     }
                 }
         );
+    }
+
+    /**
+     * 判断是否为主界面
+     */
+    private boolean isMain() {
+        ViewContainerManager.ViewContainer v = mViewContainerManager.peek();
+        if (v instanceof SearchBox) { // 只显示搜索框，一般认为当前是主界面
+            Map<String, Object> args = v.getArguments();
+            Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
+            return arg != null && (boolean) arg;
+        }
+        return false;
     }
 }

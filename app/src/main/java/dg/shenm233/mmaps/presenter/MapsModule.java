@@ -106,13 +106,8 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         mAMap.clear();
     }
 
-    public void changeMyLocationMode() {
-        if (MY_LOCATION_CUR_TYPE >= 2)
-            MY_LOCATION_CUR_TYPE = MY_LOCATION_LOCATE;
-        else
-            MY_LOCATION_CUR_TYPE++;
-
-        switch (MY_LOCATION_CUR_TYPE) {
+    public void changeMyLocationMode(int myLocationCurType) {
+        switch (myLocationCurType) {
             case MY_LOCATION_LOCATE:
                 needZoom = true; // 用于位置回调时自动放大地图
                 mAMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
@@ -131,7 +126,12 @@ public class MapsModule implements AMap.OnMarkerClickListener,
                 break;
         }
 
-        mMapsFragment.changeMyLocationBtnState(MY_LOCATION_CUR_TYPE);
+        MY_LOCATION_CUR_TYPE = myLocationCurType;
+        mMapsFragment.changeMyLocationBtnState(myLocationCurType);
+    }
+
+    public int getMyLocationMode() {
+        return MY_LOCATION_CUR_TYPE;
     }
 
     /*设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位*/
