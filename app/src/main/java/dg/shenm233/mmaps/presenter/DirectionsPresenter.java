@@ -3,7 +3,6 @@ package dg.shenm233.mmaps.presenter;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -17,6 +16,8 @@ import com.amap.api.services.route.DriveRouteResult;
 import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkRouteResult;
 
+import java.lang.ref.WeakReference;
+
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
 public class DirectionsPresenter {
@@ -26,23 +27,14 @@ public class DirectionsPresenter {
     private IDirectionsResultView mDirectionsResultView;
     private RouteSearch mRouteSearch;
 
-    private Handler mMainHandler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.arg1) {
-                case BUS_ROUTE_RESULT:
-                    DirectionsPresenter.this.onBusRouteSearched(msg);
-                    break;
-            }
-            return false;
-        }
-    });
+    private static MyHandler mMainHandler = new MyHandler();
 
     public DirectionsPresenter(Context context, IDirectionsResultView directionsResultView) {
         mContext = context;
         mDirectionsResultView = directionsResultView;
         mRouteSearch = new RouteSearch(context);
         mRouteSearch.setRouteSearchListener(onRouteSearchListener);
+        mMainHandler.setPresenter(this);
     }
 
     public void queryDriveRoute(LatLonPoint startPoint, LatLonPoint endPoint, int drivingMode) {
@@ -122,4 +114,24 @@ public class DirectionsPresenter {
                     }
                 }
             };
+
+    private static class MyHandler extends Handler {
+        private WeakReference<DirectionsPresenter> p;
+
+        private void setPresenter(DirectionsPresenter presenter) {
+            p = new WeakReference<>(presenter);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (p == null) return;
+            DirectionsPresenter presenter = p.get();
+            if (presenter == null) return;
+            switch (msg.arg1) {
+                case BUS_ROUTE_RESULT:
+                    presenter.onBusRouteSearched(msg);
+                    break;
+            }
+        }
+    }
 }
