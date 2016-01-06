@@ -130,10 +130,10 @@ public class Directions extends ViewContainerManager.ViewContainer
         busListView.setLayoutManager(new LinearLayoutManager(context));
         initBusListView();
 
-        directionsBoxView.setVisibility(View.GONE);
-        resultViewContainer.setVisibility(View.GONE);
-        rootView.addView(directionsBoxView);
-        rootView.addView(resultViewContainer);
+//        directionsBoxView.setVisibility(View.GONE);
+//        resultViewContainer.setVisibility(View.GONE);
+//        rootView.addView(directionsBoxView);
+//        rootView.addView(resultViewContainer);
     }
 
     private void initTabs() {
@@ -206,15 +206,19 @@ public class Directions extends ViewContainerManager.ViewContainer
         }
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mMapsFragment.setStatusBarColor(mContext.getResources().getColor(R.color.primary_color));
-        mDirectionsBoxView.setVisibility(View.VISIBLE);
-        mResultViewContainer.setVisibility(View.VISIBLE);
+//        mDirectionsBoxView.setVisibility(View.VISIBLE);
+//        mResultViewContainer.setVisibility(View.VISIBLE);
+        rootView.addView(mDirectionsBoxView);
+        rootView.addView(mResultViewContainer);
     }
 
     @Override
     public void exit() {
         clearAllOverlays();
-        mDirectionsBoxView.setVisibility(View.GONE);
-        mResultViewContainer.setVisibility(View.GONE);
+//        mDirectionsBoxView.setVisibility(View.GONE);
+//        mResultViewContainer.setVisibility(View.GONE);
+        rootView.removeView(mDirectionsBoxView);
+        rootView.removeView(mResultViewContainer);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
         mMapsFragment.setStatusBarColor(Color.TRANSPARENT);
     }
