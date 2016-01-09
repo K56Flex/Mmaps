@@ -24,8 +24,17 @@ public class AMapUtils {
      * boolean[0] ... 省钱
      * boolean[1] ... 避免拥堵
      * boolean[2] ... 不走高速
+     * boolean[3] ... 距离优先
+     * boolean[4] ... 不走快速路
      */
     public static int convertToAMapDriveMode(boolean[] booleans) {
+        if (booleans[3]) {
+            return RouteSearch.DrivingShortDistance;
+        }
+        if (booleans[4]) {
+            return RouteSearch.DrivingNoExpressways;
+        }
+
         int mymode = (booleans[0] ? 1 : 0)
                 + (booleans[1] ? 2 : 0)
                 + (booleans[2] ? 4 : 0);
@@ -49,7 +58,7 @@ public class AMapUtils {
         }
 
         //TODO: 本方法还没有支持高德sdk里面的
-        // DrivingShortDistance, DrivingNoExpressways, DrivingMultiStrategy
+        // DrivingMultiStrategy
     }
 
     /**
@@ -57,9 +66,11 @@ public class AMapUtils {
      * boolean[0] ... 省钱
      * boolean[1] ... 避免拥堵
      * boolean[2] ... 不走高速
+     * boolean[3] ... 距离优先
+     * boolean[4] ... 不走快速路
      */
     public static boolean[] covertAMapDriveModeToBools(int driveMode) {
-        boolean[] booleans = new boolean[3];
+        boolean[] booleans = new boolean[5];
         switch (driveMode) {
             case RouteSearch.DrivingSaveMoney:
                 booleans[0] = true;
@@ -86,6 +97,14 @@ public class AMapUtils {
 //                booleans[1] = booleans[2] = true;
             case RouteSearch.DrivingNoHighAvoidCongestionSaveMoney:
                 booleans[0] = booleans[1] = booleans[2] = true;
+                break;
+            case RouteSearch.DrivingShortDistance:
+                booleans[3] = true;
+                booleans[0] = booleans[1] = booleans[2] = booleans[4] = false;
+                break;
+            case RouteSearch.DrivingNoExpressways:
+                booleans[4] = true;
+                booleans[0] = booleans[1] = booleans[2] = booleans[3] = false;
                 break;
             default:
                 booleans[0] = booleans[1] = booleans[2] = false;

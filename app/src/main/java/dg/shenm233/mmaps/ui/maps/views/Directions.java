@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -335,6 +336,21 @@ public class Directions extends ViewContainerManager.ViewContainer
                         @Override
                         public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                             checkboxes[which] = isChecked;
+                            int checkboxesCount = checkboxes.length;
+                            ListView l = ((AlertDialog) dialog).getListView();
+                            if ((which == 3 || which == 4) && checkboxes[which]) {
+                                for (int i = 0; i < checkboxesCount; i++) {
+                                    if (i != which) { // 取消其他复选框
+                                        checkboxes[i] = false;
+                                        l.setItemChecked(i, false);
+                                    }
+                                }
+                            } else {
+                                for (int i = 3; i < checkboxesCount; i++) {
+                                    checkboxes[i] = false;
+                                    l.setItemChecked(i, false);
+                                }
+                            }
                         }
                     });
             builder.setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
