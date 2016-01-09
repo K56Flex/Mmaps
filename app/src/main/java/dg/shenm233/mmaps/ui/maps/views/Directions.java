@@ -184,8 +184,8 @@ public class Directions extends ViewContainerManager.ViewContainer
 
     @Override
     public void show() {
-        Object arg = args.get(CLEAR_ALL);
-        if (arg != null && (boolean) arg) {
+        Object arg;
+        if (getClearAll()) {
             startingPointText.setText("");
             startingPointText.setTag(null);
             destinationText.setText("");
@@ -277,6 +277,11 @@ public class Directions extends ViewContainerManager.ViewContainer
                 break;
         }
         return true;
+    }
+
+    private boolean getClearAll() {
+        Object arg = args.get(CLEAR_ALL);
+        return arg != null && (boolean) arg;
     }
 
     private void swapDirections() {

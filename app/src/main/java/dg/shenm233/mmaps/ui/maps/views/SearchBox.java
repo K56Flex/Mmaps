@@ -131,9 +131,7 @@ public class SearchBox extends ViewContainerManager.ViewContainer
 
     @Override
     public void show() {
-        Map<String, Object> args = this.args;
-        Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
-        if (arg != null && (boolean) arg) {
+        if (getOnlySearchBox()) {
             mSearchBox.setVisibility(View.VISIBLE);
             mSearchResultContainer.setVisibility(View.INVISIBLE);
             mMapsFragment.setMapViewVisibility(View.VISIBLE);
@@ -142,14 +140,12 @@ public class SearchBox extends ViewContainerManager.ViewContainer
             mSearchBox.setVisibility(View.VISIBLE);
             mSearchResultContainer.setVisibility(View.VISIBLE);
         }
-        arg = args.get(BACK_BTN_AS_DRAWER);
-        if (arg != null && (boolean) arg) {
+        if (getBackBtnAsDrawer()) {
             mBackBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_menu));
         } else {
             mBackBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_arrow_back));
         }
-        arg = args.get(SHOW_CHOOSE_ON_MAP);
-        if (arg != null && (boolean) arg) {
+        if (getChooseOnMap()) {
             mChooseOnMapBtn.setVisibility(View.VISIBLE);
         } else {
             mChooseOnMapBtn.setVisibility(View.GONE);
@@ -171,8 +167,7 @@ public class SearchBox extends ViewContainerManager.ViewContainer
 
     @Override
     public boolean onBackPressed() {
-        Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
-        if (arg != null && (boolean) arg) {
+        if (getOnlySearchBox()) {
             if (mSearchResultContainer.getVisibility() == View.VISIBLE) {
                 showOnlySearchBox();
                 return true;
@@ -186,13 +181,11 @@ public class SearchBox extends ViewContainerManager.ViewContainer
         int viewId = v.getId();
         Map<String, Object> args = this.args;
         if (viewId == R.id.opendrawer_or_back) {
-            Object arg = args.get(BACK_BTN_AS_DRAWER);
-            if (arg != null && (boolean) arg) {
+            if (getBackBtnAsDrawer()) {
                 ((IDrawerView) mMapsFragment).openDrawer();
                 return;
             }
-            arg = args.get(SearchBox.ONLY_SEARCH_BOX);
-            if (arg != null && (boolean) arg) {
+            if (getOnlySearchBox()) {
                 showOnlySearchBox();
             } else {
                 mMapsFragment.getViewContainerManager().popBackStack();
@@ -201,8 +194,7 @@ public class SearchBox extends ViewContainerManager.ViewContainer
             mSearchEditText.setText("");
         } else if (viewId == R.id.search_edittext) {
             mSearchEditText.setCursorVisible(true);
-            Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
-            if (arg != null && (boolean) arg) {
+            if (getOnlySearchBox()) {
                 mMapsFragment.setMapViewVisibility(View.INVISIBLE);
                 mSearchResultContainer.setVisibility(View.VISIBLE);
                 mBackBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_arrow_back));
@@ -217,13 +209,27 @@ public class SearchBox extends ViewContainerManager.ViewContainer
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Tip tip = mResultAdapter.getItem(position);
-        Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
-        if (arg != null && (boolean) arg) {
+        if (getOnlySearchBox()) {
             enableTextTip = false;
             mSearchEditText.setText(tip.getName());
             enableTextTip = true;
         }
         ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
+    }
+
+    private boolean getOnlySearchBox() {
+        Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
+        return arg != null && (boolean) arg;
+    }
+
+    private boolean getBackBtnAsDrawer() {
+        Object arg = args.get(SearchBox.BACK_BTN_AS_DRAWER);
+        return arg != null && (boolean) arg;
+    }
+
+    private boolean getChooseOnMap() {
+        Object arg = args.get(SearchBox.SHOW_CHOOSE_ON_MAP);
+        return arg != null && (boolean) arg;
     }
 
     private void showOnlySearchBox() {
