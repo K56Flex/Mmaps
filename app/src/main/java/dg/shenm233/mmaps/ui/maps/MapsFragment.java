@@ -238,6 +238,15 @@ public class MapsFragment extends Fragment
         }
     }
 
+    @Override
+    public void onClearSearchText() {
+        ViewContainerManager vm = mViewContainerManager;
+        ViewContainerManager.ViewContainer v = vm.peek();
+        if (v instanceof PoiItems) {
+            vm.popBackStack();
+        }
+    }
+
     private void showPoiItems(Tip tip) {
         SearchMapsPresenter presenter = new SearchMapsPresenter(getContext(), mMapsModule);
         presenter.searchPoi(tip.getName(), tip.getAdcode(),

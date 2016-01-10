@@ -13,6 +13,8 @@ public interface IMapsFragment {
 
     MapsModule getMapsModule();
 
+    void onClearSearchText();
+
     void setMapViewVisibility(int visibility);
 
     void setDirectionsBtnVisibility(int visibility);

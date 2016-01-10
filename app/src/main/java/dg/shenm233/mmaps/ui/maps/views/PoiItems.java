@@ -104,6 +104,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
         ViewContainerManager.ViewContainer searchBox =
                 mMapsFragment.getViewContainerManager().getViewContainer(SearchBox.SEARCH_BOX_ID);
         searchBox.exit();
+        ((SearchBox) searchBox).clearSearchText();
         rootView.removeView(mPoiDetailBinding.getRoot());
 
         curPoiOverlay.removeFromMap();

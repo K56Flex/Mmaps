@@ -191,6 +191,7 @@ public class SearchBox extends ViewContainerManager.ViewContainer
                 mMapsFragment.getViewContainerManager().popBackStack();
             }
         } else if (viewId == R.id.edit_text_clear) {
+            mMapsFragment.onClearSearchText();
             mSearchEditText.setText("");
         } else if (viewId == R.id.search_edittext) {
             mSearchEditText.setCursorVisible(true);
@@ -215,6 +216,10 @@ public class SearchBox extends ViewContainerManager.ViewContainer
             enableTextTip = true;
         }
         ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
+    }
+
+    public void clearSearchText() {
+        mSearchEditText.setText("");
     }
 
     private boolean getOnlySearchBox() {
