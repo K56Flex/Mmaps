@@ -15,6 +15,7 @@ import com.amap.api.services.help.Tip;
 
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
+import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
 
@@ -54,6 +55,8 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
 
     @Override
     public void show() {
+        ((IDrawerView) mMapsFragment).enableDrawer(false);
+
         ViewGroup rootView = this.rootView;
         rootView.addView(titleView);
         rootView.addView(buttonBarView);
@@ -82,6 +85,8 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
         rootView.removeView(titleView);
         rootView.removeView(buttonBarView);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
+
+        ((IDrawerView) mMapsFragment).enableDrawer(true);
     }
 
     @Override

@@ -150,6 +150,11 @@ public class MapsFragment extends Fragment
     }
 
     @Override
+    public void enableDrawer(boolean enable) {
+        ((IDrawerView) getActivity()).enableDrawer(enable);
+    }
+
+    @Override
     public boolean onBackKeyPressed() {
         ViewContainerManager vm = mViewContainerManager;
         ViewContainerManager.ViewContainer v = vm.peek();

@@ -5,5 +5,7 @@ public interface IDrawerView {
 
     void closeDrawer();
 
+    void enableDrawer(boolean enable);
+
     boolean onBackKeyPressed();
 }

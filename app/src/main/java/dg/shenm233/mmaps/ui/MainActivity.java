@@ -46,6 +46,15 @@ public class MainActivity extends BaseActivity implements IDrawerView {
     }
 
     @Override
+    public void enableDrawer(boolean enable) {
+        if (!enable) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
+    }
+
+    @Override
     public boolean onBackKeyPressed() {
         return false;
     }

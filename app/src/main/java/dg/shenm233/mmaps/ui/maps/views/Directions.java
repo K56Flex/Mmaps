@@ -41,6 +41,7 @@ import dg.shenm233.mmaps.presenter.DirectionsPresenter;
 import dg.shenm233.mmaps.presenter.IDirectionsResultView;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
+import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
 
@@ -211,6 +212,8 @@ public class Directions extends ViewContainerManager.ViewContainer
         mResultViewContainer.setVisibility(View.VISIBLE);
         rootView.addView(mDirectionsBoxView);
         rootView.addView(mResultViewContainer);
+
+        ((IDrawerView) mMapsFragment).enableDrawer(false);
     }
 
     @Override
@@ -222,6 +225,8 @@ public class Directions extends ViewContainerManager.ViewContainer
         rootView.removeView(mResultViewContainer);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
         mMapsFragment.setStatusBarColor(Color.TRANSPARENT);
+
+        ((IDrawerView) mMapsFragment).enableDrawer(true);
     }
 
     @Override

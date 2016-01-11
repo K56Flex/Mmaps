@@ -139,6 +139,8 @@ public class SearchBox extends ViewContainerManager.ViewContainer
             mMapsFragment.setMapViewVisibility(View.INVISIBLE);
             mSearchBox.setVisibility(View.VISIBLE);
             mSearchResultContainer.setVisibility(View.VISIBLE);
+
+            ((IDrawerView) mMapsFragment).enableDrawer(false);
         }
         if (getBackBtnAsDrawer()) {
             mBackBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_menu));
@@ -158,6 +160,8 @@ public class SearchBox extends ViewContainerManager.ViewContainer
         CommonUtils.hideKeyboard(mSearchEditText);
         mSearchResultContainer.setVisibility(View.INVISIBLE);
         mSearchBox.setVisibility(View.INVISIBLE);
+
+        ((IDrawerView) mMapsFragment).enableDrawer(true);
     }
 
     @Override
