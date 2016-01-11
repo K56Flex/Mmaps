@@ -161,6 +161,10 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         }
     }
 
+    public void moveCamera(LatLng position, int zoom) {
+        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+    }
+
     @Override
     public void onMapClick(LatLng latLng) {
 

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.overlay.PoiOverlay;
 import com.amap.api.services.core.PoiItem;
@@ -20,7 +21,9 @@ import java.util.Map;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.databinding.PoiDetailBinding;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
+import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
+import dg.shenm233.mmaps.util.AMapUtils;
 
 public class PoiItems extends ViewContainerManager.ViewContainer implements AMap.OnMarkerClickListener {
     public static final int POI_ITEMS_ID = 3;
@@ -83,6 +86,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
     public void show() {
         IMapsFragment mapsFragment = mMapsFragment;
         mapsFragment.setDirectionsBtnVisibility(View.GONE);
+        MapsModule mapsModule = mapsFragment.getMapsModule();
 
         // Hack: 显示搜索条
         ViewContainerManager.ViewContainer searchBox =
@@ -93,9 +97,13 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
         searchBox.show();
 
         poiItems = (List) args.get(POI_ITEM_LIST);
-        (curPoiOverlay = mapsFragment.getMapsModule().addPoiOverlay(poiItems)).zoomToSpan();
+        (curPoiOverlay = mapsModule.addPoiOverlay(poiItems)).zoomToSpan();
         rootView.addView(mPoiDetailBinding.getRoot(), 0);
-        mPoiDetailBinding.setPoi(curPoiItem = (PoiItem) poiItems.get(0));
+
+        PoiItem firstPoiItem = (PoiItem) poiItems.get(0);
+        mPoiDetailBinding.setPoi(firstPoiItem);
+        mapsModule.moveCamera(AMapUtils.convertToLatLng(firstPoiItem.getLatLonPoint()), 17);
+        curPoiItem = firstPoiItem;
     }
 
     @Override
@@ -130,6 +138,8 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
     @Override
     public boolean onMarkerClick(Marker marker) {
         mPoiDetailBinding.setPoi(curPoiItem = ((PoiItem) poiItems.get(((Integer) marker.getObject()))));
+        LatLng position = marker.getPosition();
+        mMapsFragment.getMapsModule().moveCamera(position, 20);
         return false;
     }
 }
