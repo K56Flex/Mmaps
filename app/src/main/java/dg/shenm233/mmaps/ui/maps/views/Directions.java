@@ -178,7 +178,7 @@ public class Directions extends ViewContainerManager.ViewContainer
                 MapsModule mapsModule = mMapsFragment.getMapsModule();
                 BusPath busPath = (BusPath) myPath.path;
                 BusRouteOverlay busRouteOverlay = mapsModule.addBusRouteOverlay(busPath,
-                        myPath.startPoint, myPath.endPoint);
+                        myPath.startPoint, myPath.endPoint, false);
                 busRouteOverlays.add(busRouteOverlay);
             }
         });
@@ -425,7 +425,7 @@ public class Directions extends ViewContainerManager.ViewContainer
                 MapsModule mapsModule = mMapsFragment.getMapsModule();
                 for (DrivePath drivePath : drivePaths) {
                     DrivingRouteOverlay drivingRouteOverlay = mapsModule.addDrivingRouteOverlay(drivePath,
-                            result.getStartPos(), result.getTargetPos());
+                            result.getStartPos(), result.getTargetPos(), false);
                     drivingRouteOverlays.add(drivingRouteOverlay);
                 }
             }
@@ -452,7 +452,7 @@ public class Directions extends ViewContainerManager.ViewContainer
                 MapsModule mapsModule = mMapsFragment.getMapsModule();
                 for (WalkPath walkPath : walkPaths) {
                     WalkRouteOverlay walkRouteOverlay = mapsModule.addWalkRouteOverlay(walkPath,
-                            result.getStartPos(), result.getTargetPos());
+                            result.getStartPos(), result.getTargetPos(), false);
                     walkRouteOverlays.add(walkRouteOverlay);
                 }
             }
