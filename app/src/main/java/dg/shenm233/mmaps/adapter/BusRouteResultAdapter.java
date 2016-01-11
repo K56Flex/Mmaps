@@ -18,6 +18,7 @@ import java.util.List;
 
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.model.MyPath;
+import dg.shenm233.mmaps.ui.widget.BusPathView;
 import dg.shenm233.mmaps.util.CommonUtils;
 
 public class BusRouteResultAdapter extends RecyclerView.Adapter<BusRouteResultAdapter.BusRouteView> {
@@ -107,7 +108,7 @@ public class BusRouteResultAdapter extends RecyclerView.Adapter<BusRouteResultAd
     public void onBindViewHolder(BusRouteView holder, int position) {
         holder.timeTextView.setText(CommonUtils.getFriendlyDuration(mContext,
                 mBusPaths.get(position).getDuration()));
-        holder.pathView.setText(mBusSimplePaths.get(position));
+        holder.pathView.setBusPath(mBusSimplePaths.get(position));
     }
 
     @Override
@@ -119,12 +120,12 @@ public class BusRouteResultAdapter extends RecyclerView.Adapter<BusRouteResultAd
     protected static class BusRouteView extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         protected OnItemClickListener mItemClickListener;
-        protected TextView pathView;
+        protected BusPathView pathView;
         protected TextView timeTextView;
 
         public BusRouteView(ViewGroup itemView, OnItemClickListener l) {
             super(itemView);
-            pathView = (TextView) itemView.findViewById(R.id.route_bus_path);
+            pathView = (BusPathView) itemView.findViewById(R.id.route_bus_path);
             timeTextView = (TextView) itemView.findViewById(R.id.route_bus_time);
             mItemClickListener = l;
             itemView.setOnClickListener(this);
