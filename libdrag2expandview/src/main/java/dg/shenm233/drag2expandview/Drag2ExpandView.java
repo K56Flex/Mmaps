@@ -194,7 +194,7 @@ public class Drag2ExpandView extends ViewGroup {
             }
         }
 
-        return true;
+        return isHeaderViewUnder;
     }
 
     @Override
