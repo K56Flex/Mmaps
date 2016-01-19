@@ -51,7 +51,7 @@ public class SearchTipsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = View.inflate(mContext, R.layout.listview_item, null);
+            convertView = View.inflate(mContext, R.layout.search_tip_item, null);
             viewHolder = new ViewHolder();
             viewHolder.name = (TextView) convertView.findViewById(R.id.listview_item_name);
             viewHolder.district = (TextView) convertView.findViewById(R.id.listview_item_district);
