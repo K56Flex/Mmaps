@@ -8,6 +8,8 @@ import android.widget.ImageButton;
 
 import java.util.List;
 
+import dg.shenm233.drag2expandview.Drag2ExpandView;
+
 public class FloatingButton extends ImageButton {
     public FloatingButton(Context context) {
         super(context);
@@ -41,6 +43,8 @@ public class FloatingButton extends ImageButton {
                                        FloatingButton child, View dependency) {
             if (dependency instanceof FloatingButton) {
                 return true;
+            } else if (dependency instanceof Drag2ExpandView) {
+                return true;
             }
 
             Object depend = dependency.getTag(child.getId()); // 获取child是否应该依赖dependency?
@@ -50,32 +54,63 @@ public class FloatingButton extends ImageButton {
         @Override
         public boolean onDependentViewChanged(CoordinatorLayout parent, FloatingButton child,
                                               View dependency) {
-            if (child.getVisibility() == View.VISIBLE) {
-                // get original bottom margin for more space between views
-                int bottomYMargin = ((CoordinatorLayout.LayoutParams) dependency.getLayoutParams()).bottomMargin;
-                float targetTransY = getFabTranslationYForOtherView(parent, child);
-                targetTransY -= bottomYMargin;
+            // get original bottom margin for more space between views
+            int bottomYMargin = ((CoordinatorLayout.LayoutParams) dependency.getLayoutParams()).bottomMargin;
+            float targetTransY = getFabTranslationYForOtherView(parent, child);
+            targetTransY -= bottomYMargin;
 
-                if (mFabTranslationY != targetTransY) { // only
-                    mFabTranslationY = targetTransY;
-                    child.setTranslationY(targetTransY);
-                    return true;
-                }
+            if (mFabTranslationY != targetTransY) { // only
+                mFabTranslationY = targetTransY;
+                child.setTranslationY(targetTransY);
+                return true;
             }
             return false;
         }
 
         @Override
+        public void onDependentViewRemoved(CoordinatorLayout parent, FloatingButton child,
+                                           View dependency) {
+            if (dependency instanceof Drag2ExpandView) {
+                float targetTransY = getFabTranslationYForOtherView(parent, child);
+                if (mFabTranslationY != targetTransY) {
+                    mFabTranslationY = targetTransY;
+                    child.setTranslationY(targetTransY);
+                }
+            }
+        }
+
+        @Override
         public boolean onLayoutChild(CoordinatorLayout parent, FloatingButton child,
                                      int layoutDirection) {
-            return false;
+            float targetTransY = 0.0f;
+            List<View> dependencies = parent.getDependencies(child);
+            for (View v : dependencies) {
+                if (v instanceof Drag2ExpandView) {
+                    targetTransY = Math.min(targetTransY,
+                            v.getTranslationY() - ((Drag2ExpandView) v).getHeaderHeight());
+                } else {
+                    if (parent.doViewsOverlap(v, child)) {
+                        targetTransY = Math.min(targetTransY,
+                                v.getTranslationY() - v.getHeight());
+                    }
+                }
+            }
+            parent.onLayoutChild(child, layoutDirection);
+            // no need to translate Y if dependencies not require child to do
+            if (targetTransY != 0.0f) {
+                mFabTranslationY = targetTransY;
+                child.setTranslationY(targetTransY);
+            }
+            return true;
         }
 
         private float getFabTranslationYForOtherView(CoordinatorLayout parent, FloatingButton fab) {
             float minOffset = 0;
             final List<View> dependencies = parent.getDependencies(fab);
             for (View v : dependencies) {
-                if (parent.doViewsOverlap(v, fab)) {
+                if (v instanceof Drag2ExpandView) {
+                    minOffset = v.getTranslationY() - ((Drag2ExpandView) v).getHeaderHeight();
+                } else if (parent.doViewsOverlap(v, fab)) {
                     minOffset = Math.min(minOffset, v.getTranslationY() - v.getHeight());
                 }
             }

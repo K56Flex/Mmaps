@@ -216,6 +216,10 @@ public class Drag2ExpandView extends ViewGroup {
         }
     }
 
+    public int getHeaderHeight() {
+        return mHeaderHeight;
+    }
+
     public boolean smoothSlideHeaderTo(float offset) {
         final int paddingTop = getPaddingTop();
         int finalY = (int) (paddingTop + mDragRange * offset);
