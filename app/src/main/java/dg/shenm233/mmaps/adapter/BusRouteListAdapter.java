@@ -19,7 +19,7 @@ import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.ui.widget.BusPathView;
 import dg.shenm233.mmaps.util.CommonUtils;
 
-public class BusRouteResultAdapter extends BaseRecyclerViewAdapter<BusRouteResultAdapter.BusRouteView> {
+public class BusRouteListAdapter extends BaseRecyclerViewAdapter<BusRouteListAdapter.BusRouteView> {
     private Context mContext;
     private List<BusPath> mBusPaths = new ArrayList<>();
     private List<String> mBusSimplePaths = new ArrayList<>();
@@ -27,7 +27,7 @@ public class BusRouteResultAdapter extends BaseRecyclerViewAdapter<BusRouteResul
     private LatLonPoint startLatLonPoint; // 出发点的经纬位置
     private LatLonPoint endLatLonPoint; // 终点的经纬位置
 
-    public BusRouteResultAdapter(Context context) {
+    public BusRouteListAdapter(Context context) {
         super();
         mContext = context;
     }

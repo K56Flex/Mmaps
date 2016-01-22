@@ -36,7 +36,7 @@ import java.util.Map;
 
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.BaseRecyclerViewAdapter;
-import dg.shenm233.mmaps.adapter.BusRouteResultAdapter;
+import dg.shenm233.mmaps.adapter.BusRouteListAdapter;
 import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.presenter.DirectionsPresenter;
 import dg.shenm233.mmaps.presenter.IDirectionsResultView;
@@ -167,7 +167,7 @@ public class Directions extends ViewContainerManager.ViewContainer
     }
 
     private void initBusListView() {
-        final BusRouteResultAdapter adapter = new BusRouteResultAdapter(mContext);
+        final BusRouteListAdapter adapter = new BusRouteListAdapter(mContext);
         mBusListView.setAdapter(adapter);
         adapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
@@ -193,7 +193,7 @@ public class Directions extends ViewContainerManager.ViewContainer
             startingPointText.setTag(null);
             destinationText.setText("");
             destinationText.setTag(null);
-            ((BusRouteResultAdapter) mBusListView.getAdapter()).clearAllData();
+            ((BusRouteListAdapter) mBusListView.getAdapter()).clearAllData();
         }
         arg = args.get(STARTING_POINT);
         if (arg != null) {
@@ -438,7 +438,7 @@ public class Directions extends ViewContainerManager.ViewContainer
             List<BusPath> busPaths = result.getPaths();
             if (busPaths.size() > 0) {
                 mBusListView.setVisibility(View.VISIBLE);
-                ((BusRouteResultAdapter) mBusListView.getAdapter())
+                ((BusRouteListAdapter) mBusListView.getAdapter())
                         .newRouteList(busPaths, result.getStartPos(), result.getTargetPos());
             }
         }
