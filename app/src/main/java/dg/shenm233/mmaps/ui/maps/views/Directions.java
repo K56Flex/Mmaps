@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.adapter.BaseRecyclerViewAdapter;
 import dg.shenm233.mmaps.adapter.BusRouteResultAdapter;
 import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.presenter.DirectionsPresenter;
@@ -168,7 +169,7 @@ public class Directions extends ViewContainerManager.ViewContainer
     private void initBusListView() {
         final BusRouteResultAdapter adapter = new BusRouteResultAdapter(mContext);
         mBusListView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new BusRouteResultAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int adapterPosition) {
                 clearAllOverlays();

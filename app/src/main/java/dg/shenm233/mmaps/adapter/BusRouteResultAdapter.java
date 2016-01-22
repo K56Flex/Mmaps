@@ -1,9 +1,7 @@
 package dg.shenm233.mmaps.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -21,11 +19,10 @@ import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.ui.widget.BusPathView;
 import dg.shenm233.mmaps.util.CommonUtils;
 
-public class BusRouteResultAdapter extends RecyclerView.Adapter<BusRouteResultAdapter.BusRouteView> {
+public class BusRouteResultAdapter extends BaseRecyclerViewAdapter<BusRouteResultAdapter.BusRouteView> {
     private Context mContext;
     private List<BusPath> mBusPaths = new ArrayList<>();
     private List<String> mBusSimplePaths = new ArrayList<>();
-    private OnItemClickListener mOnItemClickListener;
 
     private LatLonPoint startLatLonPoint; // 出发点的经纬位置
     private LatLonPoint endLatLonPoint; // 终点的经纬位置
@@ -84,19 +81,6 @@ public class BusRouteResultAdapter extends RecyclerView.Adapter<BusRouteResultAd
             return new MyPath(mBusPaths.get(position), startLatLonPoint, endLatLonPoint);
     }
 
-    public void setOnItemClickListener(OnItemClickListener l) {
-        mOnItemClickListener = l;
-    }
-
-    // 这是给此Adapter内部使用
-    private OnItemClickListener adapterListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(View v, int adapterPosition) {
-            if (mOnItemClickListener != null)
-                mOnItemClickListener.onItemClick(v, adapterPosition);
-        }
-    };
-
     @Override
     public BusRouteView onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewGroup routeBusItem = (ViewGroup) LayoutInflater.from(mContext)
@@ -117,28 +101,14 @@ public class BusRouteResultAdapter extends RecyclerView.Adapter<BusRouteResultAd
         return mBusPaths.size();
     }
 
-    protected static class BusRouteView extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
-        protected OnItemClickListener mItemClickListener;
+    protected static class BusRouteView extends BaseRecyclerViewAdapter.BaseViewHolder {
         protected BusPathView pathView;
         protected TextView timeTextView;
 
         public BusRouteView(ViewGroup itemView, OnItemClickListener l) {
-            super(itemView);
+            super(itemView, l);
             pathView = (BusPathView) itemView.findViewById(R.id.route_bus_path);
             timeTextView = (TextView) itemView.findViewById(R.id.route_bus_time);
-            mItemClickListener = l;
-            itemView.setOnClickListener(this);
         }
-
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            mItemClickListener.onItemClick(v, position);
-        }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(View v, int adapterPosition);
     }
 }
