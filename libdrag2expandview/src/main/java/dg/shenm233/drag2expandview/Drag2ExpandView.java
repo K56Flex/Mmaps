@@ -118,7 +118,8 @@ public class Drag2ExpandView extends ViewGroup {
             if (child == headerView) {
                 childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(mHeaderHeight, MeasureSpec.EXACTLY);
             } else {
-                childHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec, paddingHeight, lp.height);
+                childHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec - mHeaderHeight,
+                        paddingHeight, lp.height);
             }
 
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
