@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@+id/step_transit_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="12dp" />
+
+    <TextView
+        android:id="@+id/step_departure"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="70dp" />
+
+    <TextView
+        android:id="@+id/step_bus_num"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/step_departure"
+        android:layout_below="@id/step_departure"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/step_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/step_departure"
+        android:layout_below="@id/step_bus_num" />
+
+    <TextView
+        android:id="@+id/step_arrival"
+        style="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/step_departure"
+        android:layout_below="@id/step_detail" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="0dp"
+        android:layout_alignBottom="@id/step_arrival"
+        android:layout_alignTop="@id/step_departure"
+        android:layout_marginLeft="48dp"
+        android:src="@color/cardview_dark_background" />
+
+</RelativeLayout>

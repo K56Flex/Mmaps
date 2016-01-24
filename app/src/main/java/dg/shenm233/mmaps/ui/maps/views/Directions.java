@@ -16,7 +16,9 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.overlay.BusRouteOverlay;
 import com.amap.api.maps.overlay.DrivingRouteOverlay;
 import com.amap.api.maps.overlay.WalkRouteOverlay;
@@ -24,19 +26,28 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.help.Tip;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusRouteResult;
+import com.amap.api.services.route.BusStep;
 import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveRouteResult;
+import com.amap.api.services.route.DriveStep;
+import com.amap.api.services.route.Path;
+import com.amap.api.services.route.RouteBusLineItem;
+import com.amap.api.services.route.RouteBusWalkItem;
 import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
+import com.amap.api.services.route.WalkStep;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dg.shenm233.drag2expandview.Drag2ExpandView;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.BaseRecyclerViewAdapter;
 import dg.shenm233.mmaps.adapter.BusRouteListAdapter;
+import dg.shenm233.mmaps.adapter.BusStepsAdapter;
+import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
 import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.presenter.DirectionsPresenter;
 import dg.shenm233.mmaps.presenter.IDirectionsResultView;
@@ -45,6 +56,7 @@ import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
+import dg.shenm233.mmaps.util.CommonUtils;
 
 public class Directions extends ViewContainerManager.ViewContainer
         implements View.OnClickListener, PopupMenu.OnMenuItemClickListener, SearchBox.OnSearchItemClickListener {
@@ -74,6 +86,8 @@ public class Directions extends ViewContainerManager.ViewContainer
     private ViewGroup mResultViewContainer;
     private ProgressBar mProgressBar;
     private RecyclerView mBusListView;
+
+    private RouteAbstractView mRouteAbstractView;
 
     private List<DrivingRouteOverlay> drivingRouteOverlays = new ArrayList<>();
     private List<BusRouteOverlay> busRouteOverlays = new ArrayList<>();
@@ -137,6 +151,9 @@ public class Directions extends ViewContainerManager.ViewContainer
 //        resultViewContainer.setVisibility(View.GONE);
 //        rootView.addView(directionsBoxView);
 //        rootView.addView(resultViewContainer);
+
+        mRouteAbstractView = new RouteAbstractView();
+        mRouteAbstractView.initView(inflater);
     }
 
     private void initTabs() {
@@ -181,6 +198,9 @@ public class Directions extends ViewContainerManager.ViewContainer
                 BusRouteOverlay busRouteOverlay = mapsModule.addBusRouteOverlay(busPath,
                         myPath.startPoint, myPath.endPoint, false);
                 busRouteOverlays.add(busRouteOverlay);
+
+                mRouteAbstractView.setPathData(busPath);
+                mRouteAbstractView.show();
             }
         });
     }
@@ -222,6 +242,7 @@ public class Directions extends ViewContainerManager.ViewContainer
         clearAllOverlays();
 //        mDirectionsBoxView.setVisibility(View.GONE);
 //        mResultViewContainer.setVisibility(View.GONE);
+        mRouteAbstractView.hide();
         rootView.removeView(mDirectionsBoxView);
         rootView.removeView(mResultViewContainer);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
@@ -238,6 +259,7 @@ public class Directions extends ViewContainerManager.ViewContainer
     @Override
     public boolean onBackPressed() {
         if (curSelectedTab == ROUTE_BUS && mResultViewContainer.getVisibility() != View.VISIBLE) {
+            mRouteAbstractView.hide();
             mResultViewContainer.setVisibility(View.VISIBLE);
             return true;
         }
@@ -309,6 +331,9 @@ public class Directions extends ViewContainerManager.ViewContainer
         LatLonPoint endPoint = (LatLonPoint) destinationText.getTag();
         if (endPoint == null || startPoint == null)
             return;
+
+        mRouteAbstractView.hide();
+
         mResultViewContainer.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
         mBusListView.setVisibility(View.INVISIBLE);
@@ -428,6 +453,9 @@ public class Directions extends ViewContainerManager.ViewContainer
                     DrivingRouteOverlay drivingRouteOverlay = mapsModule.addDrivingRouteOverlay(drivePath,
                             result.getStartPos(), result.getTargetPos(), false);
                     drivingRouteOverlays.add(drivingRouteOverlay);
+
+                    mRouteAbstractView.setPathData(drivePath);
+                    mRouteAbstractView.show();
                 }
             }
         }
@@ -455,6 +483,129 @@ public class Directions extends ViewContainerManager.ViewContainer
                     WalkRouteOverlay walkRouteOverlay = mapsModule.addWalkRouteOverlay(walkPath,
                             result.getStartPos(), result.getTargetPos(), false);
                     walkRouteOverlays.add(walkRouteOverlay);
+
+                    mRouteAbstractView.setPathData(walkPath);
+                    mRouteAbstractView.show();
+                }
+            }
+        }
+    }
+
+    private class RouteAbstractView implements BaseRecyclerViewAdapter.OnItemClickListener {
+        private Context mContext;
+
+        private Drag2ExpandView mView;
+
+        private TextView mDistanceTextView;
+        private TextView mEtcTextView;
+        private RecyclerView mStepListView;
+
+        private Path mPathData;
+
+        private DriveWalkStepsAdapter mDriveWalkStepsAdapter;
+        private BusStepsAdapter mBusStepsAdapter;
+
+        private void initView(LayoutInflater layoutInflater) {
+            Drag2ExpandView view = (Drag2ExpandView)
+                    layoutInflater.inflate(R.layout.route_abstract, rootView, false);
+            mView = view;
+            mContext = view.getContext();
+
+            ViewGroup headerView = (ViewGroup) view.findViewById(R.id.route_abstract_header);
+            mDistanceTextView = (TextView) headerView.findViewById(R.id.route_tv_distance_duration);
+            mEtcTextView = (TextView) headerView.findViewById(R.id.route_tv_etc);
+            view.findViewById(R.id.action_navigation).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext, "Working in process", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            mStepListView = (RecyclerView) view.findViewById(R.id.route_steps_listview);
+            mStepListView.setLayoutManager(new LinearLayoutManager(mContext));
+        }
+
+        private void show() {
+            rootView.addView(mView);
+        }
+
+        private void hide() {
+            rootView.removeView(mView);
+        }
+
+        private void setPathData(Path path) {
+            mPathData = path;
+            mDistanceTextView.setText(CommonUtils.getFriendlyDuration(mContext, path.getDuration())
+                    + " " + CommonUtils.getFriendlyLength((int) path.getDistance()));
+            if (path instanceof DrivePath) {
+                updateDriveSteps();
+            } else if (path instanceof BusPath) {
+                updateBusSteps();
+            } else {
+                updateWalkSteps();
+            }
+        }
+
+        private void updateDriveSteps() {
+            mEtcTextView.setText("");
+            List<DriveStep> driveSteps = ((DrivePath) mPathData).getSteps();
+            if (mDriveWalkStepsAdapter == null) {
+                mDriveWalkStepsAdapter = new DriveWalkStepsAdapter(mContext);
+                mDriveWalkStepsAdapter.setOnItemClickListener(this);
+            }
+            mStepListView.setAdapter(mDriveWalkStepsAdapter);
+            mDriveWalkStepsAdapter.setDriveStepList(driveSteps);
+        }
+
+        private void updateBusSteps() {
+            mEtcTextView.setText(CommonUtils.getFriendlyCost(((BusPath) mPathData).getCost()));
+            List<BusStep> busSteps = ((BusPath) mPathData).getSteps();
+            if (mBusStepsAdapter == null) {
+                mBusStepsAdapter = new BusStepsAdapter(mContext);
+                mBusStepsAdapter.setOnItemClickListener(this);
+            }
+            mStepListView.setAdapter(mBusStepsAdapter);
+            mBusStepsAdapter.setBusStepList(busSteps);
+        }
+
+        private void updateWalkSteps() {
+            mEtcTextView.setText("");
+            List<WalkStep> walkSteps = ((WalkPath) mPathData).getSteps();
+            if (mDriveWalkStepsAdapter == null) {
+                mDriveWalkStepsAdapter = new DriveWalkStepsAdapter(mContext);
+                mDriveWalkStepsAdapter.setOnItemClickListener(this);
+            }
+            mStepListView.setAdapter(mDriveWalkStepsAdapter);
+            mDriveWalkStepsAdapter.setWalkStepList(walkSteps);
+        }
+
+        @Override
+        public void onItemClick(View v, int adapterPosition) {
+            MapsModule mapsModule = mMapsFragment.getMapsModule();
+            if (curSelectedTab == ROUTE_DRIVE) {
+                DriveStep driveStep = mDriveWalkStepsAdapter.getDriveStepAt(adapterPosition);
+                if (driveStep == null) return;
+                LatLng latLng = AMapUtils.convertToLatLng(driveStep.getPolyline().get(0));
+                mapsModule.moveCamera(latLng, 20);
+            } else if (curSelectedTab == ROUTE_WALK) {
+                WalkStep walkStep = mDriveWalkStepsAdapter.getWalkStepAt(adapterPosition);
+                if (walkStep == null) return;
+                LatLng latLng = AMapUtils.convertToLatLng(walkStep.getPolyline().get(0));
+                mapsModule.moveCamera(latLng, 20);
+            } else if (curSelectedTab == ROUTE_BUS) {
+                Object item = mBusStepsAdapter.getItem(adapterPosition);
+                if (item == null) return;
+                LatLonPoint latLonPoint = null;
+                if (item instanceof RouteBusLineItem) {
+                    latLonPoint = ((RouteBusLineItem) item).getPolyline().get(0);
+                } else if (item instanceof RouteBusWalkItem) {
+                    List<WalkStep> walkSteps = ((RouteBusWalkItem) item).getSteps();
+                    if (walkSteps.size() > 0) {
+                        latLonPoint = walkSteps.get(0).getPolyline().get(0);
+                    }
+                }
+                if (latLonPoint != null) {
+                    mapsModule.moveCamera(AMapUtils.convertToLatLng(latLonPoint), 20);
                 }
             }
         }
