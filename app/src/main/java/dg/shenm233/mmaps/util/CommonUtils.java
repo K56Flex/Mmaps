@@ -27,7 +27,7 @@ public class CommonUtils {
             return sb.append(sec / 60).append(context.getText(R.string.minute))
                     .toString();
         else {
-            return sb.append(sec / 3600).append(context.getText(R.string.hour))
+            return sb.append(sec / 3600).append(context.getText(R.string.hour)).append(" ")
                     .append((sec % 3600) / 60).append(context.getText(R.string.minute))
                     .toString();
         }
@@ -50,17 +50,7 @@ public class CommonUtils {
             return dstr + ChString.Kilometer;
         }
 
-        if (lenMeter > 100) {
-            int dis = lenMeter / 50 * 50;
-            return dis + ChString.Meter;
-        }
-
-        int dis = lenMeter / 10 * 10;
-        if (dis == 0) {
-            dis = 10;
-        }
-
-        return dis + ChString.Meter;
+        return lenMeter + ChString.Meter;
     }
 
     /**
