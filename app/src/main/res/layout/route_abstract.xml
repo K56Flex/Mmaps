@@ -5,54 +5,63 @@
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
     android:gravity="bottom"
-    app:sHeaderHeight="128dp">
+    app:sHeaderHeight="128dp"
+    app:sScrollableView="@+id/route_steps_listview"
+    app:sViewToDrag="@+id/route_abstract_header">
 
-    <RelativeLayout
-        android:id="@+id/route_abstract_header"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="28dp"
-            android:background="#F5F5F5"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <TextView
-                android:id="@+id/route_tv_distance_duration"
-                style="@style/TextAppearance.AppCompat.Large"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/route_tv_etc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black" />
-
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/action_navigation"
-            android:layout_width="@dimen/fab_d"
-            android:layout_height="@dimen/fab_d"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/circle_btn_background"
-            android:backgroundTint="@color/primary_color"
-            android:src="@drawable/ic_navigation" />
-
-    </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/route_steps_listview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F5F5F5"
-        android:padding="@dimen/card_view_padding" />
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@id/route_abstract_header"
+            android:layout_width="match_parent"
+            android:layout_height="128dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="28dp"
+                android:background="#F5F5F5"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/route_tv_distance_duration"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/route_tv_etc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/action_navigation"
+                android:layout_width="@dimen/fab_d"
+                android:layout_height="@dimen/fab_d"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/circle_btn_background"
+                android:backgroundTint="@color/primary_color"
+                android:src="@drawable/ic_navigation" />
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/route_steps_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F5F5F5"
+            android:padding="@dimen/card_view_padding" />
+
+    </LinearLayout>
 
 </dg.shenm233.drag2expandview.Drag2ExpandView>

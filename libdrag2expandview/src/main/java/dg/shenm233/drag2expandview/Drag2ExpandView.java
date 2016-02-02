@@ -2,7 +2,6 @@ package dg.shenm233.drag2expandview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
@@ -18,6 +17,14 @@ import android.view.ViewGroup;
  */
 
 public class Drag2ExpandView extends ViewGroup {
+    public final static int STATE_IDLE = 0;
+    public final static int STATE_DRAGGING = 1;
+    public final static int STATE_EXPAND = 2;
+    public final static int STATE_COLLAPSE = 3;
+
+    public final static int DEFAULT_STATE = STATE_COLLAPSE;
+
+
     private static int[] OTHER_ATTRS = new int[]{
             android.R.attr.gravity
     };
@@ -27,8 +34,22 @@ public class Drag2ExpandView extends ViewGroup {
 
     private int mHeaderHeight = 0;
 
-    private View mHeaderView;
+    /**
+     * the main view,is sliding
+     */
     private View mMainView;
+
+    private int mScrollableViewResId;
+    /**
+     *
+     */
+    private View mScrollableView;
+
+    private int mDragViewResId;
+    /**
+     * the view that to be dragged
+     */
+    private View mDragView;
 
     private int mDragRange = 0; // always > 0
     private float mDragOffset;
@@ -38,11 +59,14 @@ public class Drag2ExpandView extends ViewGroup {
     private float mFirstDownX = 0;
     private float mFirstDownY = 0;
 
-    private int mTop;
+    private int mViewState = DEFAULT_STATE;
 
     private boolean isFirstLayout = true;
 
     private int mSquareOfSlop;
+
+    private ScrollableViewHelper mScrollableViewHelper;
+    private boolean mLetScrollableViewHandle;
 
     public Drag2ExpandView(Context context) {
         this(context, null);
@@ -70,14 +94,28 @@ public class Drag2ExpandView extends ViewGroup {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Drag2ExpandView);
             if (a != null) {
                 mHeaderHeight = a.getDimensionPixelSize(0, -1);
+                mScrollableViewResId = a.getResourceId(1, -1);
+                mDragViewResId = a.getResourceId(2, -1);
                 a.recycle();
             }
         }
 
         mViewDragHelper = ViewDragHelper.create(this, 1.0f, mViewDragCallback = new ViewDragCallback());
+        mScrollableViewHelper = new ScrollableViewHelper();
 
         int slop = mViewDragHelper.getTouchSlop();
         mSquareOfSlop = slop * slop;
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        if (mScrollableViewResId != -1) {
+            setScrollableView(findViewById(mScrollableViewResId));
+        }
+        if (mDragViewResId != -1) {
+            setViewToDrag(findViewById(mDragViewResId));
+        }
     }
 
     @Override
@@ -87,96 +125,98 @@ public class Drag2ExpandView extends ViewGroup {
 //        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
-        int width;
-        int height;
-
         final int childCount = getChildCount();
-        if (childCount != 2) {
-            throw new IllegalStateException("must have two views");
+        if (childCount != 1) {
+            throw new IllegalStateException("only support one child view");
         }
 
         if (widthMode != MeasureSpec.EXACTLY) {
             throw new IllegalStateException("width must be exactly value or MATCH_PARENT");
         }
-        width = widthSize;
 
-        final View headerView = getChildAt(0);
-        final View mainView = getChildAt(1);
-
-        height = heightSize;
+        final View mainView = getChildAt(0);
 
         int paddingWidth = getPaddingLeft() + getPaddingRight();
         int paddingHeight = getPaddingTop() + getPaddingBottom();
 
-        for (int i = 0; i < childCount; i++) {
-            final View child = getChildAt(i);
-            final LayoutParams lp = child.getLayoutParams();
 
-            int childWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec, paddingWidth, lp.width);
+        int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize - paddingWidth, MeasureSpec.EXACTLY);
+        int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize - paddingHeight, MeasureSpec.EXACTLY);
 
-            int childHeightMeasureSpec;
-            if (child == headerView) {
-                childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(mHeaderHeight, MeasureSpec.EXACTLY);
-            } else {
-                childHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec - mHeaderHeight,
-                        paddingHeight, lp.height);
-            }
+        mainView.measure(childWidthMeasureSpec, childHeightMeasureSpec);
 
-            child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
-        }
-
-        mHeaderView = headerView;
         mMainView = mainView;
 
-        setMeasuredDimension(width, height);
+        setMeasuredDimension(widthSize, heightSize);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
 
-        final View headerView = mHeaderView;
-        final View mainView = mMainView;
+        int top;
 
         if (isFirstLayout) {
-            mDragRange = getHeight() - mHeaderView.getMeasuredHeight();
-            if (mIsUpSliding) {
-                mTop = paddingTop + mDragRange;
-            } else {
-                mTop = paddingTop;
-            }
-
+            mDragRange = getHeight() - mHeaderHeight;
+            mDragOffset = 0.0f;
             isFirstLayout = false;
         }
 
-        int top = mTop;
+        top = computePanelTopPosition(mDragOffset);
 
-        int headerViewRight = paddingLeft + headerView.getMeasuredWidth();
-        int headerViewBottom = top + mHeaderHeight;
+        mMainView.layout(paddingLeft, top,
+                paddingLeft + mMainView.getMeasuredWidth(), top + mMainView.getMeasuredHeight());
+    }
 
-        headerView.layout(paddingLeft, top, headerViewRight, headerViewBottom);
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        final int action = ev.getAction();
+        final float x = ev.getX();
+        final float y = ev.getY();
 
-        // no need to layout main view for first time
-        if (!isFirstLayout) {
-            mainView.layout(paddingLeft, headerViewBottom, paddingLeft + mainView.getMeasuredWidth(),
-                    headerViewBottom + mainView.getMeasuredHeight());
+        int maskAction = action & MotionEvent.ACTION_MASK;
+        if (maskAction == MotionEvent.ACTION_DOWN) {
+            mLetScrollableViewHandle = false;
+            mFirstDownX = x;
+            mFirstDownY = y;
+        } else if (maskAction == MotionEvent.ACTION_MOVE) {
+            if (!isViewUnder(mScrollableView, (int) x, (int) y)) {
+                return super.dispatchTouchEvent(ev);
+            }
+
+            if (mScrollableViewHelper.getScrollableViewScrollPosition(mScrollableView, mIsUpSliding) > 0) {
+                mLetScrollableViewHandle = true;
+                return super.dispatchTouchEvent(ev);
+            }
         }
+
+        // default
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mViewDragHelper.shouldInterceptTouchEvent(ev) || super.onInterceptTouchEvent(ev);
+        if (mLetScrollableViewHandle) {
+            mViewDragHelper.cancel();
+            return false;
+        }
+
+        return mViewDragHelper.shouldInterceptTouchEvent(ev);
     }
 
     @Override
-    public boolean onTouchEvent(@NonNull MotionEvent ev) {
-        mViewDragHelper.processTouchEvent(ev);
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (!mLetScrollableViewHandle) {
+            mViewDragHelper.processTouchEvent(ev);
+            if (mViewDragHelper.getViewDragState() == ViewDragHelper.STATE_DRAGGING) {
+                return true;
+            }
+        }
 
         final float x = ev.getX();
         final float y = ev.getY();
 
-        boolean isHeaderViewUnder = mViewDragHelper.isViewUnder(mHeaderView, (int) x, (int) y);
+        boolean isDragViewUnder = isViewUnder(mDragView, (int) x, (int) y);
 
         final int action = ev.getAction();
         int maskAction = action & MotionEvent.ACTION_MASK;
@@ -186,16 +226,16 @@ public class Drag2ExpandView extends ViewGroup {
         } else if (maskAction == MotionEvent.ACTION_UP) {
             float dx = mFirstDownX - x;
             float dy = mFirstDownY - y;
-            if (dx * dx + dy * dy < mSquareOfSlop && isHeaderViewUnder) {
-                if (mDragOffset > 0) {
-                    smoothSlideHeaderTo(1.0f);
-                } else if (mDragOffset < 0) {
-                    smoothSlideHeaderTo(0.0f);
+            if (dx * dx + dy * dy < mSquareOfSlop && isDragViewUnder) {
+                if (mViewState == STATE_COLLAPSE) {
+                    smoothSlideViewTo(1.0f); //expand
+                } else if (mViewState == STATE_EXPAND) {
+                    smoothSlideViewTo(0.0f); // collapse
                 }
             }
         }
 
-        return isHeaderViewUnder;
+        return isDragViewUnder;
     }
 
     @Override
@@ -207,13 +247,16 @@ public class Drag2ExpandView extends ViewGroup {
 
     public void setGravity(int gravity) {
         if (gravity == Gravity.BOTTOM) {
-            mDragOffset = -1;
             mIsUpSliding = true;
         } else if (gravity == Gravity.TOP) {
-            mDragOffset = 1;
             mIsUpSliding = false;
         } else {
             throw new IllegalStateException("gravity must be BOTTOM or TOP");
+        }
+        mViewState = DEFAULT_STATE;
+        mDragOffset = 0; // collapse
+        if (!isFirstLayout) {
+            requestLayout();
         }
     }
 
@@ -221,39 +264,108 @@ public class Drag2ExpandView extends ViewGroup {
         return mHeaderHeight;
     }
 
-    public boolean smoothSlideHeaderTo(float offset) {
-        final int paddingTop = getPaddingTop();
-        int finalY = (int) (paddingTop + mDragRange * offset);
-        final View headerView = mHeaderView;
+    public void expandView() {
+        smoothSlideViewTo(1.0f);
+    }
 
-        if (mViewDragHelper.smoothSlideViewTo(headerView, headerView.getLeft(), finalY)) {
+    public void collapseView() {
+        smoothSlideViewTo(0.0f);
+    }
+
+    public int getViewState() {
+        return mViewState;
+    }
+
+    public void setScrollableView(View scrollableView) {
+        mScrollableView = scrollableView;
+    }
+
+    public void setViewToDrag(View dragView) {
+        mDragView = dragView;
+    }
+
+    private boolean smoothSlideViewTo(float offset) {
+        int finalY = computePanelTopPosition(offset);
+        final View slidingView = mMainView;
+
+        if (mViewDragHelper.smoothSlideViewTo(slidingView, slidingView.getLeft(), finalY)) {
             ViewCompat.postInvalidateOnAnimation(this);
             return true;
         }
         return false;
     }
 
+    private boolean isViewUnder(View view, int x, int y) {
+        if (view == null) return false;
+        int[] viewLocation = new int[2];
+        view.getLocationOnScreen(viewLocation);
+        int[] parentLocation = new int[2];
+        this.getLocationOnScreen(parentLocation);
+        int screenX = parentLocation[0] + x;
+        int screenY = parentLocation[1] + y;
+        return screenX >= viewLocation[0] && screenX < viewLocation[0] + view.getWidth() &&
+                screenY >= viewLocation[1] && screenY < viewLocation[1] + view.getHeight();
+    }
+
+    /*
+     * Computes the top position of the panel based on the slide offset.
+     */
+    private int computePanelTopPosition(float slideOffset) {
+        int slidingViewHeight = mMainView != null ? mMainView.getMeasuredHeight() : 0;
+        int slidePixelOffset = (int) (slideOffset * mDragRange);
+        // Compute the top of the panel if its collapsed
+        return mIsUpSliding
+                ? getMeasuredHeight() - getPaddingBottom() - mHeaderHeight - slidePixelOffset
+                : getPaddingTop() - slidingViewHeight + mHeaderHeight + slidePixelOffset;
+    }
+
+    /*
+     * Computes the slide offset based on the top position of the panel
+     */
+    private float computeSlideOffset(int topPosition) {
+        // Compute the panel top position if the panel is collapsed (offset 0)
+        final int topBoundCollapsed = computePanelTopPosition(0);
+
+        // Determine the new slide offset based on the collapsed top position and the new required
+        // top position
+        return mIsUpSliding
+                ? (float) (topBoundCollapsed - topPosition) / mDragRange
+                : (float) (topPosition - topBoundCollapsed) / mDragRange;
+    }
+
     private class ViewDragCallback extends ViewDragHelper.Callback {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            return child == mHeaderView;
+            return child == mMainView;
+        }
+
+        @Override
+        public void onViewDragStateChanged(int state) {
+            if (state == ViewDragHelper.STATE_DRAGGING) {
+                mViewState = STATE_DRAGGING;
+            } else if (state == ViewDragHelper.STATE_IDLE) {
+                if (mDragOffset == 0.0f) {
+                    mViewState = STATE_COLLAPSE;
+                } else {
+                    mViewState = STATE_EXPAND;
+                }
+            }
         }
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
-            mTop = top;
-            mDragOffset = (float) -dy / mDragRange;
+            mDragOffset = computeSlideOffset(top);
             requestLayout();
         }
 
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             // up:yvel < 0,down:yvel > 0
-            float direction = -yvel;
-            if (direction > 0) { // expand
-                smoothSlideHeaderTo(0.0f);
-            } else if (direction < 0) { // collapse
-                smoothSlideHeaderTo(1.0f);
+            float direction = mIsUpSliding ? -yvel : yvel;
+            if (direction > 0) {
+                smoothSlideViewTo(1.0f); // expand
+            } else if (direction < 0) {
+                smoothSlideViewTo(0.0f); // collapse
             }
         }
 
@@ -264,10 +376,14 @@ public class Drag2ExpandView extends ViewGroup {
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
-            final int topBound = getPaddingTop();
-            final int bottomBound = getHeight() - mHeaderHeight - mHeaderView.getPaddingBottom();
-
-            return Math.min(Math.max(top, topBound), bottomBound);
+            final int collapsedTop = computePanelTopPosition(0.0f);
+            final int expandedTop = computePanelTopPosition(1.0f);
+            // Restrict top
+            if (mIsUpSliding) {
+                return Math.min(Math.max(top, expandedTop), collapsedTop);
+            } else {
+                return Math.min(Math.max(top, collapsedTop), expandedTop);
+            }
         }
     }
 }

@@ -2,5 +2,7 @@
 <resources>
     <declare-styleable name="Drag2ExpandView">
         <attr name="sHeaderHeight" format="dimension" />
+        <attr name="sScrollableView" format="reference" />
+        <attr name="sViewToDrag" format="reference" />
     </declare-styleable>
 </resources>

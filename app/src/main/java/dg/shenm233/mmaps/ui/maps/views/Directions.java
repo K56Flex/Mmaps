@@ -258,6 +258,11 @@ public class Directions extends ViewContainerManager.ViewContainer
 
     @Override
     public boolean onBackPressed() {
+        if (mRouteAbstractView.mView.getViewState() == Drag2ExpandView.STATE_EXPAND) {
+            mRouteAbstractView.mView.collapseView();
+            return true;
+        }
+
         if (curSelectedTab == ROUTE_BUS && mResultViewContainer.getVisibility() != View.VISIBLE) {
             mRouteAbstractView.hide();
             mResultViewContainer.setVisibility(View.VISIBLE);
