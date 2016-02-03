@@ -18,6 +18,8 @@ public class BusPathView extends TextView {
     private final TextPaint mTextPaint;
     private Rect mTempRect = new Rect();
 
+    private Drawable mRightIcon = null;
+
     public BusPathView(Context context) {
         this(context, null);
     }
@@ -63,6 +65,7 @@ public class BusPathView extends TextView {
             myWidth += textBounds.width();
         }
 
+        myWidth += (length - 1) * (mRightIcon != null ? mRightIcon.getIntrinsicWidth() : 0);
 
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
@@ -87,10 +90,11 @@ public class BusPathView extends TextView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        int canvasWidth = canvas.getWidth();
 
         final Drawable[] drawables = mDrawables;
         final String[] strings = mDetailText;
+        final Drawable rightIcon = mRightIcon;
 
         final int length = drawables != null ? drawables.length : 0;
 
@@ -111,9 +115,30 @@ public class BusPathView extends TextView {
             String text = strings[i];
             mTextPaint.getTextBounds(text, 0, text.length(), textBounds);
 
-            canvas.drawText(strings[i], startLeft,
-                    Math.abs(h - textBounds.height()) / 2 + textBounds.height(), mTextPaint);
+            int textTop = Math.abs(h - textBounds.height()) / 2 + textBounds.height();
+
+            // check whether there is enough space for drawing text,otherwise draw 3 dots
+            if (startLeft + textBounds.width() > canvasWidth - w) {
+                canvas.drawText("...", startLeft, textTop, mTextPaint);
+                break;
+            }
+
+            canvas.drawText(strings[i], startLeft, textTop, mTextPaint);
             startLeft += textBounds.width();
+
+            if (rightIcon != null && i < length - 1) {
+                // use old width,because these icon width is 24dp ;P
+                rightIcon.setBounds(startLeft, startTop, startLeft + w, startTop + h);
+                rightIcon.setAlpha(alpha);
+                rightIcon.draw(canvas);
+                startLeft += w;
+            }
+
+            // check whether there is enough space for drawing next icon,otherwise draw 3 dots
+            if (startLeft > canvasWidth - w) {
+                canvas.drawText("...", startLeft, textTop, mTextPaint);
+                break;
+            }
         }
     }
 
@@ -140,5 +165,11 @@ public class BusPathView extends TextView {
 
         mDrawables = drs;
         mDetailText = strings;
+
+        if (mRightIcon == null) {
+            mRightIcon = res.getDrawable(R.drawable.ic_chevron_right);
+        }
+
+        requestLayout();
     }
 }
