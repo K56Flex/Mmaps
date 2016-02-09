@@ -15,30 +15,11 @@
         android:src="@drawable/ic_arrow_back"
         android:tint="@color/white" />
 
-    <ImageButton
-        android:id="@+id/maps_directions_swap"
-        style="@style/ImageButtonBorderless"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/ic_swap" />
-
-    <ImageButton
-        android:id="@+id/action_more"
-        style="@style/ImageButtonBorderless"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignBottom="@+id/action_back"
-        android:layout_toEndOf="@+id/maps_directions_box"
-        android:src="@drawable/ic_more_vert"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/maps_directions_box"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_toLeftOf="@id/maps_directions_swap"
+        android:layout_toLeftOf="@+id/maps_directions_swap"
         android:layout_toRightOf="@id/action_back"
         android:orientation="vertical">
 
@@ -92,11 +73,31 @@
 
     </LinearLayout>
 
+    <ImageButton
+        android:id="@id/maps_directions_swap"
+        style="@style/ImageButtonBorderless"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@id/maps_directions_box"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/maps_directions_box"
+        android:src="@drawable/ic_swap" />
+
+    <ImageButton
+        android:id="@+id/action_more"
+        style="@style/ImageButtonBorderless"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@+id/action_back"
+        android:layout_toEndOf="@+id/maps_directions_box"
+        android:src="@drawable/ic_more_vert"
+        android:visibility="gone" />
+
     <android.support.design.widget.TabLayout
         android:id="@+id/maps_directions_tab"
         style="@style/CustomTabLayout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/maps_directions_box" />
 
 </RelativeLayout>
