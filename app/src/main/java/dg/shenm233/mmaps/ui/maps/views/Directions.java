@@ -218,10 +218,13 @@ public class Directions extends ViewContainerManager.ViewContainer
                     public void onItemClick(View v, int adapterPosition) {
                         if (curSelectedTab == ROUTE_WALK) {
                             mDirectionsPresenter.moveCameraToWalkStep(adapterPosition);
+                            mRouteAbstractView.collapseView();
                         } else if (curSelectedTab == ROUTE_DRIVE) {
                             mDirectionsPresenter.moveCameraToDriveStep(adapterPosition);
+                            mRouteAbstractView.collapseView();
                         } else if (curSelectedTab == ROUTE_BUS) {
                             mDirectionsPresenter.moveCameraToBusStep(adapterPosition);
+                            mRouteAbstractView.collapseView();
                         }
                     }
                 };
