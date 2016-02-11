@@ -89,14 +89,16 @@ public class DirectionsPresenter {
     public void moveCameraToDriveStep(int adapterPosition) {
         DriveStep driveStep = mDirectionsView.getDriveWalkStepsAdapter().getDriveStepAt(adapterPosition);
         if (driveStep == null) return;
-        LatLng latLng = AMapUtils.convertToLatLng(driveStep.getPolyline().get(0));
+        final List<LatLonPoint> polyLine = driveStep.getPolyline();
+        LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
         mMapsModule.moveCamera(latLng, 20);
     }
 
     public void moveCameraToWalkStep(int adapterPosition) {
         WalkStep walkStep = mDirectionsView.getDriveWalkStepsAdapter().getWalkStepAt(adapterPosition);
         if (walkStep == null) return;
-        LatLng latLng = AMapUtils.convertToLatLng(walkStep.getPolyline().get(0));
+        final List<LatLonPoint> polyLine = walkStep.getPolyline();
+        LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
         mMapsModule.moveCamera(latLng, 20);
     }
 
