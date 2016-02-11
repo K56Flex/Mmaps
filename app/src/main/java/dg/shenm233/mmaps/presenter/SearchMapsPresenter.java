@@ -10,7 +10,6 @@ import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.help.Inputtips;
 import com.amap.api.services.help.Tip;
-import com.amap.api.services.poisearch.PoiItemDetail;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 
@@ -118,7 +117,7 @@ public class SearchMapsPresenter {
                 }
 
                 @Override
-                public void onPoiItemDetailSearched(PoiItemDetail poiItemDetail, int rCode) {
+                public void onPoiItemSearched(PoiItem poiItem, int rCode) {
 
                 }
             };
