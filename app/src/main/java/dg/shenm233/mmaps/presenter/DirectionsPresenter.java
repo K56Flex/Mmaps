@@ -1,6 +1,7 @@
 package dg.shenm233.mmaps.presenter;
 
 import android.content.Context;
+import android.view.View;
 
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.overlay.BusRouteOverlay;
@@ -21,7 +22,10 @@ import com.amap.api.services.route.WalkStep;
 import java.util.ArrayList;
 import java.util.List;
 
+import dg.shenm233.mmaps.adapter.RouteResultAdapter;
 import dg.shenm233.mmaps.model.MyPath;
+import dg.shenm233.mmaps.model.card.BusRouteCard;
+import dg.shenm233.mmaps.model.card.Card;
 import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
 
@@ -45,7 +49,7 @@ public class DirectionsPresenter {
         mMapsModule = mapsModule;
         mDirectionsView = directionsView;
 
-        mDirectionsInteractor = new DirectionsInteractor(context, onDirectionsResultListener);
+        mDirectionsInteractor = new DirectionsInteractor(context, new ResultListener());
     }
 
     public void setStartingPoint(LatLonPoint startingPoint) {
@@ -139,58 +143,86 @@ public class DirectionsPresenter {
         clearAllOverlays();
     }
 
-    private OnDirectionsResultListener onDirectionsResultListener =
-            new OnDirectionsResultListener() {
-                @Override
-                public void onBusRouteSearched(BusRouteResult busRouteResult, int rCode) {
-                    if (rCode == 0) {
-                        List<BusPath> busPaths = busRouteResult.getPaths();
-                        if (busPaths.size() > 0) {
-                            mDirectionsView.getBusRouteListAdapter()
-                                    .newRouteList(busPaths, busRouteResult.getStartPos(), busRouteResult.getTargetPos());
-                            mDirectionsView.showBusRouteList();
-                        }
-                    }
-                }
+    private class ResultListener extends OnDirectionsResultListener {
+        @Override
+        public void onBusRouteSearched(BusRouteResult busRouteResult, int rCode) {
+            final RouteResultAdapter adapter = mDirectionsView.getResultAdapter();
+            adapter.clear();
+            if (rCode == 0) {
+                List<BusPath> busPaths = busRouteResult.getPaths();
+                final int length = busPaths.size();
+                if (length > 0) {
+                    List<BusRouteCard> cards = new ArrayList<>(length);
 
-                @Override
-                public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int rCode) {
-                    if (rCode == 0) {
-                        List<DrivePath> drivePaths = driveRouteResult.getPaths();
-                        if (drivePaths.size() > 0) {
-                            DrivePath drivePath = drivePaths.get(0);
-                            DrivingRouteOverlay drivingRouteOverlay = mMapsModule.addDrivingRouteOverlay(drivePath,
-                                    driveRouteResult.getStartPos(), driveRouteResult.getTargetPos(), false);
-                            mDrivingRouteOverlays.add(drivingRouteOverlay);
-                            mDirectionsView.getDriveWalkStepsAdapter()
-                                    .setDriveStepList(drivePath.getSteps());
-                            String s = CommonUtils.getFriendlyDuration(mContext, drivePath.getDuration())
-                                    + "(" + CommonUtils.getFriendlyLength((int) drivePath.getDistance()) + ")";
-                            mDirectionsView.setDistanceTextOnAbstractView(s);
-                            mDirectionsView.setEtcTextOnAbstractView("");
-                            mDirectionsView.showPathOnMap();
+                    final Card.OnCardClickListener listener = new Card.OnCardClickListener() {
+                        @Override
+                        public void onClick(View view, Card card) {
+                            MyPath path = (MyPath) card.getTag();
+                            if (path != null) {
+                                DirectionsPresenter.this.showBusPath(path);
+                            }
                         }
-                    }
-                }
+                    };
 
-                @Override
-                public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int rCode) {
-                    if (rCode == 0) {
-                        List<WalkPath> walkPaths = walkRouteResult.getPaths();
-                        if (walkPaths.size() > 0) {
-                            WalkPath walkPath = walkPaths.get(0);
-                            WalkRouteOverlay walkRouteOverlay = mMapsModule.addWalkRouteOverlay(walkPath,
-                                    walkRouteResult.getStartPos(), walkRouteResult.getTargetPos(), false);
-                            mWalkRouteOverlays.add(walkRouteOverlay);
-                            mDirectionsView.getDriveWalkStepsAdapter()
-                                    .setWalkStepList(walkPath.getSteps());
-                            String s = CommonUtils.getFriendlyDuration(mContext, walkPath.getDuration())
-                                    + "(" + CommonUtils.getFriendlyLength((int) walkPath.getDistance()) + ")";
-                            mDirectionsView.setDistanceTextOnAbstractView(s);
-                            mDirectionsView.setEtcTextOnAbstractView("");
-                            mDirectionsView.showPathOnMap();
-                        }
+                    for (int i = 0; i < length; i++) {
+                        final BusPath busPath = busPaths.get(i);
+
+                        BusRouteCard card = new BusRouteCard(mContext);
+                        card.setBusPath(AMapUtils.convertBusPathToText(mContext, busPath));
+                        card.setDuration(busPath.getDuration());
+                        card.setTag(new MyPath(busPath,
+                                busRouteResult.getStartPos(), busRouteResult.getTargetPos()));
+                        card.setOnClickListener(listener);
+                        cards.add(card);
                     }
+                    adapter.addAll(cards);
+                    mDirectionsView.showRouteList();
                 }
-            };
+            }
+        }
+
+        @Override
+        public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int rCode) {
+            if (rCode == 0) {
+                List<DrivePath> drivePaths = driveRouteResult.getPaths();
+                if (drivePaths.size() > 0) {
+                    DrivePath drivePath = drivePaths.get(0);
+                    DrivingRouteOverlay drivingRouteOverlay = mMapsModule.addDrivingRouteOverlay(drivePath,
+                            driveRouteResult.getStartPos(), driveRouteResult.getTargetPos(), false);
+                    mDrivingRouteOverlays.add(drivingRouteOverlay);
+
+                    IDirectionsView directionsView = mDirectionsView;
+                    directionsView.getDriveWalkStepsAdapter()
+                            .setDriveStepList(drivePath.getSteps());
+                    String s = CommonUtils.getFriendlyDuration(mContext, drivePath.getDuration())
+                            + "(" + CommonUtils.getFriendlyLength((int) drivePath.getDistance()) + ")";
+                    directionsView.setDistanceTextOnAbstractView(s);
+                    directionsView.setEtcTextOnAbstractView("");
+                    directionsView.showPathOnMap();
+                }
+            }
+        }
+
+        @Override
+        public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int rCode) {
+            if (rCode == 0) {
+                List<WalkPath> walkPaths = walkRouteResult.getPaths();
+                if (walkPaths.size() > 0) {
+                    WalkPath walkPath = walkPaths.get(0);
+                    WalkRouteOverlay walkRouteOverlay = mMapsModule.addWalkRouteOverlay(walkPath,
+                            walkRouteResult.getStartPos(), walkRouteResult.getTargetPos(), false);
+                    mWalkRouteOverlays.add(walkRouteOverlay);
+
+                    IDirectionsView directionsView = mDirectionsView;
+                    directionsView.getDriveWalkStepsAdapter()
+                            .setWalkStepList(walkPath.getSteps());
+                    String s = CommonUtils.getFriendlyDuration(mContext, walkPath.getDuration())
+                            + "(" + CommonUtils.getFriendlyLength((int) walkPath.getDistance()) + ")";
+                    directionsView.setDistanceTextOnAbstractView(s);
+                    directionsView.setEtcTextOnAbstractView("");
+                    directionsView.showPathOnMap();
+                }
+            }
+        }
+    }
 }

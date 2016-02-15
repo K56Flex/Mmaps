@@ -28,10 +28,9 @@ import java.util.Map;
 import dg.shenm233.drag2expandview.Drag2ExpandView;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.BaseRecyclerViewAdapter;
-import dg.shenm233.mmaps.adapter.BusRouteListAdapter;
 import dg.shenm233.mmaps.adapter.BusStepsAdapter;
 import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
-import dg.shenm233.mmaps.model.MyPath;
+import dg.shenm233.mmaps.adapter.RouteResultAdapter;
 import dg.shenm233.mmaps.presenter.DirectionsPresenter;
 import dg.shenm233.mmaps.presenter.IDirectionsView;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
@@ -57,7 +56,6 @@ public class Directions extends ViewContainerManager.ViewContainer
     private IMapsFragment mMapsFragment;
 
     private DirectionsPresenter mDirectionsPresenter;
-    private BusRouteListAdapter mBusRouteListAdapter;
     private DriveWalkStepsAdapter mDriveWalkStepsAdapter;
     private BusStepsAdapter mBusStepsAdapter;
 
@@ -71,7 +69,9 @@ public class Directions extends ViewContainerManager.ViewContainer
 
     private ViewGroup mResultViewContainer;
     private ProgressBar mProgressBar;
-    private RecyclerView mBusListView;
+    private RecyclerView mRouteResultListView;
+
+    private RouteResultAdapter mResultAdapter;
 
     private int curSelectedTab = ROUTE_BUS; // 当前被选择Tab 值为 ROUTE_DRIVE,ROUTE_BUS or ROUTE_WALK
 
@@ -133,13 +133,7 @@ public class Directions extends ViewContainerManager.ViewContainer
 
         initTabs();
 
-        ViewGroup resultViewContainer = (ViewGroup) inflater.inflate(R.layout.directions_result, rootView, false);
-        mResultViewContainer = resultViewContainer;
-        mProgressBar = (ProgressBar) resultViewContainer.findViewById(R.id.progress_bar);
-        RecyclerView busListView = (RecyclerView) resultViewContainer.findViewById(R.id.route_listview);
-        mBusListView = busListView;
-        busListView.setLayoutManager(new LinearLayoutManager(context));
-        initBusListView();
+        initResultViewContainer(inflater);
 
 //        directionsBoxView.setVisibility(View.GONE);
 //        resultViewContainer.setVisibility(View.GONE);
@@ -176,17 +170,14 @@ public class Directions extends ViewContainerManager.ViewContainer
         });
     }
 
-    private void initBusListView() {
-        final BusRouteListAdapter adapter = new BusRouteListAdapter(mContext);
-        mBusListView.setAdapter(adapter);
-        mBusRouteListAdapter = adapter;
-        adapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int adapterPosition) {
-                MyPath myPath = adapter.getBusPath(adapterPosition);
-                mDirectionsPresenter.showBusPath(myPath);
-            }
-        });
+    private void initResultViewContainer(LayoutInflater inflater) {
+        ViewGroup resultViewContainer = (ViewGroup) inflater.inflate(R.layout.directions_result, rootView, false);
+        mResultViewContainer = resultViewContainer;
+        mProgressBar = (ProgressBar) resultViewContainer.findViewById(R.id.progress_bar);
+        RecyclerView listView = (RecyclerView) resultViewContainer.findViewById(R.id.route_listview);
+        mRouteResultListView = listView;
+        listView.setLayoutManager(new LinearLayoutManager(mContext));
+        listView.setAdapter(mResultAdapter = new RouteResultAdapter());
     }
 
     private void initRouteAbstractView(LayoutInflater inflater) {
@@ -240,7 +231,7 @@ public class Directions extends ViewContainerManager.ViewContainer
             startingPointText.setTag(null);
             destinationText.setText("");
             destinationText.setTag(null);
-            ((BusRouteListAdapter) mBusListView.getAdapter()).clearAllData();
+            mResultAdapter.clear();
         }
         arg = args.get(STARTING_POINT);
         if (arg != null) {
@@ -327,7 +318,7 @@ public class Directions extends ViewContainerManager.ViewContainer
 
         mResultViewContainer.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
-        mBusListView.setVisibility(View.INVISIBLE);
+        mRouteResultListView.setVisibility(View.INVISIBLE);
 
         if (curSelectedTab == ROUTE_DRIVE) {
             mDirectionsPresenter.queryDriveRoute(startPoint, endPoint, curDriveRouteMode);
@@ -433,16 +424,16 @@ public class Directions extends ViewContainerManager.ViewContainer
     }
 
     @Override
-    public void showBusRouteList() {
+    public void showRouteList() {
         mMapsFragment.setMapViewVisibility(View.INVISIBLE);
         mResultViewContainer.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
-        mBusListView.setVisibility(View.VISIBLE);
+        mRouteResultListView.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public BusRouteListAdapter getBusRouteListAdapter() {
-        return mBusRouteListAdapter;
+    public RouteResultAdapter getResultAdapter() {
+        return mResultAdapter;
     }
 
     @Override
@@ -468,11 +459,6 @@ public class Directions extends ViewContainerManager.ViewContainer
     @Override
     public int getRouteType() {
         return curSelectedTab;
-    }
-
-    @Override
-    public void showError(String text) {
-
     }
 
     private class CustomOnClickListener implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {

@@ -1,15 +1,15 @@
 package dg.shenm233.mmaps.presenter;
 
-import dg.shenm233.mmaps.adapter.BusRouteListAdapter;
 import dg.shenm233.mmaps.adapter.BusStepsAdapter;
 import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
+import dg.shenm233.mmaps.adapter.RouteResultAdapter;
 
 public interface IDirectionsView {
     void showPathOnMap();
 
-    void showBusRouteList();
+    void showRouteList();
 
-    BusRouteListAdapter getBusRouteListAdapter();
+    RouteResultAdapter getResultAdapter();
 
     DriveWalkStepsAdapter getDriveWalkStepsAdapter();
 
@@ -20,6 +20,4 @@ public interface IDirectionsView {
     void setEtcTextOnAbstractView(String s);
 
     int getRouteType();
-
-    void showError(String text);
 }

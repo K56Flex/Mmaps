@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/CustomCardView"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
-    android:layout_margin="@dimen/card_view_padding">
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:minHeight="50dp"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <dg.shenm233.mmaps.ui.widget.BusPathView
         android:id="@+id/route_bus_path"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:alpha="0.7"
         android:textColor="#000000"
         android:textSize="15sp" />
@@ -17,7 +21,9 @@
         android:id="@+id/route_bus_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:singleLine="true" />
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/route_bus_path"
+        android:singleLine="true"
+        android:textColor="@color/black" />
 
-</android.support.v7.widget.CardView>
+</LinearLayout>

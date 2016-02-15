@@ -1,8 +1,16 @@
 package dg.shenm233.mmaps.util;
 
+import android.content.Context;
+
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.services.busline.BusLineItem;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.route.BusPath;
+import com.amap.api.services.route.BusStep;
+import com.amap.api.services.route.RouteBusWalkItem;
 import com.amap.api.services.route.RouteSearch;
+
+import java.util.List;
 
 public class AMapUtils {
     /**
@@ -110,5 +118,35 @@ public class AMapUtils {
                 booleans[0] = booleans[1] = booleans[2] = false;
         }
         return booleans;
+    }
+
+    /**
+     * 转换BusPath为文本格式,用于BusPathView
+     * 输出格式如下:
+     * 56路 > 58路 > W58min
+     * W 代表 步行
+     *
+     * @param context
+     * @param path
+     * @return
+     */
+    public static String convertBusPathToText(Context context, BusPath path) {
+        StringBuilder sb = new StringBuilder();
+        List<BusStep> busSteps = path.getSteps();
+        for (BusStep busStep : busSteps) {
+            BusLineItem busLineItem = busStep.getBusLine();
+            if (busLineItem != null) {
+                sb.append(busLineItem.getBusLineName().split("\\([^)]*\\)")[0]) // 匹配括号外第一个元素
+                        .append(" > ");
+            } else {
+                RouteBusWalkItem busWalkItem = busStep.getWalk();
+                if (busWalkItem != null) {
+                    sb.append("W")
+                            .append(CommonUtils.getFriendlyDuration(context, busWalkItem.getDuration()))
+                            .append(" > ");
+                }
+            }
+        }
+        return sb.toString();
     }
 }
