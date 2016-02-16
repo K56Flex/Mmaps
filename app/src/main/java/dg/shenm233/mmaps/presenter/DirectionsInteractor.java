@@ -118,6 +118,7 @@ public class DirectionsInteractor {
                 setRouteResult(bundle, driveRouteResult);
             }
 
+            bundle.putInt("routeType", RouteType.DRIVE.ordinal());
             return bundle;
         }
 
@@ -144,6 +145,7 @@ public class DirectionsInteractor {
                 setRouteResult(bundle, walkRouteResult);
             }
 
+            bundle.putInt("routeType", RouteType.WALK.ordinal());
             return bundle;
         }
 
@@ -175,6 +177,7 @@ public class DirectionsInteractor {
                 setRouteResult(bundle, busRouteResult);
             }
 
+            bundle.putInt("routeType", RouteType.BUS.ordinal());
             return bundle;
         }
 
@@ -196,17 +199,19 @@ public class DirectionsInteractor {
 
             RouteResult routeResult = result.getParcelable("result");
 
-            if (routeResult == null || isCancelled()) {
+            if (isCancelled()) {
                 return;
             }
 
-            if (routeResult instanceof DriveRouteResult) {
+            int routeType = result.getInt("routeType");
+
+            if (routeType == RouteType.DRIVE.ordinal()) {
                 interactor.mOnDirectionsResultListener.onDriveRouteSearched((DriveRouteResult) routeResult,
                         result.getInt("errorCode"));
-            } else if (routeResult instanceof WalkRouteResult) {
+            } else if (routeType == RouteType.WALK.ordinal()) {
                 interactor.mOnDirectionsResultListener.onWalkRouteSearched((WalkRouteResult) routeResult,
                         result.getInt("errorCode"));
-            } else if (routeResult instanceof BusRouteResult) {
+            } else if (routeType == RouteType.BUS.ordinal()) {
                 interactor.mOnDirectionsResultListener.onBusRouteSearched((BusRouteResult) routeResult,
                         result.getInt("errorCode"));
             }
