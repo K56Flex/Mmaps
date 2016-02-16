@@ -225,7 +225,6 @@ public class Directions extends ViewContainerManager.ViewContainer
 
     @Override
     public void show() {
-        Object arg;
         if (getClearAll()) {
             startingPointText.setText("");
             startingPointText.setTag(null);
@@ -233,18 +232,10 @@ public class Directions extends ViewContainerManager.ViewContainer
             destinationText.setTag(null);
             mResultAdapter.clear();
         }
-        arg = args.get(STARTING_POINT);
-        if (arg != null) {
-            Tip tip = (Tip) arg;
-            startingPointText.setText(tip.getName());
-            startingPointText.setTag(tip.getPoint());
-        }
-        arg = args.get(DESTINATION);
-        if (arg != null) {
-            Tip tip = (Tip) arg;
-            destinationText.setText(tip.getName());
-            destinationText.setTag(tip.getPoint());
-        }
+
+        setStartingPointFromArgs();
+        setDestPointFromArgs();
+
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mMapsFragment.setStatusBarColor(mContext.getResources().getColor(R.color.primary_color));
 //        mDirectionsBoxView.setVisibility(View.VISIBLE);
@@ -293,6 +284,22 @@ public class Directions extends ViewContainerManager.ViewContainer
     private boolean getClearAll() {
         Object arg = args.get(CLEAR_ALL);
         return arg != null && (boolean) arg;
+    }
+
+    private void setStartingPointFromArgs() {
+        Tip tip = (Tip) args.get(STARTING_POINT);
+        if (tip != null) {
+            startingPointText.setText(tip.getName());
+            startingPointText.setTag(tip.getPoint());
+        }
+    }
+
+    private void setDestPointFromArgs() {
+        Tip tip = (Tip) args.get(DESTINATION);
+        if (tip != null) {
+            destinationText.setText(tip.getName());
+            destinationText.setTag(tip.getPoint());
+        }
     }
 
     private void swapDirections() {
