@@ -4,7 +4,7 @@
 
     </style>
 
-    <style name="ImageButtonBorderless" parent="Base.Widget.AppCompat.ImageButton">
+    <style name="CustomImageButton" parent="Base.Widget.AppCompat.ImageButton">
         <item name="android:background">?selectableItemBackgroundBorderless</item>
         <item name="android:gravity">center</item>
     </style>
@@ -13,7 +13,7 @@
         <item name="tabIndicatorColor">@color/color_accent</item>
     </style>
 
-    <style name="CustomCardView" parent="CardView.Light">
+    <style name="SelectableCardView" parent="CardView.Light">
         <item name="android:foreground">?selectableItemBackground</item>
     </style>
 

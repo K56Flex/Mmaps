@@ -7,7 +7,7 @@
 
     <ImageButton
         android:id="@+id/action_back"
-        style="@style/ImageButtonBorderless"
+        style="@style/CustomImageButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
@@ -75,7 +75,7 @@
 
     <ImageButton
         android:id="@id/maps_directions_swap"
-        style="@style/ImageButtonBorderless"
+        style="@style/CustomImageButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignBottom="@id/maps_directions_box"
@@ -85,7 +85,7 @@
 
     <ImageButton
         android:id="@+id/action_more"
-        style="@style/ImageButtonBorderless"
+        style="@style/CustomImageButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignBottom="@+id/action_back"
