@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.busline.BusLineItem;
+import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusStep;
@@ -11,6 +12,8 @@ import com.amap.api.services.route.RouteBusWalkItem;
 import com.amap.api.services.route.RouteSearch;
 
 import java.util.List;
+
+import dg.shenm233.mmaps.R;
 
 public class AMapUtils {
     /**
@@ -148,5 +151,17 @@ public class AMapUtils {
             }
         }
         return sb.toString();
+    }
+
+    public static String convertErrorCodeToText(Context context, int code) {
+        switch (code) {
+            case AMapException.ERROR_CODE_CONNECTION:
+                return context.getString(R.string.error_no_connection);
+            case AMapException.ERROR_CODE_OVER_DIRECTION_RANGE:
+                return context.getString(R.string.error_over_directions_range);
+
+            default:
+                return context.getString(R.string.error_unknown);
+        }
     }
 }

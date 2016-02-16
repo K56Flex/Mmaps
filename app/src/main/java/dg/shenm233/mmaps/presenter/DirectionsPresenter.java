@@ -22,10 +22,12 @@ import com.amap.api.services.route.WalkStep;
 import java.util.ArrayList;
 import java.util.List;
 
+import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.RouteResultAdapter;
 import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.model.card.BusRouteCard;
 import dg.shenm233.mmaps.model.card.Card;
+import dg.shenm233.mmaps.model.card.MsgCard;
 import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
 
@@ -177,7 +179,11 @@ public class DirectionsPresenter {
                     }
                     adapter.addAll(cards);
                     mDirectionsView.showRouteList();
+                } else {
+                    showError(rCode, true);
                 }
+            } else {
+                showError(rCode, true);
             }
         }
 
@@ -199,7 +205,11 @@ public class DirectionsPresenter {
                     directionsView.setDistanceTextOnAbstractView(s);
                     directionsView.setEtcTextOnAbstractView("");
                     directionsView.showPathOnMap();
+                } else {
+                    showError(rCode, true);
                 }
+            } else {
+                showError(rCode, true);
             }
         }
 
@@ -221,8 +231,27 @@ public class DirectionsPresenter {
                     directionsView.setDistanceTextOnAbstractView(s);
                     directionsView.setEtcTextOnAbstractView("");
                     directionsView.showPathOnMap();
+                } else {
+                    showError(rCode, true);
                 }
+            } else {
+                showError(rCode, true);
             }
+        }
+
+        private void showError(int rCode, boolean isEmptyResult) {
+            final RouteResultAdapter adapter = mDirectionsView.getResultAdapter();
+            adapter.clear();
+            MsgCard card = new MsgCard(mContext);
+            String s;
+            if (rCode == 0 && isEmptyResult) {
+                s = mContext.getString(R.string.no_result);
+            } else {
+                s = AMapUtils.convertErrorCodeToText(mContext, rCode);
+            }
+            card.setText(s);
+            adapter.add(card);
+            mDirectionsView.showRouteList();
         }
     }
 }

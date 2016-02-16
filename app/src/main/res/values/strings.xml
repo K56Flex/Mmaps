@@ -51,4 +51,8 @@
     <string name="choose_on_map">Choose on map</string>
     <string name="chosen_on_map">Chosen on map</string>
     <string name="map_under_pin">Pan &amp; zoom map under pin</string>
+
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_no_connection">No Internet Connection</string>
+    <string name="error_over_directions_range">Over directions range</string>
 </resources>
