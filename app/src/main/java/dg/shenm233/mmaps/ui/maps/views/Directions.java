@@ -42,7 +42,7 @@ import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
 public class Directions extends ViewContainerManager.ViewContainer
         implements IDirectionsView, SearchBox.OnSearchItemClickListener {
-    public final static int DIRECTIONS_ID = 1;
+    public final static int ID = 1;
     public final static String CLEAR_ALL = "clear_all"; // boolean
     public final static String STARTING_POINT = "starting_point"; // TIP
     public final static String DESTINATION = "destination"; // TIP
@@ -485,11 +485,11 @@ public class Directions extends ViewContainerManager.ViewContainer
                     case R.id.maps_directions_to:
                         curProcessingText = destinationText;
                 }
-                ViewContainerManager.ViewContainer searchBox = vm.getViewContainer(SearchBox.SEARCH_BOX_ID);
+                ViewContainerManager.ViewContainer searchBox = vm.getViewContainer(SearchBox.ID);
                 exit();
                 Map<String, Object> args = new HashMap<>();
                 args.put(SearchBox.SHOW_CHOOSE_ON_MAP, true);
-                vm.putViewContainer(searchBox, args, true, SearchBox.SEARCH_BOX_ID);
+                vm.putViewContainer(searchBox, args, true, SearchBox.ID);
             } else if (viewId == R.id.action_more) {
                 PopupMenu popupMenu = new PopupMenu(mContext, mMoreBtn);
                 popupMenu.inflate(R.menu.directions_more);

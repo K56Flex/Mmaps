@@ -82,7 +82,7 @@ public class MapsFragment extends Fragment
         Map<String, Object> searchBoxArgs = new HashMap<>();
         searchBoxArgs.put(SearchBox.BACK_BTN_AS_DRAWER, true);
         searchBoxArgs.put(SearchBox.ONLY_SEARCH_BOX, true);
-        viewContainerManager.putViewContainer(searchBox, searchBoxArgs, true, SearchBox.SEARCH_BOX_ID);
+        viewContainerManager.putViewContainer(searchBox, searchBoxArgs, true, SearchBox.ID);
 
         mDirections = new Directions(viewContainer, this);
     }
@@ -124,7 +124,7 @@ public class MapsFragment extends Fragment
 
             args.put(Directions.CLEAR_ALL, true);
             args.put(Directions.STARTING_POINT, tip);
-            mViewContainerManager.putViewContainer(mDirections, args, false, Directions.DIRECTIONS_ID);
+            mViewContainerManager.putViewContainer(mDirections, args, false, Directions.ID);
         } else if (viewId == R.id.action_my_location) {
             int myLocationMode = mMapsModule.getMyLocationMode();
             if (!isMain()) {
@@ -225,8 +225,8 @@ public class MapsFragment extends Fragment
     public void onSearchItemClick(Tip tip) {
         final ViewContainerManager vm = mViewContainerManager;
         // 优先给其他调用过SearchBox/ChooseOnMap的ViewContainer处理
-        if (vm.getViewContainer(Directions.DIRECTIONS_ID) != null) { // 栈中有Directions这个ViewContainer,直接给它处理
-            vm.popBackStack(Directions.DIRECTIONS_ID);
+        if (vm.getViewContainer(Directions.ID) != null) { // 栈中有Directions这个ViewContainer,直接给它处理
+            vm.popBackStack(Directions.ID);
             ((SearchBox.OnSearchItemClickListener) vm.peek()).onSearchItemClick(tip);
             return;
         }
@@ -262,7 +262,7 @@ public class MapsFragment extends Fragment
                             Map<String, Object> args = new HashMap<>();
                             args.put(PoiItems.POI_ITEM_LIST, poiItems);
                             getViewContainerManager().putViewContainer(new PoiItems(mViewContainer, MapsFragment.this),
-                                    args, true, PoiItems.POI_ITEMS_ID);
+                                    args, true, PoiItems.ID);
                         }
                     }
                 }

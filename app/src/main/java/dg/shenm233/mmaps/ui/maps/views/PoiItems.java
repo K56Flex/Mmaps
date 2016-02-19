@@ -26,7 +26,7 @@ import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
 
 public class PoiItems extends ViewContainerManager.ViewContainer implements AMap.OnMarkerClickListener {
-    public static final int POI_ITEMS_ID = 3;
+    public static final int ID = 3;
     public static final String POI_ITEM_LIST = "poi_item_list"; // List<PoiItem>
 
     private ViewGroup rootView;
@@ -73,7 +73,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
                 args.put(Directions.DESTINATION, dtip);
 
                 vm.putViewContainer(new Directions(rootView, mMapsFragment),
-                        args, false, Directions.DIRECTIONS_ID);
+                        args, false, Directions.ID);
             }
         });
 
@@ -90,7 +90,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
 
         // Hack: 显示搜索条
         ViewContainerManager.ViewContainer searchBox =
-                mapsFragment.getViewContainerManager().getViewContainer(SearchBox.SEARCH_BOX_ID);
+                mapsFragment.getViewContainerManager().getViewContainer(SearchBox.ID);
         Map<String, Object> searchBoxArguments = searchBox.getArguments();
         searchBoxArguments.put(SearchBox.BACK_BTN_AS_DRAWER, true);
         searchBoxArguments.put(SearchBox.ONLY_SEARCH_BOX, true);
@@ -110,7 +110,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
     public void exit() {
         // Hack: 隐藏搜索框
         ViewContainerManager.ViewContainer searchBox =
-                mMapsFragment.getViewContainerManager().getViewContainer(SearchBox.SEARCH_BOX_ID);
+                mMapsFragment.getViewContainerManager().getViewContainer(SearchBox.ID);
         searchBox.exit();
         ((SearchBox) searchBox).clearSearchText();
         rootView.removeView(mPoiDetailBinding.getRoot());

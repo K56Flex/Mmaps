@@ -21,7 +21,7 @@ import dg.shenm233.mmaps.util.AMapUtils;
 
 public class ChooseOnMap extends ViewContainerManager.ViewContainer
         implements View.OnClickListener {
-    public static final int CHOOSE_ON_MAP_ID = 2;
+    public static final int ID = 2;
 
     private Context mContext;
     private IMapsFragment mMapsFragment;

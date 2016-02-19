@@ -30,7 +30,7 @@ public class SearchBox extends ViewContainerManager.ViewContainer
         void onSearchItemClick(Tip tip);
     }
 
-    public static final int SEARCH_BOX_ID = 0;
+    public static final int ID = 0;
     public static final String ONLY_SEARCH_BOX = "only_search_box"; //boolean
     public static final String BACK_BTN_AS_DRAWER = "back_btn_as_drawer"; //boolean
     public static final String SHOW_CHOOSE_ON_MAP = "show_choose_on_map"; //boolean
@@ -207,7 +207,7 @@ public class SearchBox extends ViewContainerManager.ViewContainer
             }
         } else if (viewId == R.id.search_choose_on_map) {
             mMapsFragment.getViewContainerManager().putViewContainer(
-                    new ChooseOnMap(rootView, mMapsFragment), null, false, ChooseOnMap.CHOOSE_ON_MAP_ID);
+                    new ChooseOnMap(rootView, mMapsFragment), null, false, ChooseOnMap.ID);
         }
     }
 
