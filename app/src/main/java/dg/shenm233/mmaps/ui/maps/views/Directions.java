@@ -250,6 +250,7 @@ public class Directions extends ViewContainerManager.ViewContainer
     @Override
     public void exit() {
         mDirectionsPresenter.exit();
+        restoreViewState();
 //        mDirectionsBoxView.setVisibility(View.GONE);
 //        mResultViewContainer.setVisibility(View.GONE);
         rootView.removeView(mDirectionsBoxView);
@@ -300,6 +301,11 @@ public class Directions extends ViewContainerManager.ViewContainer
             destinationText.setText(tip.getName());
             destinationText.setTag(tip.getPoint());
         }
+    }
+
+    private void restoreViewState() {
+        mProgressBar.setVisibility(View.GONE);
+        mRouteAbstractView.setVisibility(View.GONE);
     }
 
     private void swapDirections() {
