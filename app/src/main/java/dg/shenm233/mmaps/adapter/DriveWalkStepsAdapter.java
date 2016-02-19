@@ -37,6 +37,11 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
         notifyDataSetChanged();
     }
 
+    public void clear() {
+        mDriveStepList = null;
+        mWalkStepList = null;
+    }
+
     /**
      * 根据item位置返回对应DriveStep
      *
@@ -45,6 +50,10 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
      * 当position = 0 或 = getItemCount() - 1 返回 null(由于item位置分别为起始点和终点)
      */
     public DriveStep getDriveStepAt(int position) {
+        if (mDriveStepList == null) {
+            return null;
+        }
+
         if (position <= 0 || position >= getItemCount() - 1) {
             return null;
         } else {
@@ -60,6 +69,10 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
      * 当position = 0 或 = getItemCount() - 1 返回 null(由于item位置分别为起始点和终点)
      */
     public WalkStep getWalkStepAt(int position) {
+        if (mWalkStepList == null) {
+            return null;
+        }
+
         if (position <= 0 || position >= getItemCount() - 1) {
             return null;
         } else {

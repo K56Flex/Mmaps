@@ -25,7 +25,6 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
     private LayoutInflater mLayoutInflater;
     private final String rideXstops;
 
-    private List<BusStep> mBusStepList;
     private final List<Object> mItemList = new ArrayList<>();
 
     private boolean isFirstRouteBusWalkItem = true;
@@ -37,7 +36,6 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
     }
 
     public void setBusStepList(List<BusStep> busSteps) {
-        mBusStepList = busSteps;
         final List<Object> itemList = mItemList;
         itemList.clear();
         if (busSteps == null) {
@@ -63,6 +61,10 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         isFirstRouteBusWalkItem = (mItemList.get(0) instanceof RouteBusWalkItem);
 
         notifyDataSetChanged();
+    }
+
+    public void clear() {
+        mItemList.clear();
     }
 
     /**

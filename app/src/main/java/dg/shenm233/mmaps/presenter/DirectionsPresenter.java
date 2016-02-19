@@ -143,6 +143,12 @@ public class DirectionsPresenter {
     public void exit() {
         mDirectionsInteractor.stopQueryingRoute();
         clearAllOverlays();
+
+        IDirectionsView directionsView = mDirectionsView;
+        // clear data in adapters
+        directionsView.getResultAdapter().clear();
+        directionsView.getDriveWalkStepsAdapter().clear();
+        directionsView.getBusStepsAdapter().clear();
     }
 
     private class ResultListener extends OnDirectionsResultListener {
