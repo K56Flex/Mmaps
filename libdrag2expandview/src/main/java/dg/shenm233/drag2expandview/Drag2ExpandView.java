@@ -245,6 +245,27 @@ public class Drag2ExpandView extends ViewGroup {
         }
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        // if size changed,just re-layout
+        if (h != oldh) {
+            isFirstLayout = true;
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        isFirstLayout = true;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        isFirstLayout = true;
+    }
+
     public void setGravity(int gravity) {
         if (gravity == Gravity.BOTTOM) {
             mIsUpSliding = true;
