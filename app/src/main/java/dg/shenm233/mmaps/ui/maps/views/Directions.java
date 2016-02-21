@@ -333,11 +333,23 @@ public class Directions extends ViewContainerManager.ViewContainer
         mProgressBar.setVisibility(View.VISIBLE);
         mRouteResultListView.setVisibility(View.INVISIBLE);
 
+        String sPointStr = startingPointText.getText().toString(); // 出发点的文本
+        String dPointStr = destinationText.getText().toString(); // 目的点的文本
+
         if (curSelectedTab == ROUTE_DRIVE) {
+            mDriveWalkStepsAdapter.setStartingPointText(sPointStr);
+            mDriveWalkStepsAdapter.setDestPointText(dPointStr);
+
             mDirectionsPresenter.queryDriveRoute(startPoint, endPoint, curDriveRouteMode);
         } else if (curSelectedTab == ROUTE_BUS) {
+            mBusStepsAdapter.setStartingPointText(sPointStr);
+            mBusStepsAdapter.setDestPointText(dPointStr);
+
             mDirectionsPresenter.queryBusRoute(startPoint, endPoint, curBusRouteMode, nightBus);
         } else if (curSelectedTab == ROUTE_WALK) {
+            mDriveWalkStepsAdapter.setStartingPointText(sPointStr);
+            mDriveWalkStepsAdapter.setDestPointText(dPointStr);
+
             mDirectionsPresenter.queryWalkRoute(startPoint, endPoint, curWalkRouteMode);
         }
         // 隐藏交换按钮，显示三点

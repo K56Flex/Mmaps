@@ -25,6 +25,17 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
         mLayoutInflater = LayoutInflater.from(context);
     }
 
+    private String mStartingPointText;
+    private String mDestPointText;
+
+    public void setStartingPointText(String s) {
+        mStartingPointText = s;
+    }
+
+    public void setDestPointText(String s) {
+        mDestPointText = s;
+    }
+
     public void setDriveStepList(List<DriveStep> driveSteps) {
         mDriveStepList = driveSteps;
         mWalkStepList = null;
@@ -89,13 +100,13 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
     @Override
     public void onBindViewHolder(StepViewHolder holder, int position) {
         if (position == 0) {
-            holder.mDirection.setImageResource(R.drawable.ic_my_location);
-            holder.mInstruction.setText(R.string.starting_point);
+            holder.mDirection.setImageResource(getIconFromPlace(mStartingPointText));
+            holder.mInstruction.setText(mStartingPointText);
             return;
         }
         if (position == getItemCount() - 1) {
-            holder.mDirection.setImageResource(R.drawable.ic_place);
-            holder.mInstruction.setText(R.string.arrive_destination);
+            holder.mDirection.setImageResource(getIconFromPlace(mDestPointText));
+            holder.mInstruction.setText(mDestPointText);
             return;
         }
 
@@ -107,6 +118,11 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
             WalkStep walkStep = mWalkStepList.get(position - 1);
             holder.mInstruction.setText(walkStep.getInstruction());
         }
+    }
+
+    private int getIconFromPlace(String s) {
+        return mContext.getText(R.string.my_location).equals(s) ?
+                R.drawable.ic_my_location : R.drawable.ic_place;
     }
 
     @Override

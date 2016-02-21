@@ -35,6 +35,17 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         rideXstops = context.getString(R.string.ride_x_stops);
     }
 
+    private String mStartingPointText;
+    private String mDestPointText;
+
+    public void setStartingPointText(String s) {
+        mStartingPointText = s;
+    }
+
+    public void setDestPointText(String s) {
+        mDestPointText = s;
+    }
+
     public void setBusStepList(List<BusStep> busSteps) {
         final List<Object> itemList = mItemList;
         itemList.clear();
@@ -101,8 +112,8 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
     @Override
     public void onBindViewHolder(StepViewHolder holder, int position) {
         if (position == 0) {
-            holder.mTransitIcon.setImageResource(R.drawable.ic_my_location);
-            holder.mDepartureText.setText(R.string.starting_point);
+            holder.mTransitIcon.setImageResource(getIconFromPlace(mStartingPointText));
+            holder.mDepartureText.setText(mStartingPointText);
             WalkItemViewHolder vh = (WalkItemViewHolder) holder;
             if (isFirstRouteBusWalkItem()) {
                 vh.mDetailIcon.setVisibility(View.VISIBLE);
@@ -119,10 +130,10 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         if (position == getItemCount() - 1) {
             WalkItemViewHolder vh = (WalkItemViewHolder) holder;
 
-            holder.mTransitIcon.setImageResource(R.drawable.ic_place);
+            holder.mTransitIcon.setImageResource(getIconFromPlace(mDestPointText));
             vh.mDetailIcon.setVisibility(View.INVISIBLE);
             vh.mDetailView.setText("");
-            holder.mDepartureText.setText(R.string.arrive_destination);
+            holder.mDepartureText.setText(mDestPointText);
             return;
         }
 
@@ -152,6 +163,11 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
                     String.format(rideXstops, busLineItem.getPassStationNum())
                     + "\n");
         }
+    }
+
+    private int getIconFromPlace(String s) {
+        return mContext.getText(R.string.my_location).equals(s) ?
+                R.drawable.ic_my_location : R.drawable.ic_place;
     }
 
     @Override
