@@ -1,10 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dg.shenm233.drag2expandview">
+<manifest package="dg.shenm233.drag2expandview">
 
-    <application
-        android:allowBackup="false"
-        android:supportsRtl="true">
-
-    </application>
+    <application />
 
 </manifest>
