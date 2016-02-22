@@ -10,10 +10,7 @@ import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
-import com.amap.api.maps.overlay.BusRouteOverlay;
-import com.amap.api.maps.overlay.DrivingRouteOverlay;
 import com.amap.api.maps.overlay.PoiOverlay;
-import com.amap.api.maps.overlay.WalkRouteOverlay;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.route.BusPath;
@@ -22,6 +19,9 @@ import com.amap.api.services.route.WalkPath;
 
 import java.util.List;
 
+import dg.shenm233.api.maps.overlay.BusRouteOverlayS;
+import dg.shenm233.api.maps.overlay.DrivingRouteOverlayS;
+import dg.shenm233.api.maps.overlay.WalkRouteOverlayS;
 import dg.shenm233.mmaps.model.Compass;
 import dg.shenm233.mmaps.model.LocationManager;
 
@@ -81,30 +81,30 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         return poiOverlay;
     }
 
-    public BusRouteOverlay addBusRouteOverlay(BusPath busPath,
-                                              LatLonPoint start, LatLonPoint end,
-                                              boolean showNodeIcon) {
-        BusRouteOverlay busRouteOverlay = new BusRouteOverlay(mContext, mAMap, busPath, start, end);
+    public BusRouteOverlayS addBusRouteOverlay(BusPath busPath,
+                                               LatLonPoint start, LatLonPoint end,
+                                               boolean showNodeIcon) {
+        BusRouteOverlayS busRouteOverlay = new BusRouteOverlayS(mContext, mAMap, busPath, start, end);
         busRouteOverlay.setNodeIconVisibility(showNodeIcon);
         busRouteOverlay.addToMap();
         busRouteOverlay.zoomToSpan();
         return busRouteOverlay;
     }
 
-    public DrivingRouteOverlay addDrivingRouteOverlay(DrivePath drivePath,
-                                                      LatLonPoint start, LatLonPoint end,
-                                                      boolean showNodeIcon) {
-        DrivingRouteOverlay drivingRouteOverlay = new DrivingRouteOverlay(mContext, mAMap, drivePath, start, end);
+    public DrivingRouteOverlayS addDrivingRouteOverlay(DrivePath drivePath,
+                                                       LatLonPoint start, LatLonPoint end,
+                                                       boolean showNodeIcon) {
+        DrivingRouteOverlayS drivingRouteOverlay = new DrivingRouteOverlayS(mContext, mAMap, drivePath, start, end);
         drivingRouteOverlay.setNodeIconVisibility(showNodeIcon);
         drivingRouteOverlay.addToMap();
         drivingRouteOverlay.zoomToSpan();
         return drivingRouteOverlay;
     }
 
-    public WalkRouteOverlay addWalkRouteOverlay(WalkPath walkPath,
-                                                LatLonPoint start, LatLonPoint end,
-                                                boolean showNodeIcon) {
-        WalkRouteOverlay walkRouteOverlay = new WalkRouteOverlay(mContext, mAMap, walkPath, start, end);
+    public WalkRouteOverlayS addWalkRouteOverlay(WalkPath walkPath,
+                                                 LatLonPoint start, LatLonPoint end,
+                                                 boolean showNodeIcon) {
+        WalkRouteOverlayS walkRouteOverlay = new WalkRouteOverlayS(mContext, mAMap, walkPath, start, end);
         walkRouteOverlay.setNodeIconVisibility(showNodeIcon);
         walkRouteOverlay.addToMap();
         walkRouteOverlay.zoomToSpan();

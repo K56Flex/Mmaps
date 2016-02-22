@@ -4,9 +4,6 @@ import android.content.Context;
 import android.view.View;
 
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.overlay.BusRouteOverlay;
-import com.amap.api.maps.overlay.DrivingRouteOverlay;
-import com.amap.api.maps.overlay.WalkRouteOverlay;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusRouteResult;
@@ -22,6 +19,9 @@ import com.amap.api.services.route.WalkStep;
 import java.util.ArrayList;
 import java.util.List;
 
+import dg.shenm233.api.maps.overlay.BusRouteOverlayS;
+import dg.shenm233.api.maps.overlay.DrivingRouteOverlayS;
+import dg.shenm233.api.maps.overlay.WalkRouteOverlayS;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.RouteResultAdapter;
 import dg.shenm233.mmaps.model.MyPath;
@@ -39,9 +39,9 @@ public class DirectionsPresenter {
 
     private MapsModule mMapsModule;
 
-    private List<DrivingRouteOverlay> mDrivingRouteOverlays = new ArrayList<>();
-    private List<BusRouteOverlay> mBusRouteOverlays = new ArrayList<>();
-    private List<WalkRouteOverlay> mWalkRouteOverlays = new ArrayList<>();
+    private List<DrivingRouteOverlayS> mDrivingRouteOverlays = new ArrayList<>();
+    private List<BusRouteOverlayS> mBusRouteOverlays = new ArrayList<>();
+    private List<WalkRouteOverlayS> mWalkRouteOverlays = new ArrayList<>();
 
     private LatLonPoint mStartingPoint;
     private LatLonPoint mDestinationPoint;
@@ -81,7 +81,7 @@ public class DirectionsPresenter {
     public void showBusPath(MyPath myPath) {
         clearAllOverlays();
         BusPath busPath = (BusPath) myPath.path;
-        BusRouteOverlay busRouteOverlay = mMapsModule.addBusRouteOverlay(busPath,
+        BusRouteOverlayS busRouteOverlay = mMapsModule.addBusRouteOverlay(busPath,
                 myPath.startPoint, myPath.endPoint, false);
         mBusRouteOverlays.add(busRouteOverlay);
         mDirectionsView.getBusStepsAdapter().setBusStepList(((BusPath) myPath.path).getSteps());
@@ -126,15 +126,15 @@ public class DirectionsPresenter {
     }
 
     public void clearAllOverlays() {
-        for (DrivingRouteOverlay overlay : mDrivingRouteOverlays) {
+        for (DrivingRouteOverlayS overlay : mDrivingRouteOverlays) {
             overlay.removeFromMap();
         }
         mDrivingRouteOverlays.clear();
-        for (BusRouteOverlay overlay : mBusRouteOverlays) {
+        for (BusRouteOverlayS overlay : mBusRouteOverlays) {
             overlay.removeFromMap();
         }
         mBusRouteOverlays.clear();
-        for (WalkRouteOverlay overlay : mWalkRouteOverlays) {
+        for (WalkRouteOverlayS overlay : mWalkRouteOverlays) {
             overlay.removeFromMap();
         }
         mWalkRouteOverlays.clear();
@@ -199,7 +199,7 @@ public class DirectionsPresenter {
                 List<DrivePath> drivePaths = driveRouteResult.getPaths();
                 if (drivePaths.size() > 0) {
                     DrivePath drivePath = drivePaths.get(0);
-                    DrivingRouteOverlay drivingRouteOverlay = mMapsModule.addDrivingRouteOverlay(drivePath,
+                    DrivingRouteOverlayS drivingRouteOverlay = mMapsModule.addDrivingRouteOverlay(drivePath,
                             driveRouteResult.getStartPos(), driveRouteResult.getTargetPos(), false);
                     mDrivingRouteOverlays.add(drivingRouteOverlay);
 
@@ -225,7 +225,7 @@ public class DirectionsPresenter {
                 List<WalkPath> walkPaths = walkRouteResult.getPaths();
                 if (walkPaths.size() > 0) {
                     WalkPath walkPath = walkPaths.get(0);
-                    WalkRouteOverlay walkRouteOverlay = mMapsModule.addWalkRouteOverlay(walkPath,
+                    WalkRouteOverlayS walkRouteOverlay = mMapsModule.addWalkRouteOverlay(walkPath,
                             walkRouteResult.getStartPos(), walkRouteResult.getTargetPos(), false);
                     mWalkRouteOverlays.add(walkRouteOverlay);
 

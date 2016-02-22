@@ -11,6 +11,7 @@ import com.amap.api.services.route.BusStep;
 import com.amap.api.services.route.RouteBusWalkItem;
 import com.amap.api.services.route.RouteSearch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dg.shenm233.mmaps.R;
@@ -23,11 +24,29 @@ public class AMapUtils {
         return new LatLng(latLonPoint.getLatitude(), latLonPoint.getLongitude());
     }
 
+    public static List<LatLng> convertToLatLng(List<LatLonPoint> list) {
+        List<LatLng> newList = new ArrayList<>(list.size());
+        for (LatLonPoint point : list) {
+            newList.add(convertToLatLng(point));
+        }
+
+        return newList;
+    }
+
     /**
      * 把LatLon对象转化为LatLonPoint对象
      */
     public static LatLonPoint convertToLatLonPoint(LatLng latLng) {
         return new LatLonPoint(latLng.latitude, latLng.longitude);
+    }
+
+    public static List<LatLonPoint> convertToLatLonPoint(List<LatLng> list) {
+        List<LatLonPoint> newList = new ArrayList<>(list.size());
+        for (LatLng point : list) {
+            newList.add(convertToLatLonPoint(point));
+        }
+
+        return newList;
     }
 
     /**
