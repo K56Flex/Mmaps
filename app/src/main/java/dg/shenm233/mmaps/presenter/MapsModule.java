@@ -1,15 +1,18 @@
 package dg.shenm233.mmaps.presenter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.overlay.PoiOverlay;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
@@ -22,6 +25,7 @@ import java.util.List;
 import dg.shenm233.api.maps.overlay.BusRouteOverlayS;
 import dg.shenm233.api.maps.overlay.DrivingRouteOverlayS;
 import dg.shenm233.api.maps.overlay.WalkRouteOverlayS;
+import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.model.Compass;
 import dg.shenm233.mmaps.model.LocationManager;
 
@@ -62,6 +66,13 @@ public class MapsModule implements AMap.OnMarkerClickListener,
                 mAMap.setMyLocationRotateAngle(degree);
             }
         }); // 设置 我的位置 的旋转角度监听器
+
+        final int color = Color.parseColor("#66D5E6FE");
+        mAMap.setMyLocationStyle(new MyLocationStyle()
+                        .myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_qu_explore_here))
+                        .radiusFillColor(color)
+                        .strokeColor(color)
+        );
     }
 
     public void onStart() {
