@@ -27,7 +27,7 @@ public class Compass {
 
     public void start() {
         mSensorManager.registerListener(mInternalListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-                SensorManager.SENSOR_DELAY_GAME);
+                SensorManager.SENSOR_DELAY_UI);
     }
 
     public void stop() {
