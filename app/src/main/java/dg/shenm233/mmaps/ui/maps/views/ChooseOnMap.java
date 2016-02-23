@@ -1,6 +1,7 @@
 package dg.shenm233.mmaps.ui.maps.views;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.design.widget.CoordinatorLayout;
@@ -67,7 +68,7 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
 
         Marker marker = mMapsFragment.getMapsModule().addMarker();
         marker.setIcon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                .fromBitmap(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.pin)));
         marker.setDraggable(false);
         this.marker = marker;
 
