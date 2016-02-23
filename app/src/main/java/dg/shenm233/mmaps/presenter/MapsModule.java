@@ -69,7 +69,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
 
         final int color = Color.parseColor("#66D5E6FE");
         mAMap.setMyLocationStyle(new MyLocationStyle()
-                        .myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_qu_explore_here))
+                        .myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_qu_my_location))
                         .radiusFillColor(color)
                         .strokeColor(color)
         );
