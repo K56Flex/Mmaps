@@ -3,7 +3,9 @@ package dg.shenm233.mmaps.presenter;
 import android.content.Context;
 import android.view.View;
 
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusRouteResult;
@@ -45,6 +47,8 @@ public class DirectionsPresenter {
 
     private LatLonPoint mStartingPoint;
     private LatLonPoint mDestinationPoint;
+
+    private Marker mDirectionMarker;
 
     public DirectionsPresenter(Context context, IDirectionsView directionsView, MapsModule mapsModule) {
         mContext = context;
@@ -98,6 +102,7 @@ public class DirectionsPresenter {
         final List<LatLonPoint> polyLine = driveStep.getPolyline();
         LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
         mMapsModule.moveCamera(latLng, 20);
+        addMarker(latLng, R.drawable.pin_directionscard);
     }
 
     public void moveCameraToWalkStep(int adapterPosition) {
@@ -106,6 +111,7 @@ public class DirectionsPresenter {
         final List<LatLonPoint> polyLine = walkStep.getPolyline();
         LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
         mMapsModule.moveCamera(latLng, 20);
+        addMarker(latLng, R.drawable.pin_directionscard);
     }
 
     public void moveCameraToBusStep(int adapterPosition) {
@@ -121,11 +127,36 @@ public class DirectionsPresenter {
             }
         }
         if (latLonPoint != null) {
-            mMapsModule.moveCamera(AMapUtils.convertToLatLng(latLonPoint), 20);
+            LatLng latLng = AMapUtils.convertToLatLng(latLonPoint);
+            mMapsModule.moveCamera(latLng, 20);
+            addMarker(latLng, R.drawable.pin_directionscard);
         }
     }
 
+    private void addMarker(LatLng position, int resId) {
+        Marker marker;
+        if (mDirectionMarker == null) {
+            mDirectionMarker = marker = mMapsModule.addMarker();
+            marker.setDraggable(false);
+        } else {
+            marker = mDirectionMarker;
+        }
+
+        // 是否有必要更换marker的icon
+        if (marker.getObject() == null || (int) marker.getObject() != resId) {
+            marker.setObject(resId);
+            marker.setIcon(BitmapDescriptorFactory.fromResource(resId));
+        }
+
+        marker.setPosition(position);
+    }
+
     public void clearAllOverlays() {
+        if (mDirectionMarker != null) {
+            mDirectionMarker.destroy();
+            mDirectionMarker = null;
+        }
+
         for (DrivingRouteOverlayS overlay : mDrivingRouteOverlays) {
             overlay.removeFromMap();
         }
