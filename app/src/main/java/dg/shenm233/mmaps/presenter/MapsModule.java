@@ -43,6 +43,8 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     private int MY_LOCATION_CUR_TYPE = MY_LOCATION_LOCATE;
     private boolean needZoom = true;
 
+    private MyLocationStyle mMyLocationStyle;
+
     public MapsModule(Context context, IMapsFragment mapsFragment, AMap aMap) {
         mContext = context;
         mMapsFragment = mapsFragment;
@@ -68,11 +70,10 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         }); // 设置 我的位置 的旋转角度监听器
 
         final int color = Color.parseColor("#66D5E6FE");
-        mAMap.setMyLocationStyle(new MyLocationStyle()
-                        .myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_qu_my_location))
-                        .radiusFillColor(color)
-                        .strokeColor(color)
-        );
+        mMyLocationStyle = new MyLocationStyle()
+                .myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_qu_my_location))
+                .radiusFillColor(color)
+                .strokeColor(color);
     }
 
     public void onStart() {
@@ -157,6 +158,10 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     /*设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位*/
     public void setMyLocationEnabled(boolean enabled) {
         mAMap.setMyLocationEnabled(enabled);
+        // 修复Activity.onStart()后导致自定义"我的位置"样式丢失
+        if (enabled) {
+            mAMap.setMyLocationStyle(mMyLocationStyle);
+        }
     }
 
     public Marker addMarker() {
