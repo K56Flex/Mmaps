@@ -1,13 +1,14 @@
 package dg.shenm233.mmaps.ui.maps.views;
 
 import android.content.Context;
-import android.support.design.widget.CoordinatorLayout;
-import android.view.Gravity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.overlay.PoiOverlay;
@@ -39,6 +40,8 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
     private PoiItem curPoiItem;
     private PoiOverlay curPoiOverlay;
 
+    private Marker mMarker;
+
     public PoiItems(ViewGroup rootView, IMapsFragment mapsFragment) {
         this.rootView = rootView;
         mContext = rootView.getContext();
@@ -50,11 +53,6 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
     public void onCreateView() {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         mPoiDetailBinding = PoiDetailBinding.inflate(inflater, rootView, false);
-        ViewGroup v = (ViewGroup) mPoiDetailBinding.getRoot();
-        CoordinatorLayout.LayoutParams layoutParams =
-                (CoordinatorLayout.LayoutParams) v.getLayoutParams();
-        layoutParams.gravity = Gravity.BOTTOM;
-        layoutParams.anchorGravity = Gravity.BOTTOM;
         mPoiDetailBinding.setHandler(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +76,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
         });
 
         // 设置本View被action_my_location这个View ID依赖,即定位按钮将向上移动,使它和PoiDetail视图不重合
-        v.setTag(R.id.action_my_location, true);
+//        v.setTag(R.id.action_my_location, true);
     }
 
     @SuppressWarnings("unchecked")
@@ -98,7 +96,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
 
         poiItems = (List) args.get(POI_ITEM_LIST);
         (curPoiOverlay = mapsModule.addPoiOverlay(poiItems)).zoomToSpan();
-        rootView.addView(mPoiDetailBinding.getRoot(), 0);
+        rootView.addView(mPoiDetailBinding.getRoot());
 
         PoiItem firstPoiItem = (PoiItem) poiItems.get(0);
         mPoiDetailBinding.setPoi(firstPoiItem);
@@ -115,6 +113,10 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
 
         rootView.removeView(mPoiDetailBinding.getRoot());
 
+        if (mMarker != null) {
+            mMarker.destroy();
+            mMarker = null;
+        }
         curPoiOverlay.removeFromMap();
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
     }
@@ -137,9 +139,25 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
-        mPoiDetailBinding.setPoi(curPoiItem = ((PoiItem) poiItems.get(((Integer) marker.getObject()))));
+        // TODO: 判断marker是否属于PoiOverlay
+        Object index = marker.getObject();
+        if (index == null || !(index instanceof Integer)) {
+            return false;
+        }
+
+        mPoiDetailBinding.setPoi(curPoiItem = ((PoiItem) poiItems.get((Integer) index)));
         LatLng position = marker.getPosition();
-        mMapsFragment.getMapsModule().moveCamera(position, 20);
+
+        Marker marker2 = mMarker;
+        if (marker2 == null) {
+            mMarker = marker2 = mMapsFragment.getMapsModule().addMarker();
+            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.pin);
+            // BitmapDescriptor对象创建时会调用Bitmap.recycle()
+            marker2.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+            marker2.setAnchor(0.5f, 1.2f);
+        }
+        marker2.setPosition(position);
+
         return false;
     }
 }

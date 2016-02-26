@@ -13,7 +13,6 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.amap.api.maps.overlay.PoiOverlay;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.route.BusPath;
@@ -24,6 +23,7 @@ import java.util.List;
 
 import dg.shenm233.api.maps.overlay.BusRouteOverlayS;
 import dg.shenm233.api.maps.overlay.DrivingRouteOverlayS;
+import dg.shenm233.api.maps.overlay.PoiOverlayS;
 import dg.shenm233.api.maps.overlay.WalkRouteOverlayS;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.model.Compass;
@@ -86,8 +86,8 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         mCompass.stop();
     }
 
-    public PoiOverlay addPoiOverlay(List<PoiItem> poiItems) {
-        PoiOverlay poiOverlay = new PoiOverlay(mAMap, poiItems);
+    public PoiOverlayS addPoiOverlay(List<PoiItem> poiItems) {
+        PoiOverlayS poiOverlay = new PoiOverlayS(mContext, mAMap, poiItems);
         poiOverlay.addToMap();
         poiOverlay.zoomToSpan();
         return poiOverlay;

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <import type="android.view.View" />
+
+        <import type="dg.shenm233.mmaps.util.CommonUtils" />
 
         <variable
             name="poi"
@@ -13,70 +18,143 @@
 
     </data>
 
-    <RelativeLayout
+    <dg.shenm233.drag2expandview.Drag2ExpandView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="380dp"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        app:sHeaderHeight="100dp"
+        app:sViewToDrag="@+id/poi_detail_title">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:background="@color/white"
-            android:orientation="vertical"
-            android:padding="5dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/poi_name"
+            <RelativeLayout
+                android:id="@id/poi_detail_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="@{poi.title}"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/black" />
+                android:layout_height="100dp">
 
-            <TextView
-                android:id="@+id/poi_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{poi.typeDes}"
-                android:textColor="@color/grey" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="28dp"
+                    android:background="@drawable/list_item_background_light"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-            <TextView
-                android:id="@+id/poi_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{poi.provinceName+poi.cityName+poi.snippet}"
-                android:textColor="@android:color/black" />
+                    <TextView
+                        android:id="@+id/poi_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="@{poi.title}"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/black" />
 
-            <TextView
-                android:id="@+id/poi_tel_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{poi.tel}"
-                android:textColor="@android:color/black" />
+                    <TextView
+                        android:id="@+id/poi_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{poi.typeDes}"
+                        android:textColor="@color/grey" />
 
-            <TextView
-                android:id="@+id/poi_website"
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@id/action_directions"
+                    android:layout_width="@dimen/fab_d"
+                    android:layout_height="@dimen/fab_d"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/circle_btn_background"
+                    android:backgroundTint="@color/primary_color"
+                    android:contentDescription="@string/directions"
+                    android:onClick="@{handler.onClick}"
+                    android:src="@drawable/ic_directions" />
+
+            </RelativeLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{poi.website}"
-                android:textColor="@android:color/black" />
+                android:layout_height="match_parent"
+                android:background="#FAFAFA"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp">
+
+                    <ImageView
+                        style="@style/MaterialIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_place" />
+
+                    <TextView
+                        android:id="@+id/poi_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@{poi.provinceName+poi.cityName+poi.snippet}"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:visibility="@{CommonUtils.isStringEmpty(poi.tel) ? View.GONE : View.VISIBLE}">
+
+                    <ImageView
+                        style="@style/MaterialIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_call" />
+
+                    <TextView
+                        android:id="@+id/poi_tel_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@{poi.tel}"
+                        android:textColor="@android:color/black" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:visibility="@{CommonUtils.isStringEmpty(poi.website) ? View.GONE : View.VISIBLE}">
+
+                    <ImageView
+                        style="@style/MaterialIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_qu_website" />
+
+                    <TextView
+                        android:id="@+id/poi_website"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@{poi.website}"
+                        android:textColor="@android:color/black" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <ImageButton
-            android:id="@id/action_directions"
-            android:layout_width="@dimen/fab_d"
-            android:layout_height="@dimen/fab_d"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/circle_btn_background"
-            android:backgroundTint="@color/primary_color"
-            android:contentDescription="@string/directions"
-            android:onClick="@{handler.onClick}"
-            android:src="@drawable/ic_directions" />
-
-    </RelativeLayout>
+    </dg.shenm233.drag2expandview.Drag2ExpandView>
 
 </layout>
