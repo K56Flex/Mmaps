@@ -17,4 +17,8 @@
         <item name="android:foreground">?selectableItemBackground</item>
     </style>
 
+    <style name="MaterialIcon">
+        <item name="android:alpha">0.6</item>
+    </style>
+
 </resources>
