@@ -9,6 +9,7 @@
 
     <ImageView
         android:id="@+id/listview_item_icon"
+        style="@style/MaterialIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_centerVertical="true"
