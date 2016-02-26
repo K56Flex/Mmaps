@@ -59,4 +59,8 @@ public class CommonUtils {
     public static String getFriendlyCost(float yuan) {
         return yuan + "元";
     }
+
+    public static boolean isStringEmpty(String s) {
+        return s == null || s.isEmpty();
+    }
 }
