@@ -503,7 +503,7 @@ public class Directions extends ViewContainerManager.ViewContainer
                     case R.id.maps_directions_to:
                         curProcessingText = destinationText;
                 }
-                ViewContainerManager.ViewContainer searchBox = vm.getViewContainer(SearchBox.ID);
+                ViewContainerManager.ViewContainer searchBox = new SearchBox(rootView, mMapsFragment);
                 exit();
                 Map<String, Object> args = new HashMap<>();
                 args.put(SearchBox.SHOW_CHOOSE_ON_MAP, true);
