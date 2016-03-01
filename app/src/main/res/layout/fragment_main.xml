@@ -36,7 +36,7 @@
             android:layout_margin="20dp"
             android:background="@drawable/circle_btn_background"
             android:contentDescription="@string/my_location"
-            android:src="@drawable/ic_my_location"
+            android:src="@drawable/ic_my_location_grey600"
             app:layout_behavior="dg.shenm233.mmaps.ui.widget.FloatingButton$Behavior" />
 
         <dg.shenm233.mmaps.ui.widget.FloatingButton
