@@ -42,6 +42,8 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
 
     private Marker mMarker;
 
+    private SearchBox mSearchBox;
+
     public PoiItems(ViewGroup rootView, IMapsFragment mapsFragment) {
         this.rootView = rootView;
         mContext = rootView.getContext();
@@ -89,10 +91,11 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
         // Hack: 显示搜索条
         ViewContainerManager.ViewContainer searchBox =
                 mapsFragment.getViewContainerManager().getViewContainer(SearchBox.ID);
-        Map<String, Object> searchBoxArguments = searchBox.getArguments();
-        searchBoxArguments.put(SearchBox.BACK_BTN_AS_DRAWER, true);
-        searchBoxArguments.put(SearchBox.ONLY_SEARCH_BOX, true);
+//        Map<String, Object> searchBoxArguments = searchBox.getArguments();
+//        searchBoxArguments.put(SearchBox.BACK_BTN_AS_DRAWER, true);
+//        searchBoxArguments.put(SearchBox.ONLY_SEARCH_BOX, true);
         searchBox.show();
+        mSearchBox = (SearchBox) searchBox;
 
         poiItems = (List) args.get(POI_ITEM_LIST);
         (curPoiOverlay = mapsModule.addPoiOverlay(poiItems)).zoomToSpan();
@@ -107,9 +110,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
     @Override
     public void exit() {
         // Hack: 隐藏搜索框
-        ViewContainerManager.ViewContainer searchBox =
-                mMapsFragment.getViewContainerManager().getViewContainer(SearchBox.ID);
-        searchBox.exit();
+        mSearchBox.exit();
 
         rootView.removeView(mPoiDetailBinding.getRoot());
 
@@ -128,6 +129,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
 
     @Override
     public boolean onBackPressed() {
+        mSearchBox.clearSearchText();
         return false;
     }
 
