@@ -42,7 +42,7 @@
 
             </LinearLayout>
 
-            <ImageButton
+            <dg.shenm233.mmaps.ui.widget.FloatingButton
                 android:id="@+id/action_navigation"
                 android:layout_width="@dimen/fab_d"
                 android:layout_height="@dimen/fab_d"
