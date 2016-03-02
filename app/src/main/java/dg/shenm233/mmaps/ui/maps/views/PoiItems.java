@@ -103,7 +103,9 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
 
         PoiItem firstPoiItem = (PoiItem) poiItems.get(0);
         mPoiDetailBinding.setPoi(firstPoiItem);
-        mapsModule.moveCamera(AMapUtils.convertToLatLng(firstPoiItem.getLatLonPoint()), 17);
+        LatLng latLng = AMapUtils.convertToLatLng(firstPoiItem.getLatLonPoint());
+        mapsModule.moveCamera(latLng, 17);
+        addMarkerForSingle(latLng);
         curPoiItem = firstPoiItem;
     }
 
@@ -150,6 +152,12 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
         mPoiDetailBinding.setPoi(curPoiItem = ((PoiItem) poiItems.get((Integer) index)));
         LatLng position = marker.getPosition();
 
+        addMarkerForSingle(position);
+
+        return false;
+    }
+
+    private void addMarkerForSingle(LatLng latLng) {
         Marker marker2 = mMarker;
         if (marker2 == null) {
             mMarker = marker2 = mMapsFragment.getMapsModule().addMarker();
@@ -158,8 +166,6 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
             marker2.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
             marker2.setAnchor(0.5f, 1.2f);
         }
-        marker2.setPosition(position);
-
-        return false;
+        marker2.setPosition(latLng);
     }
 }
