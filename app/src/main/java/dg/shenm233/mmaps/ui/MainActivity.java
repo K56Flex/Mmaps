@@ -1,6 +1,5 @@
 package dg.shenm233.mmaps.ui;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,7 +15,6 @@ import dg.shenm233.mmaps.ui.maps.MapsFragment;
 
 public class MainActivity extends BaseActivity implements IDrawerView {
     private DrawerLayout mDrawerLayout;
-    private ProgressDialog mProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
