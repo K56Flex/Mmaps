@@ -35,6 +35,9 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     public final static int MY_LOCATION_FOLLOW = 1;
     public final static int MY_LOCATION_ROTATE = 2;
 
+    public final static int MAP_TYPE_NORMAL = 0;
+    public final static int MAP_TYPE_SATELLITE = 1;
+
     private Context mContext;
     private Compass mCompass;
     private IMapsFragment mMapsFragment;
@@ -74,6 +77,9 @@ public class MapsModule implements AMap.OnMarkerClickListener,
                 .myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_qu_my_location))
                 .radiusFillColor(color)
                 .strokeColor(color);
+
+        setMapType(MAP_TYPE_NORMAL);
+        setTrafficEnabled(false);
     }
 
     public void onStart() {
@@ -84,6 +90,18 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     public void onPause() {
         setMyLocationEnabled(false);
         mCompass.stop();
+    }
+
+    public void setMapType(int type) {
+        if (type == MAP_TYPE_NORMAL) {
+            mAMap.setMapType(AMap.MAP_TYPE_NORMAL);
+        } else if (type == MAP_TYPE_SATELLITE) {
+            mAMap.setMapType(AMap.MAP_TYPE_SATELLITE);
+        }
+    }
+
+    public void setTrafficEnabled(boolean enabled) {
+        mAMap.setTrafficEnabled(enabled);
     }
 
     public PoiOverlayS addPoiOverlay(List<PoiItem> poiItems) {
