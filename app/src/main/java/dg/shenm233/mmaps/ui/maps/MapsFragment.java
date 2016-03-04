@@ -24,9 +24,9 @@ import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.presenter.SearchMapsPresenter;
 import dg.shenm233.mmaps.ui.IDrawerView;
-import dg.shenm233.mmaps.ui.maps.views.Directions;
-import dg.shenm233.mmaps.ui.maps.views.PoiItems;
-import dg.shenm233.mmaps.ui.maps.views.SearchBox;
+import dg.shenm233.mmaps.ui.maps.view.Directions;
+import dg.shenm233.mmaps.ui.maps.view.PoiItems;
+import dg.shenm233.mmaps.ui.maps.view.SearchBox;
 import dg.shenm233.mmaps.widget.FloatingButton;
 
 public class MapsFragment extends Fragment

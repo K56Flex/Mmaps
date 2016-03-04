@@ -1,4 +1,4 @@
-package dg.shenm233.mmaps.ui.maps.views;
+package dg.shenm233.mmaps.ui.maps.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
