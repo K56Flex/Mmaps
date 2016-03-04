@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import dg.shenm233.mmaps.R;
-import dg.shenm233.mmaps.ui.widget.BusPathView;
 import dg.shenm233.mmaps.util.CommonUtils;
+import dg.shenm233.mmaps.widget.BusPathView;
 
 public class BusRouteCard extends Card<BusRouteCard.ViewHolder> {
     private Context mContext;

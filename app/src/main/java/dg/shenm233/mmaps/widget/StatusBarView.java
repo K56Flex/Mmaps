@@ -1,4 +1,4 @@
-package dg.shenm233.mmaps.ui.widget;
+package dg.shenm233.mmaps.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

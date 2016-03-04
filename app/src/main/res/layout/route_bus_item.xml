@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     android:padding="10dp">
 
-    <dg.shenm233.mmaps.ui.widget.BusPathView
+    <dg.shenm233.mmaps.widget.BusPathView
         android:id="@+id/route_bus_path"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

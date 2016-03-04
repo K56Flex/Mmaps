@@ -17,7 +17,7 @@
         android:background="#EEEEEE"
         android:visibility="gone" />
 
-    <!--<dg.shenm233.mmaps.ui.widget.StatusBarView-->
+    <!--<dg.shenm233.mmaps.widget.StatusBarView-->
     <!--android:id="@+id/status_bar_view"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content" />-->
@@ -28,7 +28,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <dg.shenm233.mmaps.ui.widget.FloatingButton
+        <dg.shenm233.mmaps.widget.FloatingButton
             android:id="@+id/action_my_location"
             android:layout_width="@dimen/fab_d"
             android:layout_height="@dimen/fab_d"
@@ -37,9 +37,9 @@
             android:background="@drawable/circle_btn_background"
             android:contentDescription="@string/my_location"
             android:src="@drawable/ic_my_location_grey600"
-            app:layout_behavior="dg.shenm233.mmaps.ui.widget.FloatingButton$Behavior" />
+            app:layout_behavior="dg.shenm233.mmaps.widget.FloatingButton$Behavior" />
 
-        <dg.shenm233.mmaps.ui.widget.FloatingButton
+        <dg.shenm233.mmaps.widget.FloatingButton
             android:id="@+id/action_directions"
             android:layout_width="@dimen/fab_d"
             android:layout_height="@dimen/fab_d"

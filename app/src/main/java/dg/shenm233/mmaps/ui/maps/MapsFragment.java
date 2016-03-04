@@ -27,7 +27,7 @@ import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.views.Directions;
 import dg.shenm233.mmaps.ui.maps.views.PoiItems;
 import dg.shenm233.mmaps.ui.maps.views.SearchBox;
-import dg.shenm233.mmaps.ui.widget.FloatingButton;
+import dg.shenm233.mmaps.widget.FloatingButton;
 
 public class MapsFragment extends Fragment
         implements IMapsFragment, IDrawerView, View.OnClickListener, SearchBox.OnSearchItemClickListener {
