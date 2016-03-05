@@ -10,7 +10,10 @@
     </style>
 
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="android:background">@color/primary_color</item>
         <item name="tabIndicatorColor">@color/color_accent</item>
+        <item name="tabTextColor">#EEEEEE</item>
+        <item name="tabSelectedTextColor">@color/white</item>
     </style>
 
     <style name="SelectableCardView" parent="CardView.Light">
