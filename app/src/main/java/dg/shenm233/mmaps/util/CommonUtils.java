@@ -60,6 +60,16 @@ public class CommonUtils {
         return yuan + "元";
     }
 
+    public static String getFriendlyBytes(long bytes) {
+        if (bytes > 1000000) {
+            return String.format("%.2fMB", (double) bytes / 1000000);
+        } else if (bytes > 1000) {
+            return String.format("%.2fKB", (double) bytes / 1000);
+        } else {
+            return String.format("%dB", bytes);
+        }
+    }
+
     public static boolean isStringEmpty(String s) {
         return s == null || s.isEmpty();
     }
