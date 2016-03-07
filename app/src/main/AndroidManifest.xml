@@ -39,6 +39,18 @@
         // 定位包所需服务
         <service android:name="com.amap.api.location.APSService" />
 
+        <service
+            android:name=".service.OfflineMapService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.OfflineMapActivity"
+            android:label="@string/offline_map_download"
+            android:theme="@style/AppTheme">
+
+        </activity>
+
     </application>
 
 </manifest>

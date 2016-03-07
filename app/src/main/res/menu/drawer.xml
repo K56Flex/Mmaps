@@ -15,4 +15,13 @@
 
     </group>
 
+    <group android:id="@+id/navi_group_other">
+
+        <item
+            android:id="@+id/navigation_offline"
+            android:icon="@drawable/ic_file_download_black_24dp"
+            android:title="@string/offline_map_download" />
+
+    </group>
+
 </menu>
