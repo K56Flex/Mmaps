@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amap.api.maps.offlinemap.OfflineMapCity;
@@ -138,6 +139,8 @@ public class OfflineMapActivity extends BaseActivity {
     private IOfflineMapCallback mCallback = new IOfflineMapCallback() {
         @Override
         public void onOfflineMapManagerReady() {
+            mDownloadListPager.removeProgressBar();
+            mCityListPager.removeProgressBar();
             refreshDownloadList();
             mCityListPager.setOfflineProvinceList(mBinder.getOfflineMapProvinceList());
         }
@@ -166,6 +169,7 @@ public class OfflineMapActivity extends BaseActivity {
     };
 
     private class DownloadListPager extends BasePager {
+        private ProgressBar mProgressBar;
         private RecyclerView mListView;
 
         /**
@@ -236,10 +240,16 @@ public class OfflineMapActivity extends BaseActivity {
             mAdapter.notifyItemChanged(currentCityToPosition);
         }
 
+        public void removeProgressBar() {
+            mProgressBar.setVisibility(View.GONE);
+        }
+
         @Override
         public View onCreateView(ViewGroup rootView) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.offline_down_list, rootView, false);
+            mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+
             RecyclerView listView = (RecyclerView) view.findViewById(R.id.offline_down_list);
             listView.setLayoutManager(new LinearLayoutManager(mContext));
             listView.setAdapter(mAdapter);
@@ -255,6 +265,7 @@ public class OfflineMapActivity extends BaseActivity {
 
     private class CityListPager extends BasePager
             implements OnViewClickListener {
+        private ProgressBar mProgressBar;
         private RecyclerView mListView;
 
         private List<ProvinceListItem> mProvinceListItems = new ArrayList<>(35);
@@ -273,10 +284,16 @@ public class OfflineMapActivity extends BaseActivity {
             mAdapter.notifyParentListChanged();
         }
 
+        public void removeProgressBar() {
+            mProgressBar.setVisibility(View.GONE);
+        }
+
         @Override
         public View onCreateView(ViewGroup rootView) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.offline_city_list, rootView, false);
+            mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+
             RecyclerView listView = (RecyclerView) view.findViewById(R.id.offline_city_list);
             mListView = listView;
             listView.setLayoutManager(new LinearLayoutManager(mContext));
