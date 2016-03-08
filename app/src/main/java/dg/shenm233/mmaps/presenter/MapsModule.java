@@ -3,6 +3,7 @@ package dg.shenm233.mmaps.presenter;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
+import android.view.MotionEvent;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
@@ -30,7 +31,7 @@ import dg.shenm233.mmaps.model.Compass;
 import dg.shenm233.mmaps.model.LocationManager;
 
 public class MapsModule implements AMap.OnMarkerClickListener,
-        AMap.OnMapClickListener, LocationSource {
+        AMap.OnMapClickListener, AMap.OnMapTouchListener, LocationSource {
     public final static int MY_LOCATION_LOCATE = 0;
     public final static int MY_LOCATION_FOLLOW = 1;
     public final static int MY_LOCATION_ROTATE = 2;
@@ -60,6 +61,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         //register listeners
         mAMap.setOnMapClickListener(this);
         mAMap.setOnMarkerClickListener(this);
+        mAMap.setOnMapTouchListener(this);
         mAMap.setLocationSource(this); // 设置定位监听
 
         UiSettings uiSettings = mAMap.getUiSettings();
@@ -208,6 +210,22 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     public boolean onMarkerClick(Marker marker) {
         mMapsFragment.onMarkerClick(marker);
         return true;
+    }
+
+    private boolean isPrevTouchUp = true;
+
+    @Override
+    public void onTouch(MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            if (isPrevTouchUp) {
+                if (getMyLocationMode() != MY_LOCATION_LOCATE) {
+                    changeMyLocationMode(MY_LOCATION_LOCATE);
+                }
+                isPrevTouchUp = false;
+            }
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            isPrevTouchUp = true;
+        }
     }
 
     /*mAMap会请求获取位置，并把其内部的位置监听器以实参传递供外部使用*/
