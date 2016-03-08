@@ -113,6 +113,17 @@ public class MapsFragment extends Fragment
     }
 
     @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        mMapView.onSaveInstanceState(bundle);
+    }
+
+    @Override
+    public void onLowMemory() {
+        mMapView.onLowMemory();
+        super.onLowMemory();
+    }
+
+    @Override
     public void onClick(View v) {
         int viewId = v.getId();
         if (viewId == R.id.action_directions) {
