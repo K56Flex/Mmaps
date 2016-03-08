@@ -14,6 +14,7 @@ import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapManager;
 import com.amap.api.maps.offlinemap.OfflineMapManager.OfflineMapDownloadListener;
 import com.amap.api.maps.offlinemap.OfflineMapProvince;
+import com.amap.api.maps.offlinemap.OfflineMapStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ public class OfflineMapService extends Service {
     private ServiceBinder mBinder;
     private volatile OfflineMapManager mMapManager;
     private List<IOfflineMapCallback> mCallbacks = new ArrayList<>();
+
+    private boolean mIsDownloading = false;
 
     public OfflineMapService() {
     }
@@ -56,8 +59,10 @@ public class OfflineMapService extends Service {
             try {
                 //异步下载
                 if (TYPE_CITY.equals(type)) {
+                    mIsDownloading = true;
                     mMapManager.downloadByCityName(name);
                 } else if (TYPE_PROVINCE.equals(type)) {
+                    mIsDownloading = true;
                     mMapManager.downloadByProvinceName(name);
                 }
             } catch (AMapException e) {
@@ -86,6 +91,7 @@ public class OfflineMapService extends Service {
             Log.d("OfflineMapService", "Service is being destroy");
         }
         mMapManager.destroy();
+        mIsDownloading = false;
         super.onDestroy();
     }
 
@@ -263,6 +269,65 @@ public class OfflineMapService extends Service {
          */
         public List<OfflineMapProvince> getOfflineMapProvinceList() {
             return mMapManager.getOfflineMapProvinceList();
+        }
+
+        public void pause() {
+            mIsDownloading = false;
+            mMapManager.pause();
+        }
+
+        public void restart() {
+            mIsDownloading = true;
+            OfflineMapManager mapManager = mMapManager;
+
+            int length;
+
+            // 由于OfflineMapManager.restart()是开始下载队列中的第一个为等待中的任务，
+            // 不能直接让暂停下载的任务继续下载
+
+            List<OfflineMapProvince> downloadingProvince = getDownloadingProvinceList();
+            length = downloadingProvince.size();
+            for (int i = 0; i < length; i++) {
+                OfflineMapProvince province = downloadingProvince.get(i);
+                int state = province.getState();
+                if (state == OfflineMapStatus.WAITING) {
+                    // 对于等待状态交给OfflineMapManager.restart()处理
+                    continue;
+                }
+                startDownloadingService(province.getProvinceName(), TYPE_PROVINCE);
+            }
+
+            List<OfflineMapCity> downloadingCity = getDownloadingCityList();
+            length = downloadingCity.size();
+            for (int i = 0; i < length; i++) {
+                OfflineMapCity city = downloadingCity.get(i);
+                int state = city.getState();
+                if (state == OfflineMapStatus.WAITING) {
+                    // 对于等待状态交给OfflineMapManager.restart()处理
+                    continue;
+                }
+                startDownloadingService(city.getCity(), TYPE_CITY);
+            }
+
+            mapManager.restart();
+        }
+
+        private void startDownloadingService(String name, String type) {
+            Intent intent = new Intent();
+            intent.setClass(OfflineMapService.this, OfflineMapService.class);
+            intent.putExtra("name", name);
+            intent.putExtra("type", type);
+            intent.putExtra("dowhat", OfflineMapService.DOWHAT_ADD_MAP);
+            startService(intent);
+        }
+
+        public void stop() {
+            mIsDownloading = false;
+            mMapManager.stop();
+        }
+
+        public boolean isDownloading() {
+            return mIsDownloading;
         }
     }
 }

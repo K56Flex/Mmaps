@@ -59,6 +59,9 @@
     <string name="satellite">Satellite</string>
     <string name="traffic">Traffic</string>
 
+    <string name="action_download_start">start</string>
+    <string name="action_download_pause">pause</string>
+
     <string name="download">Download</string>
     <string name="downloaded">Downloaded</string>
     <string name="downloading_with_percent">Downloading %d %%</string>

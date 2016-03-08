@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -168,9 +169,11 @@ public class OfflineMapActivity extends BaseActivity {
         }
     };
 
-    private class DownloadListPager extends BasePager {
+    private class DownloadListPager extends BasePager
+            implements View.OnClickListener {
         private ProgressBar mProgressBar;
         private RecyclerView mListView;
+        private Button mDownBtn;
 
         /**
          * 包含所有下载(正在下载，已下载)
@@ -213,6 +216,8 @@ public class OfflineMapActivity extends BaseActivity {
         public void updateDataList() {
             currentCity = "";
             mAdapter.notifyDataSetChanged();
+            mDownBtn.setText(mBinder.isDownloading() ?
+                    R.string.action_download_pause : R.string.action_download_start);
         }
 
         /**
@@ -249,6 +254,9 @@ public class OfflineMapActivity extends BaseActivity {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.offline_down_list, rootView, false);
             mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+            Button downBtn = (Button) view.findViewById(R.id.action_download);
+            downBtn.setOnClickListener(this);
+            mDownBtn = downBtn;
 
             RecyclerView listView = (RecyclerView) view.findViewById(R.id.offline_down_list);
             listView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -260,6 +268,24 @@ public class OfflineMapActivity extends BaseActivity {
         @Override
         public CharSequence getTitle() {
             return mContext.getString(R.string.download_list);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int id = v.getId();
+            if (id == R.id.action_download) {
+                OfflineMapService.ServiceBinder binder = mBinder;
+                if (binder == null) {
+                    return;
+                }
+                if (binder.isDownloading()) {
+                    mDownBtn.setText(R.string.action_download_start);
+                    binder.pause();
+                } else {
+                    mDownBtn.setText(R.string.action_download_pause);
+                    binder.restart();
+                }
+            }
         }
     }
 
