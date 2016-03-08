@@ -221,8 +221,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
                 if (needZoom) { // 是否第一次启动，是则放大地图到一定位置
                     needZoom = false;
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mAMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15),
-                            2000, null); // 2秒动画效果
+                    mAMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 }
             }
         });
