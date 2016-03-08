@@ -66,8 +66,13 @@
     <string name="downloaded">Downloaded</string>
     <string name="downloading_with_percent">Downloading %d %%</string>
     <string name="unzipping_with_percent">Unzipping %d %%</string>
+    <string name="paused">Paused</string>
+    <string name="stopped">Stopped</string>
     <string name="io_exception">IO Exception</string>
+    <string name="network_exception">Network Exception</string>
     <string name="waiting_downloading">Waiting</string>
+    <string name="error_redownload">Error,please redownload</string>
+    <string name="already_downloaded">Already downloaded</string>
 
     <string name="offline_map_download">Offline Map Download</string>
     <string name="download_list">Download list</string>

@@ -39,6 +39,14 @@ public class OffLineMapUtils {
                 string = context.getString(R.string.unzipping_with_percent, completePercent);
                 break;
 
+            case OfflineMapStatus.PAUSE:
+                string = context.getString(R.string.paused);
+                break;
+
+            case OfflineMapStatus.STOP:
+                string = context.getString(R.string.stopped);
+                break;
+
             case OfflineMapStatus.WAITING:
                 string = context.getString(R.string.waiting_downloading);
                 break;
@@ -51,6 +59,21 @@ public class OffLineMapUtils {
                 string = context.getString(R.string.io_exception);
                 break;
 
+            case OfflineMapStatus.EXCEPTION_NETWORK_LOADING:
+                string = context.getString(R.string.network_exception);
+                break;
+
+            case OfflineMapStatus.ERROR:
+                string = context.getString(R.string.error_redownload);
+                break;
+
+            case OfflineMapStatus.START_DOWNLOAD_FAILD:
+                string = context.getString(R.string.already_downloaded);
+                break;
+
+            case OfflineMapStatus.EXCEPTION_AMAP:
+                string = "ha?";
+                break;
         }
 
         return string;
