@@ -2,12 +2,14 @@ package dg.shenm233.mmaps.ui;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,6 +35,7 @@ import dg.shenm233.mmaps.model.offlinemap.ProvinceListItem;
 import dg.shenm233.mmaps.service.IOfflineMapCallback;
 import dg.shenm233.mmaps.service.OfflineMapService;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
+import dg.shenm233.mmaps.viewholder.OnViewLongClickListener;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
@@ -166,11 +169,14 @@ public class OfflineMapActivity extends BaseActivity {
             if (DEBUG) {
                 Log.d("OfflineMapActivity", String.format("remove %s %b %s", name, success, describe));
             }
+            if (success) {
+                refreshDownloadList();
+            }
         }
     };
 
     private class DownloadListPager extends BasePager
-            implements View.OnClickListener {
+            implements View.OnClickListener, OnViewLongClickListener {
         private ProgressBar mProgressBar;
         private RecyclerView mListView;
         private Button mDownBtn;
@@ -261,6 +267,7 @@ public class OfflineMapActivity extends BaseActivity {
             RecyclerView listView = (RecyclerView) view.findViewById(R.id.offline_down_list);
             listView.setLayoutManager(new LinearLayoutManager(mContext));
             listView.setAdapter(mAdapter);
+            mAdapter.setOnViewLongClickListener(this);
             mListView = listView;
             return view;
         }
@@ -286,6 +293,34 @@ public class OfflineMapActivity extends BaseActivity {
                     binder.restart();
                 }
             }
+        }
+
+        @Override
+        public void onLongClick(View v, final Object data) {
+            if (data == null) {
+                return;
+            }
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(OfflineMapActivity.this);
+            builder.setCancelable(true)
+                    .setMessage(R.string.really_remove_offline_map)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent();
+                            intent.setClass(mContext, OfflineMapService.class);
+                            intent.putExtra("name", ((OfflineMapCity) data).getCity());
+                            intent.putExtra("type", OfflineMapService.TYPE_CITY);
+                            intent.putExtra("dowhat", OfflineMapService.DOWHAT_REMOVE_MAP);
+                            OfflineMapActivity.this.startService(intent);
+                        }
+                    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            })
+                    .show();
         }
     }
 

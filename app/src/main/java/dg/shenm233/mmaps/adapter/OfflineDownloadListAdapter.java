@@ -2,6 +2,7 @@ package dg.shenm233.mmaps.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.util.OffLineMapUtils;
 import dg.shenm233.mmaps.viewholder.BaseRecyclerViewHolder;
+import dg.shenm233.mmaps.viewholder.OnViewLongClickListener;
 
 public class OfflineDownloadListAdapter extends BaseRecyclerViewAdapter<OfflineDownloadListAdapter.DownloadVH> {
     private Context mContext;
@@ -61,6 +63,18 @@ public class OfflineDownloadListAdapter extends BaseRecyclerViewAdapter<OfflineD
             mCity = (TextView) itemView.findViewById(R.id.offline_city);
             mSize = (TextView) itemView.findViewById(R.id.offline_size);
             mState = (TextView) itemView.findViewById(R.id.offline_state);
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    OnViewLongClickListener l = getOnViewLongClickListener();
+                    if (l == null) {
+                        return false;
+                    } else {
+                        l.onLongClick(v, getTag());
+                        return true;
+                    }
+                }
+            });
         }
     }
 }

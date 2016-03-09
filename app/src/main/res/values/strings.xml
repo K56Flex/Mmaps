@@ -77,4 +77,5 @@
     <string name="offline_map_download">Offline Map Download</string>
     <string name="download_list">Download list</string>
     <string name="city_list">City list</string>
+    <string name="really_remove_offline_map">Really remove this city\'s offline map?</string>
 </resources>
