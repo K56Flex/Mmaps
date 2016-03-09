@@ -25,6 +25,8 @@ import dg.shenm233.api.maps.overlay.BusRouteOverlayS;
 import dg.shenm233.api.maps.overlay.DrivingRouteOverlayS;
 import dg.shenm233.api.maps.overlay.WalkRouteOverlayS;
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.adapter.BusStepsAdapter;
+import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
 import dg.shenm233.mmaps.adapter.RouteResultAdapter;
 import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.model.card.BusRouteCard;
@@ -88,18 +90,30 @@ public class DirectionsPresenter {
         BusRouteOverlayS busRouteOverlay = mMapsModule.addBusRouteOverlay(busPath,
                 myPath.startPoint, myPath.endPoint, false);
         mBusRouteOverlays.add(busRouteOverlay);
-        mDirectionsView.getBusStepsAdapter().setBusStepList(((BusPath) myPath.path).getSteps());
+
+        IDirectionsView directionsView = mDirectionsView;
+
+        BusStepsAdapter adapter = directionsView.getBusStepsAdapter();
+        adapter.setBusStepList(((BusPath) myPath.path).getSteps());
+        adapter.setStartingPoint(myPath.startPoint);
+        adapter.setDestPoint(myPath.endPoint);
+
         String s = mContext.getString(R.string.duration_and_distance,
                 CommonUtils.getFriendlyDuration(mContext, busPath.getDuration()),
                 CommonUtils.getFriendlyLength((int) busPath.getDistance()));
-        mDirectionsView.setDistanceTextOnAbstractView(s);
-        mDirectionsView.setEtcTextOnAbstractView(CommonUtils.getFriendlyCost(busPath.getCost()));
-        mDirectionsView.showPathOnMap();
+        directionsView.setDistanceTextOnAbstractView(s);
+        directionsView.setEtcTextOnAbstractView(CommonUtils.getFriendlyCost(busPath.getCost()));
+        directionsView.showPathOnMap();
     }
 
     public void moveCameraToDriveStep(Object step) {
+        if (step == null) return;
+        if (step instanceof LatLonPoint) { // 出发地，目的地
+            moveCameraToLatLonPoint((LatLonPoint) step);
+            return;
+        }
+
         DriveStep driveStep = (DriveStep) step;
-        if (driveStep == null) return;
         final List<LatLonPoint> polyLine = driveStep.getPolyline();
         LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
         mMapsModule.moveCamera(latLng, 20);
@@ -107,8 +121,13 @@ public class DirectionsPresenter {
     }
 
     public void moveCameraToWalkStep(Object step) {
+        if (step == null) return;
+        if (step instanceof LatLonPoint) { // 出发地，目的地
+            moveCameraToLatLonPoint((LatLonPoint) step);
+            return;
+        }
+
         WalkStep walkStep = (WalkStep) step;
-        if (walkStep == null) return;
         final List<LatLonPoint> polyLine = walkStep.getPolyline();
         LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
         mMapsModule.moveCamera(latLng, 20);
@@ -117,6 +136,11 @@ public class DirectionsPresenter {
 
     public void moveCameraToBusStep(Object step) {
         if (step == null) return;
+        if (step instanceof LatLonPoint) { // 出发地，目的地
+            moveCameraToLatLonPoint((LatLonPoint) step);
+            return;
+        }
+
         LatLonPoint latLonPoint = null;
         if (step instanceof RouteBusLineItem) {
             latLonPoint = ((RouteBusLineItem) step).getPolyline().get(0);
@@ -131,6 +155,12 @@ public class DirectionsPresenter {
             mMapsModule.moveCamera(latLng, 20);
             addMarker(latLng, R.drawable.pin_directionscard);
         }
+    }
+
+    private void moveCameraToLatLonPoint(LatLonPoint point) {
+        LatLng latLng = AMapUtils.convertToLatLng(point);
+        mMapsModule.moveCamera(latLng, 20);
+        destroyMarker();
     }
 
     private void addMarker(LatLng position, int resId) {
@@ -151,11 +181,15 @@ public class DirectionsPresenter {
         marker.setPosition(position);
     }
 
-    public void clearAllOverlays() {
+    private void destroyMarker() {
         if (mDirectionMarker != null) {
             mDirectionMarker.destroy();
             mDirectionMarker = null;
         }
+    }
+
+    public void clearAllOverlays() {
+        destroyMarker();
 
         for (DrivingRouteOverlayS overlay : mDrivingRouteOverlays) {
             overlay.removeFromMap();
@@ -230,13 +264,20 @@ public class DirectionsPresenter {
                 List<DrivePath> drivePaths = driveRouteResult.getPaths();
                 if (drivePaths.size() > 0) {
                     DrivePath drivePath = drivePaths.get(0);
+                    LatLonPoint startPoint = driveRouteResult.getStartPos();
+                    LatLonPoint destPoint = driveRouteResult.getTargetPos();
+
                     DrivingRouteOverlayS drivingRouteOverlay = mMapsModule.addDrivingRouteOverlay(drivePath,
-                            driveRouteResult.getStartPos(), driveRouteResult.getTargetPos(), false);
+                            startPoint, destPoint, false);
                     mDrivingRouteOverlays.add(drivingRouteOverlay);
 
                     IDirectionsView directionsView = mDirectionsView;
-                    directionsView.getDriveWalkStepsAdapter()
-                            .setDriveStepList(drivePath.getSteps());
+
+                    DriveWalkStepsAdapter adapter = directionsView.getDriveWalkStepsAdapter();
+                    adapter.setStartingPoint(startPoint);
+                    adapter.setDestPoint(destPoint);
+                    adapter.setDriveStepList(drivePath.getSteps());
+
                     String s = mContext.getString(R.string.duration_and_distance,
                             CommonUtils.getFriendlyDuration(mContext, drivePath.getDuration()),
                             CommonUtils.getFriendlyLength((int) drivePath.getDistance()));
@@ -257,13 +298,20 @@ public class DirectionsPresenter {
                 List<WalkPath> walkPaths = walkRouteResult.getPaths();
                 if (walkPaths.size() > 0) {
                     WalkPath walkPath = walkPaths.get(0);
+                    LatLonPoint startPoint = walkRouteResult.getStartPos();
+                    LatLonPoint destPoint = walkRouteResult.getTargetPos();
+
                     WalkRouteOverlayS walkRouteOverlay = mMapsModule.addWalkRouteOverlay(walkPath,
-                            walkRouteResult.getStartPos(), walkRouteResult.getTargetPos(), false);
+                            startPoint, destPoint, false);
                     mWalkRouteOverlays.add(walkRouteOverlay);
 
                     IDirectionsView directionsView = mDirectionsView;
-                    directionsView.getDriveWalkStepsAdapter()
-                            .setWalkStepList(walkPath.getSteps());
+
+                    DriveWalkStepsAdapter adapter = directionsView.getDriveWalkStepsAdapter();
+                    adapter.setStartingPoint(startPoint);
+                    adapter.setDestPoint(destPoint);
+                    adapter.setWalkStepList(walkPath.getSteps());
+
                     String s = mContext.getString(R.string.duration_and_distance,
                             CommonUtils.getFriendlyDuration(mContext, walkPath.getDuration()),
                             CommonUtils.getFriendlyLength((int) walkPath.getDistance()));

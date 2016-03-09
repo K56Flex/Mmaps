@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DriveStep;
 import com.amap.api.services.route.WalkStep;
 
@@ -37,6 +38,17 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
 
     public void setDestPointText(String s) {
         mDestPointText = s;
+    }
+
+    private LatLonPoint mStartingPoint;
+    private LatLonPoint mDestPoint;
+
+    public void setStartingPoint(LatLonPoint startingPoint) {
+        mStartingPoint = startingPoint;
+    }
+
+    public void setDestPoint(LatLonPoint destPoint) {
+        mDestPoint = destPoint;
     }
 
     public void setDriveStepList(List<DriveStep> driveSteps) {
@@ -102,15 +114,16 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
 
     @Override
     public void onBindViewHolderS(StepViewHolder holder, int position) {
-        holder.setTag(null); // just remove tag
         if (position == 0) {
             holder.mDirection.setImageResource(getIconFromPlace(mStartingPointText));
             holder.mInstruction.setText(mStartingPointText);
+            holder.setTag(mStartingPoint);
             return;
         }
         if (position == getItemCount() - 1) {
             holder.mDirection.setImageResource(getIconFromPlace(mDestPointText));
             holder.mInstruction.setText(mDestPointText);
+            holder.setTag(mDestPoint);
             return;
         }
 

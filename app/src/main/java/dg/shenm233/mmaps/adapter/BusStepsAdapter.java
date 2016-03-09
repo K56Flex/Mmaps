@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusStep;
 import com.amap.api.services.route.RouteBusLineItem;
 import com.amap.api.services.route.RouteBusWalkItem;
@@ -44,6 +45,17 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
 
     public void setDestPointText(String s) {
         mDestPointText = s;
+    }
+
+    private LatLonPoint mStartingPoint;
+    private LatLonPoint mDestPoint;
+
+    public void setStartingPoint(LatLonPoint startingPoint) {
+        mStartingPoint = startingPoint;
+    }
+
+    public void setDestPoint(LatLonPoint destPoint) {
+        mDestPoint = destPoint;
     }
 
     public void setBusStepList(List<BusStep> busSteps) {
@@ -126,6 +138,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
             } else {
                 vh.mDetailIcon.setVisibility(View.INVISIBLE);
                 vh.mDetailView.setText("");
+                holder.setTag(mStartingPoint);
             }
             return;
         }
@@ -136,6 +149,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
             vh.mDetailIcon.setVisibility(View.INVISIBLE);
             vh.mDetailView.setText("");
             holder.mDepartureText.setText(mDestPointText);
+            holder.setTag(mDestPoint);
             return;
         }
 
