@@ -241,6 +241,8 @@ public class Directions extends ViewContainerManager.ViewContainer
         rootView.addView(mDirectionsBoxView);
         rootView.addView(mResultViewContainer);
         rootView.addView(mRouteAbstractView);
+
+        queryRoute();
     }
 
     @Override
