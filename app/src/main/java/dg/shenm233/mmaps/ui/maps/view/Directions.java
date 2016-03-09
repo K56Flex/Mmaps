@@ -27,7 +27,6 @@ import java.util.Map;
 
 import dg.shenm233.drag2expandview.Drag2ExpandView;
 import dg.shenm233.mmaps.R;
-import dg.shenm233.mmaps.adapter.BaseRecyclerViewAdapter;
 import dg.shenm233.mmaps.adapter.BusStepsAdapter;
 import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
 import dg.shenm233.mmaps.adapter.RouteResultAdapter;
@@ -36,6 +35,7 @@ import dg.shenm233.mmaps.presenter.IDirectionsView;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
+import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
@@ -202,24 +202,23 @@ public class Directions extends ViewContainerManager.ViewContainer
     private void initAdapters() {
         mDriveWalkStepsAdapter = new DriveWalkStepsAdapter(mContext);
         mBusStepsAdapter = new BusStepsAdapter(mContext);
-        BaseRecyclerViewAdapter.OnItemClickListener listener =
-                new BaseRecyclerViewAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int adapterPosition) {
-                        if (curSelectedTab == ROUTE_WALK) {
-                            mDirectionsPresenter.moveCameraToWalkStep(adapterPosition);
-                            mRouteAbstractView.collapseView();
-                        } else if (curSelectedTab == ROUTE_DRIVE) {
-                            mDirectionsPresenter.moveCameraToDriveStep(adapterPosition);
-                            mRouteAbstractView.collapseView();
-                        } else if (curSelectedTab == ROUTE_BUS) {
-                            mDirectionsPresenter.moveCameraToBusStep(adapterPosition);
-                            mRouteAbstractView.collapseView();
-                        }
-                    }
-                };
-        mDriveWalkStepsAdapter.setOnItemClickListener(listener);
-        mBusStepsAdapter.setOnItemClickListener(listener);
+        OnViewClickListener listener = new OnViewClickListener() {
+            @Override
+            public void onClick(View v, Object data) {
+                if (curSelectedTab == ROUTE_WALK) {
+                    mDirectionsPresenter.moveCameraToWalkStep(data);
+                    mRouteAbstractView.collapseView();
+                } else if (curSelectedTab == ROUTE_DRIVE) {
+                    mDirectionsPresenter.moveCameraToDriveStep(data);
+                    mRouteAbstractView.collapseView();
+                } else if (curSelectedTab == ROUTE_BUS) {
+                    mDirectionsPresenter.moveCameraToBusStep(data);
+                    mRouteAbstractView.collapseView();
+                }
+            }
+        };
+        mBusStepsAdapter.setOnViewClickListener(listener);
+        mDriveWalkStepsAdapter.setOnViewClickListener(listener);
     }
 
     @Override

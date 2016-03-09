@@ -96,8 +96,8 @@ public class DirectionsPresenter {
         mDirectionsView.showPathOnMap();
     }
 
-    public void moveCameraToDriveStep(int adapterPosition) {
-        DriveStep driveStep = mDirectionsView.getDriveWalkStepsAdapter().getDriveStepAt(adapterPosition);
+    public void moveCameraToDriveStep(Object step) {
+        DriveStep driveStep = (DriveStep) step;
         if (driveStep == null) return;
         final List<LatLonPoint> polyLine = driveStep.getPolyline();
         LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
@@ -105,8 +105,8 @@ public class DirectionsPresenter {
         addMarker(latLng, R.drawable.pin_directionscard);
     }
 
-    public void moveCameraToWalkStep(int adapterPosition) {
-        WalkStep walkStep = mDirectionsView.getDriveWalkStepsAdapter().getWalkStepAt(adapterPosition);
+    public void moveCameraToWalkStep(Object step) {
+        WalkStep walkStep = (WalkStep) step;
         if (walkStep == null) return;
         final List<LatLonPoint> polyLine = walkStep.getPolyline();
         LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
@@ -114,14 +114,13 @@ public class DirectionsPresenter {
         addMarker(latLng, R.drawable.pin_directionscard);
     }
 
-    public void moveCameraToBusStep(int adapterPosition) {
-        Object item = mDirectionsView.getBusStepsAdapter().getItem(adapterPosition);
-        if (item == null) return;
+    public void moveCameraToBusStep(Object step) {
+        if (step == null) return;
         LatLonPoint latLonPoint = null;
-        if (item instanceof RouteBusLineItem) {
-            latLonPoint = ((RouteBusLineItem) item).getPolyline().get(0);
-        } else if (item instanceof RouteBusWalkItem) {
-            List<WalkStep> walkSteps = ((RouteBusWalkItem) item).getSteps();
+        if (step instanceof RouteBusLineItem) {
+            latLonPoint = ((RouteBusLineItem) step).getPolyline().get(0);
+        } else if (step instanceof RouteBusWalkItem) {
+            List<WalkStep> walkSteps = ((RouteBusWalkItem) step).getSteps();
             if (walkSteps.size() > 0) {
                 latLonPoint = walkSteps.get(0).getPolyline().get(0);
             }

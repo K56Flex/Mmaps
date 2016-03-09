@@ -12,6 +12,7 @@ import java.util.List;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.util.OffLineMapUtils;
+import dg.shenm233.mmaps.viewholder.BaseRecyclerViewHolder;
 
 public class OfflineDownloadListAdapter extends BaseRecyclerViewAdapter<OfflineDownloadListAdapter.DownloadVH> {
     private Context mContext;
@@ -26,18 +27,19 @@ public class OfflineDownloadListAdapter extends BaseRecyclerViewAdapter<OfflineD
     }
 
     @Override
-    public DownloadVH onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DownloadVH onCreateViewHolderS(ViewGroup parent, int viewType) {
         ViewGroup v = (ViewGroup) mLayoutInflater.inflate(R.layout.offline_city_down_item, parent, false);
-        return new DownloadVH(v, adapterListener);
+        return new DownloadVH(v);
     }
 
     @Override
-    public void onBindViewHolder(DownloadVH holder, int position) {
+    public void onBindViewHolderS(DownloadVH holder, int position) {
         OfflineMapCity city = mDownloadCityList.get(position);
         holder.mCity.setText(city.getCity());
         holder.mSize.setText(CommonUtils.getFriendlyBytes(city.getSize()));
         holder.mState.setText(
                 OffLineMapUtils.convertStateToText(mContext, city.getState(), city.getcompleteCode()));
+        holder.setTag(city);
     }
 
     @Override
@@ -49,13 +51,13 @@ public class OfflineDownloadListAdapter extends BaseRecyclerViewAdapter<OfflineD
         }
     }
 
-    protected static class DownloadVH extends BaseRecyclerViewAdapter.BaseViewHolder {
+    protected static class DownloadVH extends BaseRecyclerViewHolder {
         protected TextView mCity;
         protected TextView mSize;
         protected TextView mState;
 
-        public DownloadVH(ViewGroup itemView, OnItemClickListener l) {
-            super(itemView, l);
+        public DownloadVH(ViewGroup itemView) {
+            super(itemView);
             mCity = (TextView) itemView.findViewById(R.id.offline_city);
             mSize = (TextView) itemView.findViewById(R.id.offline_size);
             mState = (TextView) itemView.findViewById(R.id.offline_state);

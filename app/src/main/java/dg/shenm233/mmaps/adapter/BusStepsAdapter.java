@@ -16,6 +16,8 @@ import java.util.List;
 
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.util.CommonUtils;
+import dg.shenm233.mmaps.viewholder.BaseRecyclerViewHolder;
+import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
 public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.StepViewHolder> {
     private final static int TYPE_WALK = 0;
@@ -98,19 +100,20 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
     }
 
     @Override
-    public StepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StepViewHolder onCreateViewHolderS(ViewGroup parent, int viewType) {
         ViewGroup stepView;
         if (viewType == TYPE_BUS) {
             stepView = (ViewGroup) mLayoutInflater.inflate(R.layout.bus_step_bus_item, parent, false);
-            return new BusItemViewHolder(stepView, adapterListener);
+            return new BusItemViewHolder(stepView);
         } else {
             stepView = (ViewGroup) mLayoutInflater.inflate(R.layout.bus_step_walk_item, parent, false);
-            return new WalkItemViewHolder(stepView, adapterListener);
+            return new WalkItemViewHolder(stepView);
         }
     }
 
     @Override
-    public void onBindViewHolder(StepViewHolder holder, int position) {
+    public void onBindViewHolderS(StepViewHolder holder, int position) {
+        holder.setTag(null); // just remove tag
         if (position == 0) {
             holder.mTransitIcon.setImageResource(getIconFromPlace(mStartingPointText));
             holder.mDepartureText.setText(mStartingPointText);
@@ -121,6 +124,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
                 vh.mDetailView.append(" " +
                         CommonUtils.getFriendlyLength((int) ((RouteBusWalkItem) mItemList.get(0)).getDistance())
                         + "\n");
+                vh.setTag(getItem(position));
             } else {
                 vh.mDetailIcon.setVisibility(View.INVISIBLE);
                 vh.mDetailView.setText("");
@@ -153,6 +157,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
             vh.mDetailView.append(" " +
                     CommonUtils.getFriendlyLength((int) ((RouteBusWalkItem) item).getDistance())
                     + "\n");
+            vh.setTag(item);
         } else if (item instanceof RouteBusLineItem) {
             BusItemViewHolder vh = (BusItemViewHolder) holder;
             RouteBusLineItem busLineItem = (RouteBusLineItem) item;
@@ -162,6 +167,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
             vh.mDetailView.setText("\n" +
                     String.format(rideXstops, busLineItem.getPassStationNum())
                     + "\n");
+            vh.setTag(item);
         }
     }
 
@@ -203,8 +209,8 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
     protected static class BusItemViewHolder extends StepViewHolder {
         protected TextView mDetailView;
 
-        public BusItemViewHolder(ViewGroup itemView, OnItemClickListener l) {
-            super(itemView, l);
+        public BusItemViewHolder(ViewGroup itemView) {
+            super(itemView);
             mDetailView = (TextView) itemView.findViewById(R.id.step_detail);
         }
     }
@@ -213,23 +219,32 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         protected ImageView mDetailIcon;
         protected TextView mDetailView;
 
-        public WalkItemViewHolder(ViewGroup itemView, OnItemClickListener l) {
-            super(itemView, l);
+        public WalkItemViewHolder(ViewGroup itemView) {
+            super(itemView);
             mDetailIcon = (ImageView) itemView.findViewById(R.id.step_detail_icon);
             mDetailView = (TextView) itemView.findViewById(R.id.step_detail);
         }
     }
 
-    protected static class StepViewHolder extends BaseRecyclerViewAdapter.BaseViewHolder {
+    protected static class StepViewHolder extends BaseRecyclerViewHolder {
         protected ImageView mTransitIcon;
         protected TextView mDepartureText;
         protected TextView mSecondText;
 
-        public StepViewHolder(ViewGroup itemView, OnItemClickListener l) {
-            super(itemView, l);
+        public StepViewHolder(ViewGroup itemView) {
+            super(itemView);
             mTransitIcon = (ImageView) itemView.findViewById(R.id.step_transit_icon);
             mDepartureText = (TextView) itemView.findViewById(R.id.step_departure);
             mSecondText = (TextView) itemView.findViewById(R.id.step_second_text);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    OnViewClickListener listener = getOnViewClickListener();
+                    if (listener != null) {
+                        listener.onClick(v, getTag());
+                    }
+                }
+            });
         }
     }
 }

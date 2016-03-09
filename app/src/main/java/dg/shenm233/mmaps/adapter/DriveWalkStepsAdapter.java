@@ -2,6 +2,7 @@ package dg.shenm233.mmaps.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +13,8 @@ import com.amap.api.services.route.WalkStep;
 import java.util.List;
 
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.viewholder.BaseRecyclerViewHolder;
+import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
 public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStepsAdapter.StepViewHolder> {
     private Context mContext;
@@ -92,13 +95,14 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
     }
 
     @Override
-    public StepViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StepViewHolder onCreateViewHolderS(ViewGroup parent, int viewType) {
         ViewGroup stepView = (ViewGroup) mLayoutInflater.inflate(R.layout.drive_walk_step_item, parent, false);
-        return new StepViewHolder(stepView, adapterListener);
+        return new StepViewHolder(stepView);
     }
 
     @Override
-    public void onBindViewHolder(StepViewHolder holder, int position) {
+    public void onBindViewHolderS(StepViewHolder holder, int position) {
+        holder.setTag(null); // just remove tag
         if (position == 0) {
             holder.mDirection.setImageResource(getIconFromPlace(mStartingPointText));
             holder.mInstruction.setText(mStartingPointText);
@@ -114,9 +118,11 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
         if (mDriveStepList != null) {
             DriveStep driveStep = mDriveStepList.get(position - 1);
             holder.mInstruction.setText(driveStep.getInstruction());
+            holder.setTag(driveStep);
         } else if (mWalkStepList != null) {
             WalkStep walkStep = mWalkStepList.get(position - 1);
             holder.mInstruction.setText(walkStep.getInstruction());
+            holder.setTag(walkStep);
         }
     }
 
@@ -136,17 +142,26 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
         }
     }
 
-    protected static class StepViewHolder extends BaseRecyclerViewAdapter.BaseViewHolder {
+    protected static class StepViewHolder extends BaseRecyclerViewHolder {
         protected ImageView mDirection;
         protected TextView mInstruction;
         protected TextView mDistance;
 
-        public StepViewHolder(ViewGroup itemView, OnItemClickListener l) {
-            super(itemView, l);
+        public StepViewHolder(ViewGroup itemView) {
+            super(itemView);
             mDirection = (ImageView) itemView.findViewById(R.id.step_direction_icon);
             mInstruction = (TextView) itemView.findViewById(R.id.step_instruction);
-            mInstruction.setOnClickListener(this);
             mDistance = (TextView) itemView.findViewById(R.id.step_distance);
+
+            mInstruction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    OnViewClickListener listener = getOnViewClickListener();
+                    if (listener != null) {
+                        listener.onClick(v, getTag());
+                    }
+                }
+            });
         }
     }
 }
