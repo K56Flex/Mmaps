@@ -177,6 +177,7 @@ public class OfflineMapActivity extends BaseActivity {
 
     private class DownloadListPager extends BasePager
             implements View.OnClickListener, OnViewLongClickListener {
+        private boolean showProgressBar = true;
         private ProgressBar mProgressBar;
         private RecyclerView mListView;
         private Button mDownBtn;
@@ -222,8 +223,10 @@ public class OfflineMapActivity extends BaseActivity {
         public void updateDataList() {
             currentCity = "";
             mAdapter.notifyDataSetChanged();
-            mDownBtn.setText(mBinder.isDownloading() ?
-                    R.string.action_download_pause : R.string.action_download_start);
+            if (mDownBtn != null) {
+                mDownBtn.setText(mBinder.isDownloading() ?
+                        R.string.action_download_pause : R.string.action_download_start);
+            }
         }
 
         /**
@@ -252,7 +255,10 @@ public class OfflineMapActivity extends BaseActivity {
         }
 
         public void removeProgressBar() {
-            mProgressBar.setVisibility(View.GONE);
+            showProgressBar = false;
+            if (mProgressBar != null) {
+                mProgressBar.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -260,6 +266,9 @@ public class OfflineMapActivity extends BaseActivity {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.offline_down_list, rootView, false);
             mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+            if (!showProgressBar) {
+                mProgressBar.setVisibility(View.GONE);
+            }
             Button downBtn = (Button) view.findViewById(R.id.action_download);
             downBtn.setOnClickListener(this);
             mDownBtn = downBtn;
@@ -326,6 +335,7 @@ public class OfflineMapActivity extends BaseActivity {
 
     private class CityListPager extends BasePager
             implements OnViewClickListener {
+        private boolean showProgressBar = true;
         private ProgressBar mProgressBar;
         private RecyclerView mListView;
 
@@ -346,7 +356,10 @@ public class OfflineMapActivity extends BaseActivity {
         }
 
         public void removeProgressBar() {
-            mProgressBar.setVisibility(View.GONE);
+            showProgressBar = false;
+            if (mProgressBar != null) {
+                mProgressBar.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -354,6 +367,9 @@ public class OfflineMapActivity extends BaseActivity {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.offline_city_list, rootView, false);
             mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+            if (!showProgressBar) {
+                mProgressBar.setVisibility(View.GONE);
+            }
 
             RecyclerView listView = (RecyclerView) view.findViewById(R.id.offline_city_list);
             mListView = listView;
