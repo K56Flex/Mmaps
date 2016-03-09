@@ -21,6 +21,7 @@
     <string name="starting_point">Starting point</string>
     <string name="arrive_destination">Arrive destination</string>
     <string name="ride_x_stops">Ride %1$d stops</string>
+    <string name="duration_and_distance">%1$s (%2$s)</string>
 
     <string-array name="route_options_drive">
         <item>Save Money</item>

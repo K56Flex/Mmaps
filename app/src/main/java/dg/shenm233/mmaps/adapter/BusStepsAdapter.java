@@ -25,7 +25,6 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
 
     private Context mContext;
     private LayoutInflater mLayoutInflater;
-    private final String rideXstops;
 
     private final List<Object> mItemList = new ArrayList<>();
 
@@ -34,7 +33,6 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
     public BusStepsAdapter(Context context) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
-        rideXstops = context.getString(R.string.ride_x_stops);
     }
 
     private String mStartingPointText;
@@ -164,9 +162,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
 
             holder.mDepartureText.setText(busLineItem.getDepartureBusStation().getBusStationName());
             vh.mSecondText.setText(busLineItem.getBusLineName());
-            vh.mDetailView.setText("\n" +
-                    String.format(rideXstops, busLineItem.getPassStationNum())
-                    + "\n");
+            vh.mDetailView.setText(mContext.getString(R.string.ride_x_stops, busLineItem.getPassStationNum()));
             vh.setTag(item);
         }
     }

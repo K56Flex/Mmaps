@@ -89,8 +89,9 @@ public class DirectionsPresenter {
                 myPath.startPoint, myPath.endPoint, false);
         mBusRouteOverlays.add(busRouteOverlay);
         mDirectionsView.getBusStepsAdapter().setBusStepList(((BusPath) myPath.path).getSteps());
-        String s = CommonUtils.getFriendlyDuration(mContext, busPath.getDuration())
-                + "(" + CommonUtils.getFriendlyLength((int) busPath.getDistance()) + ")";
+        String s = mContext.getString(R.string.duration_and_distance,
+                CommonUtils.getFriendlyDuration(mContext, busPath.getDuration()),
+                CommonUtils.getFriendlyLength((int) busPath.getDistance()));
         mDirectionsView.setDistanceTextOnAbstractView(s);
         mDirectionsView.setEtcTextOnAbstractView(CommonUtils.getFriendlyCost(busPath.getCost()));
         mDirectionsView.showPathOnMap();
@@ -236,8 +237,9 @@ public class DirectionsPresenter {
                     IDirectionsView directionsView = mDirectionsView;
                     directionsView.getDriveWalkStepsAdapter()
                             .setDriveStepList(drivePath.getSteps());
-                    String s = CommonUtils.getFriendlyDuration(mContext, drivePath.getDuration())
-                            + "(" + CommonUtils.getFriendlyLength((int) drivePath.getDistance()) + ")";
+                    String s = mContext.getString(R.string.duration_and_distance,
+                            CommonUtils.getFriendlyDuration(mContext, drivePath.getDuration()),
+                            CommonUtils.getFriendlyLength((int) drivePath.getDistance()));
                     directionsView.setDistanceTextOnAbstractView(s);
                     directionsView.setEtcTextOnAbstractView("");
                     directionsView.showPathOnMap();
@@ -262,8 +264,9 @@ public class DirectionsPresenter {
                     IDirectionsView directionsView = mDirectionsView;
                     directionsView.getDriveWalkStepsAdapter()
                             .setWalkStepList(walkPath.getSteps());
-                    String s = CommonUtils.getFriendlyDuration(mContext, walkPath.getDuration())
-                            + "(" + CommonUtils.getFriendlyLength((int) walkPath.getDistance()) + ")";
+                    String s = mContext.getString(R.string.duration_and_distance,
+                            CommonUtils.getFriendlyDuration(mContext, walkPath.getDuration()),
+                            CommonUtils.getFriendlyLength((int) walkPath.getDistance()));
                     directionsView.setDistanceTextOnAbstractView(s);
                     directionsView.setEtcTextOnAbstractView("");
                     directionsView.showPathOnMap();
