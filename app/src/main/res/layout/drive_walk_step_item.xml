@@ -38,7 +38,7 @@
             android:layout_height="1dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:background="@color/grey" />
+            android:background="@color/grey_background_light" />
 
     </LinearLayout>
 

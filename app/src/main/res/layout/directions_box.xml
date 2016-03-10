@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_margin="5dp"
-            android:background="#19000000"
+            android:background="@color/directions_hint_background_light"
             android:orientation="horizontal">
 
             <TextView
@@ -36,7 +36,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:text="@string/directions_from"
-                android:textColor="@color/direction_box_hint" />
+                android:textColor="@color/text_color_white_hint" />
 
             <TextView
                 android:id="@+id/maps_directions_from_text"
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_margin="5dp"
-            android:background="#19000000"
+            android:background="@color/directions_hint_background_light"
             android:orientation="horizontal">
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:text="@string/directions_to"
-                android:textColor="@color/direction_box_hint" />
+                android:textColor="@color/text_color_white_hint" />
 
             <TextView
                 android:id="@+id/maps_directions_to_text"
