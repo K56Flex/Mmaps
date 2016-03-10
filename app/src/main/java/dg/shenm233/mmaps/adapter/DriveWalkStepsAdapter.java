@@ -14,6 +14,7 @@ import com.amap.api.services.route.WalkStep;
 import java.util.List;
 
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.viewholder.BaseRecyclerViewHolder;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
@@ -127,13 +128,14 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
             return;
         }
 
-        holder.mDirection.setImageDrawable(null);
         if (mDriveStepList != null) {
             DriveStep driveStep = mDriveStepList.get(position - 1);
+            setDirectionIcon(holder.mDirection, driveStep.getAction());
             holder.mInstruction.setText(driveStep.getInstruction());
             holder.setTag(driveStep);
         } else if (mWalkStepList != null) {
             WalkStep walkStep = mWalkStepList.get(position - 1);
+            setDirectionIcon(holder.mDirection, walkStep.getAction());
             holder.mInstruction.setText(walkStep.getInstruction());
             holder.setTag(walkStep);
         }
@@ -142,6 +144,61 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
     private int getIconFromPlace(String s) {
         return mContext.getText(R.string.my_location).equals(s) ?
                 R.drawable.ic_my_location : R.drawable.ic_place;
+    }
+
+    private void setDirectionIcon(ImageView view, String direction) {
+        int resId = getIconResIdFromDirection(direction);
+        if (resId == -1) {
+            view.setImageDrawable(null);
+        } else {
+            view.setImageResource(resId);
+        }
+    }
+
+    private int getIconResIdFromDirection(String s) {
+        if (CommonUtils.isStringEmpty(s)) {
+            return -1;
+        }
+        switch (s) {
+            case "直行":
+                return R.drawable.map_step_ahead;
+            case "左转":
+                return R.drawable.map_step_left;
+            case "右转":
+                return R.drawable.map_step_right;
+
+            case "靠左":
+            case "向左前方":
+            case "向左前方行走":
+            case "向左前方行驶":
+                return R.drawable.map_step_left_front;
+
+            case "靠右":
+            case "向右前方":
+            case "向右前方行走":
+            case "向右前方行驶":
+                return R.drawable.map_step_right_front;
+
+            case "进入环岛":
+            case "离开环岛":
+                return R.drawable.map_step_roundabout;
+
+            case "左转调头":
+                return R.drawable.map_step_left_turn_round;
+            case "右转调头":
+                return R.drawable.map_step_right_turn_round;
+
+            case "向左后方":
+            case "向左后方行走":
+            case "向左后方行驶":
+                return R.drawable.map_step_left_behind;
+
+            case "向右后方":
+            case "向右后方行走":
+            case "向右后方行驶":
+                return R.drawable.map_step_right_behind;
+        }
+        return -1;
     }
 
     @Override
