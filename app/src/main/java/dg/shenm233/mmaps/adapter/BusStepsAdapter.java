@@ -165,6 +165,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
             } else {
                 holder.mDepartureText.setText("");
             }
+            holder.mTransitIcon.setImageDrawable(null);
             vh.mDetailIcon.setVisibility(View.VISIBLE);
             vh.mDetailView.setText(R.string.walk);
             vh.mDetailView.append(" " +
