@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amap.api.services.busline.BusStationItem;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusStep;
 import com.amap.api.services.route.RouteBusLineItem;
@@ -176,7 +177,8 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
 
             holder.mDepartureText.setText(busLineItem.getDepartureBusStation().getBusStationName());
             vh.mSecondText.setText(busLineItem.getBusLineName());
-            vh.mDetailView.setText(mContext.getString(R.string.ride_x_stops, busLineItem.getPassStationNum()));
+            vh.mBusBaseTextView.setText(mContext.getString(R.string.ride_x_stops, busLineItem.getPassStationNum()));
+            bindStationList(vh, busLineItem.getPassStations());
             vh.setTag(item);
         }
     }
@@ -184,6 +186,14 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
     private int getIconFromPlace(String s) {
         return mContext.getText(R.string.my_location).equals(s) ?
                 R.drawable.ic_my_location : R.drawable.ic_place;
+    }
+
+    private void bindStationList(BusItemViewHolder vh, List<BusStationItem> busStationItemList) {
+        final int length = busStationItemList.size();
+        for (int i = 0; i < length; i++) {
+            vh.addStationText(i, busStationItemList.get(i).getBusStationName());
+        }
+        vh.setTotalStationCount(length);
     }
 
     @Override
@@ -216,12 +226,70 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         return isFirstRouteBusWalkItem;
     }
 
-    protected static class BusItemViewHolder extends StepViewHolder {
-        protected TextView mDetailView;
+    protected class BusItemViewHolder extends StepViewHolder {
+        protected ImageView mUnfoldImageView;
+        protected TextView mBusBaseTextView;
+        protected ViewGroup mDetailView;
+
+        private boolean isExpanded = false;
+
+        private List<TextView> mStationTextViewList = new ArrayList<>(); // 缓存TextView，便于复用
 
         public BusItemViewHolder(ViewGroup itemView) {
             super(itemView);
-            mDetailView = (TextView) itemView.findViewById(R.id.step_detail);
+            mDetailView = (ViewGroup) itemView.findViewById(R.id.step_detail);
+
+            View expandBtn = itemView.findViewById(R.id.bus_expandable);
+            mBusBaseTextView = (TextView) expandBtn.findViewById(R.id.bus_base);
+            mUnfoldImageView = (ImageView) expandBtn.findViewById(R.id.bus_unfold_btn);
+            expandBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isExpanded) {
+                        mUnfoldImageView.setImageResource(R.drawable.ic_unfold_more_black_24dp);
+                        collapse();
+                    } else {
+                        mUnfoldImageView.setImageResource(R.drawable.ic_unfold_less_black_24dp);
+                        expand();
+                    }
+                }
+            });
+        }
+
+        private void expand() {
+            isExpanded = true;
+            mDetailView.setVisibility(View.VISIBLE);
+        }
+
+        private void collapse() {
+            isExpanded = false;
+            mDetailView.setVisibility(View.GONE);
+        }
+
+        // 设置公交站总数，用于删除多余的View
+        protected void setTotalStationCount(int count) {
+            final ViewGroup detailView = mDetailView;
+            final List<TextView> textViewList = mStationTextViewList;
+
+            int listLength = textViewList.size();
+            for (int i = count; i < listLength; i++) {
+                detailView.removeView(textViewList.get(i));
+                textViewList.remove(i);
+            }
+        }
+
+        protected void addStationText(int index, String s) {
+            TextView textView;
+            if (index >= mStationTextViewList.size()) {
+                textView = (TextView) mLayoutInflater.inflate(R.layout.bus_step_bus_station_item,
+                        mDetailView, false);
+                mDetailView.addView(textView);
+                textView.setText(s);
+                mStationTextViewList.add(textView);
+            } else {
+                textView = mStationTextViewList.get(index);
+                textView.setText(s);
+            }
         }
     }
 
