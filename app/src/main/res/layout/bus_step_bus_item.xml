@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
@@ -18,7 +19,7 @@
         style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="70dp" />
+        android:layout_marginLeft="80dp" />
 
     <TextView
         android:id="@+id/step_second_text"
@@ -36,12 +37,14 @@
         android:layout_alignLeft="@id/step_departure"
         android:layout_below="@id/step_second_text" />
 
-    <ImageView
-        android:layout_width="20dp"
+    <dg.shenm233.mmaps.widget.DotBarView
+        android:layout_width="24dp"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@id/step_detail"
         android:layout_alignTop="@id/step_departure"
         android:layout_marginLeft="48dp"
-        android:src="@color/cardview_dark_background" />
+        android:src="@drawable/dot2"
+        app:drawableAsDot="@drawable/dot"
+        app:singleItemHeight="30dp"
+        app:singleItemWidth="24dp" />
 
 </RelativeLayout>

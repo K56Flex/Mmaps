@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DotBarView">
+        <attr name="singleItemHeight" format="dimension" />
+        <attr name="singleItemWidth" format="dimension" />
+        <attr name="drawableAsDot" format="reference|color" />
+    </declare-styleable>
+</resources>
