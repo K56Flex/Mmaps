@@ -21,6 +21,7 @@ import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.SearchMapsPresenter;
 import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
+import dg.shenm233.mmaps.util.AnimUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
 
 public class SearchBox extends ViewContainerManager.ViewContainer
@@ -140,6 +141,7 @@ public class SearchBox extends ViewContainerManager.ViewContainer
     private void setSearchBoxVisible(boolean visible) {
         if (visible) {
             if (!isSearchBoxVisible()) {
+                AnimUtils.viewSlideInTop(mSearchBox);
                 rootView.addView(mSearchBox);
             }
         } else {

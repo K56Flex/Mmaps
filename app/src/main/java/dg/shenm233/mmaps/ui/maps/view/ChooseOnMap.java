@@ -19,6 +19,7 @@ import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
+import dg.shenm233.mmaps.util.AnimUtils;
 
 public class ChooseOnMap extends ViewContainerManager.ViewContainer
         implements View.OnClickListener {
@@ -59,6 +60,7 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
         ((IDrawerView) mMapsFragment).enableDrawer(false);
 
         ViewGroup rootView = this.rootView;
+        AnimUtils.viewSlideInTop(titleView);
         rootView.addView(titleView);
         rootView.addView(buttonBarView);
 
@@ -83,6 +85,7 @@ public class ChooseOnMap extends ViewContainerManager.ViewContainer
         marker.destroy();
         mMapsFragment.setStatusBarColor(Color.TRANSPARENT);
         mMapsFragment.setMapViewVisibility(View.INVISIBLE);
+        AnimUtils.viewSlideOutTop(titleView);
         rootView.removeView(titleView);
         rootView.removeView(buttonBarView);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
