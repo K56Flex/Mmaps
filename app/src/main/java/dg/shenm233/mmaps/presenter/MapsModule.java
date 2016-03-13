@@ -90,7 +90,6 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     }
 
     public void onStart() {
-        setMyLocationEnabled(true);
         mCompass.start();
     }
 
@@ -248,6 +247,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         @Override
         public void deactivate() {
             mListenerForAMapInternal = null;
+            LocationManager.getInstance(mContext).stopLocationFor(this);
         }
 
         // LocationListener

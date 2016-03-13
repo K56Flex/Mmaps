@@ -1,7 +1,10 @@
 package dg.shenm233.mmaps.ui.maps;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -28,6 +31,7 @@ import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.view.Directions;
 import dg.shenm233.mmaps.ui.maps.view.PoiItems;
 import dg.shenm233.mmaps.ui.maps.view.SearchBox;
+import dg.shenm233.mmaps.util.PermissionUtils;
 import dg.shenm233.mmaps.widget.FloatingButton;
 
 public class MapsFragment extends Fragment
@@ -92,6 +96,9 @@ public class MapsFragment extends Fragment
     public void onStart() {
         super.onStart();
         mMapsModule.onStart();
+        if (PermissionUtils.checkLocationPermission(getContext())) {
+            mMapsModule.setMyLocationEnabled(true);
+        }
     }
 
     @Override
@@ -139,6 +146,10 @@ public class MapsFragment extends Fragment
             args.put(Directions.STARTING_POINT, tip);
             mViewContainerManager.putViewContainer(mDirections, args, false, Directions.ID);
         } else if (viewId == R.id.action_my_location) {
+            if (!requestLocationPermission()) {
+                return;
+            }
+
             int myLocationMode = mMapsModule.getMyLocationMode();
             if (!isMain()) {
                 myLocationMode = MapsModule.MY_LOCATION_LOCATE;
@@ -149,6 +160,34 @@ public class MapsFragment extends Fragment
             }
 
             mMapsModule.changeMyLocationMode(myLocationMode);
+        }
+    }
+
+    private boolean requestLocationPermission() {
+        if (PermissionUtils.checkLocationPermission(getContext())) {
+            return true;
+        }
+
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+                || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            // TODO: balabala
+            requestPermissions(PermissionUtils.LOCATION_PERMISSION, 0x2b);
+        } else {
+            requestPermissions(PermissionUtils.LOCATION_PERMISSION, 0x2b);
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == 0x2b) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                mMapsModule.setMyLocationEnabled(true);
+            } else {
+                mMapsModule.setMyLocationEnabled(false);
+            }
         }
     }
 
