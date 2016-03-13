@@ -1,19 +1,22 @@
 package dg.shenm233.mmaps.model;
 
 import android.content.Context;
+import android.location.LocationListener;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.LocationSource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LocationManager {
     private static LocationManager mLocationManager;
+    private List<LocationListener> mLocationListeners = new ArrayList<>();
+
     private AMapLocationClient mLocationManagerProxy;
     private AMapLocationClientOption mOption;
-
-    private LocationSource.OnLocationChangedListener mListener;
 
     private LocationManager(Context context) {
         mLocationManagerProxy = new AMapLocationClient(context);
@@ -35,25 +38,47 @@ public class LocationManager {
         option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
     }
 
-    public void destroy() {
-        mLocationManagerProxy.stopLocation();
-        mLocationManagerProxy.unRegisterLocationListener(mInternalListener);
-        mLocationManagerProxy.onDestroy();
-        mLocationManager.mLocationManagerProxy = null;
-        mLocationManager.mListener = null;
+    public static void destroy() {
+        if (mLocationManager == null) {
+            return;
+        }
+
+        if (mLocationManager.mLocationListeners.size() > 0) { // 如果有正在监听的监听器，阻止销毁
+            return;
+        }
+
+        AMapLocationClient client = mLocationManager.mLocationManagerProxy;
+
+        client.stopLocation();
+        client.unRegisterLocationListener(mLocationManager.mInternalListener);
+        mLocationManager.removeAllListener();
+        client.onDestroy();
+
         mLocationManager = null;
     }
 
-    public void requestLocationData(LocationSource.OnLocationChangedListener l) {
-        mListener = l;
+    public void startLocationFor(LocationListener l) {
+        mLocationListeners.add(l);
         mLocationManagerProxy.startLocation();
+    }
+
+    public void stopLocationFor(LocationListener l) {
+        mLocationListeners.remove(l);
+        if (mLocationListeners.size() == 0) {
+            mLocationManagerProxy.stopLocation();
+        }
+    }
+
+    private void removeAllListener() {
+        mLocationListeners.clear();
     }
 
     private AMapLocationListener mInternalListener = new AMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
-            if (mListener != null)
-                mListener.onLocationChanged(aMapLocation);
+            for (LocationListener l : mLocationListeners) {
+                l.onLocationChanged(aMapLocation);
+            }
         }
     };
 }

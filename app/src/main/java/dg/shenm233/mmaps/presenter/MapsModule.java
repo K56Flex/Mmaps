@@ -3,6 +3,8 @@ package dg.shenm233.mmaps.presenter;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
 import android.view.MotionEvent;
 
 import com.amap.api.maps.AMap;
@@ -31,7 +33,7 @@ import dg.shenm233.mmaps.model.Compass;
 import dg.shenm233.mmaps.model.LocationManager;
 
 public class MapsModule implements AMap.OnMarkerClickListener,
-        AMap.OnMapClickListener, AMap.OnMapTouchListener, LocationSource {
+        AMap.OnMapClickListener, AMap.OnMapTouchListener {
     public final static int MY_LOCATION_LOCATE = 0;
     public final static int MY_LOCATION_FOLLOW = 1;
     public final static int MY_LOCATION_ROTATE = 2;
@@ -41,6 +43,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
 
     private Context mContext;
     private Compass mCompass;
+    private AMapLocationListener mLocationListener;
     private IMapsFragment mMapsFragment;
     private AMap mAMap;
 
@@ -62,7 +65,9 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         mAMap.setOnMapClickListener(this);
         mAMap.setOnMarkerClickListener(this);
         mAMap.setOnMapTouchListener(this);
-        mAMap.setLocationSource(this); // 设置定位监听
+
+        mLocationListener = new AMapLocationListener();
+        mAMap.setLocationSource(mLocationListener); // 设置定位监听
 
         UiSettings uiSettings = mAMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(false);
@@ -90,6 +95,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     }
 
     public void onPause() {
+        LocationManager.getInstance(mContext).stopLocationFor(mLocationListener);
         setMyLocationEnabled(false);
         mCompass.stop();
     }
@@ -228,26 +234,49 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         }
     }
 
-    /*mAMap会请求获取位置，并把其内部的位置监听器以实参传递供外部使用*/
-    @Override
-    public void activate(final OnLocationChangedListener onLocationChangedListener) {
-        LocationManager.getInstance(mContext).requestLocationData(new OnLocationChangedListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                onLocationChangedListener.onLocationChanged(location);
+    private class AMapLocationListener implements LocationSource, LocationListener {
+        // 属于AMap内部的Listener，需要通过activate(OnLocationChangedListener)获取
+        private OnLocationChangedListener mListenerForAMapInternal;
 
-                if (needZoom) { // 是否第一次启动，是则放大地图到一定位置
-                    needZoom = false;
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mAMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                }
+        //LocationSource
+        @Override
+        public void activate(OnLocationChangedListener onLocationChangedListener) {
+            mListenerForAMapInternal = onLocationChangedListener;
+            LocationManager.getInstance(mContext).startLocationFor(this);
+        }
+
+        @Override
+        public void deactivate() {
+            mListenerForAMapInternal = null;
+        }
+
+        // LocationListener
+        @Override
+        public void onLocationChanged(Location location) {
+            if (mListenerForAMapInternal != null) {
+                mListenerForAMapInternal.onLocationChanged(location);
             }
-        });
-    }
 
-    /*mAMap会取消获取位置，可以通知位置管理器停止监听*/
-    @Override
-    public void deactivate() {
-        LocationManager.getInstance(mContext).destroy();
+            if (needZoom) { // 是否第一次启动，是则放大地图到一定位置
+                needZoom = false;
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                mAMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+            }
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
     }
 }
