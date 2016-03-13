@@ -27,7 +27,7 @@ android {
 
         release {
             manifestPlaceholders = [AMAP_API_KEY: '926388b1a68e9c26af2b6275c424c027']
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
