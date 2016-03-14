@@ -29,7 +29,7 @@ public class OfflineMapService extends Service {
     final public static String DOWHAT_CHECK_UPDATE_MAP = "checkMap";
 
     private ServiceBinder mBinder;
-    private volatile OfflineMapManager mMapManager;
+    private volatile OfflineMapManager mMapManager; // 由于是异步建立对象，需要先检查是否null
     private List<IOfflineMapCallback> mCallbacks = new ArrayList<>();
 
     private boolean mIsDownloading = false;
@@ -50,6 +50,10 @@ public class OfflineMapService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (mMapManager == null) {
+            return START_NOT_STICKY;
+        }
+
         Bundle intentExtras = intent.getExtras();
         String name = intentExtras.getString("name");
         String type = intentExtras.getString("type");
@@ -90,7 +94,9 @@ public class OfflineMapService extends Service {
         if (DEBUG) {
             Log.d("OfflineMapService", "Service is being destroy");
         }
-        mMapManager.destroy();
+        if (mMapManager != null) {
+            mMapManager.destroy();
+        }
         mIsDownloading = false;
         super.onDestroy();
     }
@@ -211,6 +217,10 @@ public class OfflineMapService extends Service {
          * @return 返回城市列表
          */
         public List<OfflineMapCity> getDownloadingCityList() {
+            // prevent NPE
+            if (mMapManager == null) {
+                return new ArrayList<>();
+            }
             return mMapManager.getDownloadingCityList();
         }
 
@@ -220,6 +230,10 @@ public class OfflineMapService extends Service {
          * @return 返回省份列表
          */
         public List<OfflineMapProvince> getDownloadingProvinceList() {
+            // prevent NPE
+            if (mMapManager == null) {
+                return new ArrayList<>();
+            }
             return mMapManager.getDownloadingProvinceList();
         }
 
@@ -229,6 +243,10 @@ public class OfflineMapService extends Service {
          * @return 返回城市列表
          */
         public List<OfflineMapCity> getDownloadOfflineMapCityList() {
+            // prevent NPE
+            if (mMapManager == null) {
+                return new ArrayList<>();
+            }
             return mMapManager.getDownloadOfflineMapCityList();
         }
 
@@ -238,18 +256,34 @@ public class OfflineMapService extends Service {
          * @return 返回省份列表
          */
         public List<OfflineMapProvince> getDownloadOfflineMapProvinceList() {
+            // prevent NPE
+            if (mMapManager == null) {
+                return new ArrayList<>();
+            }
             return mMapManager.getDownloadOfflineMapProvinceList();
         }
 
         public OfflineMapCity getItemByCityCode(String cityCode) {
+            // prevent NPE
+            if (mMapManager == null) {
+                return null;
+            }
             return mMapManager.getItemByCityCode(cityCode);
         }
 
         public OfflineMapCity getItemByCityName(String cityName) {
+            // prevent NPE
+            if (mMapManager == null) {
+                return null;
+            }
             return mMapManager.getItemByCityName(cityName);
         }
 
         public OfflineMapProvince getItemByProvinceName(String provinceName) {
+            // prevent NPE
+            if (mMapManager == null) {
+                return null;
+            }
             return mMapManager.getItemByProvinceName(provinceName);
         }
 
@@ -259,6 +293,10 @@ public class OfflineMapService extends Service {
          * @return 返回城市列表
          */
         public List<OfflineMapCity> getOfflineMapCityList() {
+            // prevent NPE
+            if (mMapManager == null) {
+                return new ArrayList<>();
+            }
             return mMapManager.getOfflineMapCityList();
         }
 
@@ -268,15 +306,27 @@ public class OfflineMapService extends Service {
          * @return 返回省份列表
          */
         public List<OfflineMapProvince> getOfflineMapProvinceList() {
+            // prevent NPE
+            if (mMapManager == null) {
+                return new ArrayList<>();
+            }
             return mMapManager.getOfflineMapProvinceList();
         }
 
         public void pause() {
             mIsDownloading = false;
+            // prevent NPE
+            if (mMapManager == null) {
+                return;
+            }
             mMapManager.pause();
         }
 
         public void restart() {
+            // prevent NPE
+            if (mMapManager == null) {
+                return;
+            }
             mIsDownloading = true;
             OfflineMapManager mapManager = mMapManager;
 
@@ -323,6 +373,10 @@ public class OfflineMapService extends Service {
 
         public void stop() {
             mIsDownloading = false;
+            // prevent NPE
+            if (mMapManager == null) {
+                return;
+            }
             mMapManager.stop();
         }
 
