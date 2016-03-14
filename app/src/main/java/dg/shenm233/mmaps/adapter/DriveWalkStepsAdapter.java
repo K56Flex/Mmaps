@@ -160,6 +160,7 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
             return -1;
         }
         switch (s) {
+            case "往前走":
             case "直行":
                 return R.drawable.map_step_ahead;
             case "左转":
