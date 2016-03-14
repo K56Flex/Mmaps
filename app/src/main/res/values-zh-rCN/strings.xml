@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mmaps</string>
+    <string name="app_name_debug">Mmaps (debug)</string>
+    <string name="action_settings">设置</string>
+    <string name="action_back">返回</string>
+    <string name="action_search">搜索</string>
+    <string name="search_in_maps">搜索地图</string>
+    <string name="directions_from">从</string>
+    <string name="directions_to">到</string>
+    <string name="directions">路径</string>
+    <string name="my_location">我的位置</string>
+    <string name="searching">正在搜索...</string>
+    <string name="no_result">抱歉，没有结果</string>
+    <string name="reverse">返程路线</string>
+    <string name="route_options">路线选项</string>
+    <string name="done">完成</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确定</string>
+    <string name="back">返回</string>
+    <string name="walk">步行</string>
+    <string name="starting_point">出发点</string>
+    <string name="arrive_destination">到达目的地</string>
+    <string name="ride_x_stops">途经%1$d站</string>
+
+    <string-array name="route_options_drive">
+        <item>省钱</item>
+        <item>避免拥堵</item>
+        <item>不走高速</item>
+        <item>距离优先</item>
+        <item>不走快速路</item>
+    </string-array>
+
+    <string-array name="route_options_bus">
+        <item>默认</item>
+        <item>省钱</item>
+        <item>较少换乘</item>
+        <item>较少步行</item>
+        <item>更舒适</item>
+        <item>不乘地铁</item>
+    </string-array>
+
+    <string-array name="route_options_walk">
+        <item>默认</item>
+        <item>多种方案</item>
+    </string-array>
+
+    <string name="hour">小时</string>
+    <string name="minute">分钟</string>
+    <string name="second">秒</string>
+
+    <string name="choose_on_map">从地图选点</string>
+    <string name="chosen_on_map">地图上的选点</string>
+    <string name="map_under_pin">平移和缩放图钉周围的地图</string>
+
+    <string name="error_unknown">未知错误</string>
+    <string name="error_no_connection">没有网络连接</string>
+    <string name="error_over_directions_range">超出路径规划范围</string>
+
+    <string name="satellite">卫星图</string>
+    <string name="traffic">实时路况</string>
+
+    <string name="action_download_start">开始下载</string>
+    <string name="action_download_pause">暂停下载</string>
+
+    <string name="download">下载</string>
+    <string name="downloaded">已下载</string>
+    <string name="downloading_with_percent">下载中 %d %%</string>
+    <string name="unzipping_with_percent">解压中 %d %%</string>
+    <string name="paused">已暂停</string>
+    <string name="stopped">已停止</string>
+    <string name="io_exception">IO错误</string>
+    <string name="network_exception">网络错误</string>
+    <string name="waiting_downloading">等待中</string>
+    <string name="error_redownload">错误，请重新下载</string>
+    <string name="already_downloaded">已下载</string>
+
+    <string name="offline_map_download">离线地图下载</string>
+    <string name="download_list">下载列表</string>
+    <string name="city_list">城市列表</string>
+    <string name="really_remove_offline_map">真的要删除该城市的离线地图？</string>
+</resources>
