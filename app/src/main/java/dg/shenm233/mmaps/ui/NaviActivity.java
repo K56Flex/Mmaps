@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -42,8 +40,6 @@ public class NaviActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        requestPermission();
 
         mNaviPresenter = new NaviPresenter(this);
         mNaviPresenter.setAMapNaviListener(mAMapNaviListenerS);
@@ -174,7 +170,7 @@ public class NaviActivity extends Activity {
         }
     };
 
-    private void prepareNavi() {
+    private void prepareNaviReal() {
         boolean success = false;
         Intent intent = getIntent();
         int strategy = intent.getIntExtra(NAVI_STRATEGY, -1);
@@ -242,30 +238,35 @@ public class NaviActivity extends Activity {
                 .show();
     }
 
-    private void requestPermission() {
-        if (PermissionUtils.checkLocationPermission(this)
-                && PermissionUtils.checkPhoneStatePermission(this)) {
-            return;
-        }
+    private PermissionUtils.OnRequestPermissionsResult mPermissionsResult;
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            requestPermissions(new String[]{
-                    Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-            }, 0x3b);
-        }
+    private void prepareNavi() {
+        String[] perms = new String[]{
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        };
+
+        PermissionUtils.PermsCallback permsCallback = new PermissionUtils.PermsCallback() {
+            @Override
+            public void onAllGranted() {
+                prepareNaviReal();
+            }
+
+            @Override
+            public void onAllDenied() {
+                promptNoteAndExit(R.string.navi_permission_failed);
+            }
+        };
+
+        mPermissionsResult = PermissionUtils.requestPermissionsAndThen(this, perms, permsCallback);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == 0x3b) {
-            if (!(grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
-                promptNoteAndExit(R.string.navi_permission_failed);
-            }
+        if (mPermissionsResult != null) {
+            mPermissionsResult.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }
