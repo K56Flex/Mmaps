@@ -16,6 +16,10 @@ public class PermissionUtils {
                 && checkPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
+    public static boolean checkPhoneStatePermission(Context context) {
+        return checkPermission(context, Manifest.permission.READ_PHONE_STATE);
+    }
+
     private static boolean checkPermission(Context context, String permission) {
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }

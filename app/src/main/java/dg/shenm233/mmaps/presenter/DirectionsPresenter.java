@@ -1,6 +1,7 @@
 package dg.shenm233.mmaps.presenter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import com.amap.api.maps.model.BitmapDescriptorFactory;
@@ -32,6 +33,7 @@ import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.model.card.BusRouteCard;
 import dg.shenm233.mmaps.model.card.Card;
 import dg.shenm233.mmaps.model.card.MsgCard;
+import dg.shenm233.mmaps.ui.NaviActivity;
 import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
 
@@ -60,11 +62,11 @@ public class DirectionsPresenter {
         mDirectionsInteractor = new DirectionsInteractor(context, new ResultListener());
     }
 
-    public void setStartingPoint(LatLonPoint startingPoint) {
+    private void setStartingPoint(LatLonPoint startingPoint) {
         mStartingPoint = startingPoint;
     }
 
-    public void setDestinationPoint(LatLonPoint destinationPoint) {
+    private void setDestinationPoint(LatLonPoint destinationPoint) {
         mDestinationPoint = destinationPoint;
     }
 
@@ -216,6 +218,23 @@ public class DirectionsPresenter {
         directionsView.getBusStepsAdapter().clear();
     }
 
+    public void startDriveNavigation(int strategy) {
+        Intent intent = new Intent(mContext, NaviActivity.class);
+        intent.putExtra(NaviActivity.NAVI_MODE, NaviActivity.NAVI_DRIVE);
+        intent.putExtra(NaviActivity.NAVI_STRATEGY, AMapUtils.convertDriveModeForNavi(strategy));
+        intent.putExtra(NaviActivity.NAVI_START, AMapUtils.convertToNaviLatLng(mStartingPoint));
+        intent.putExtra(NaviActivity.NAVI_DEST, AMapUtils.convertToNaviLatLng(mDestinationPoint));
+        mContext.startActivity(intent);
+    }
+
+    public void startWalkNavigation(int strategy) {
+        Intent intent = new Intent(mContext, NaviActivity.class);
+        intent.putExtra(NaviActivity.NAVI_MODE, NaviActivity.NAVI_WALK);
+        intent.putExtra(NaviActivity.NAVI_START, AMapUtils.convertToNaviLatLng(mStartingPoint));
+        intent.putExtra(NaviActivity.NAVI_DEST, AMapUtils.convertToNaviLatLng(mDestinationPoint));
+        mContext.startActivity(intent);
+    }
+
     private class ResultListener extends OnDirectionsResultListener {
         @Override
         public void onBusRouteSearched(BusRouteResult busRouteResult, int rCode) {
@@ -278,6 +297,9 @@ public class DirectionsPresenter {
                     adapter.setDestPoint(destPoint);
                     adapter.setDriveStepList(drivePath.getSteps());
 
+                    setStartingPoint(startPoint);
+                    setDestinationPoint(destPoint);
+
                     String s = mContext.getString(R.string.duration_and_distance,
                             CommonUtils.getFriendlyDuration(mContext, drivePath.getDuration()),
                             CommonUtils.getFriendlyLength((int) drivePath.getDistance()));
@@ -311,6 +333,9 @@ public class DirectionsPresenter {
                     adapter.setStartingPoint(startPoint);
                     adapter.setDestPoint(destPoint);
                     adapter.setWalkStepList(walkPath.getSteps());
+
+                    setStartingPoint(startPoint);
+                    setDestinationPoint(destPoint);
 
                     String s = mContext.getString(R.string.duration_and_distance,
                             CommonUtils.getFriendlyDuration(mContext, walkPath.getDuration()),

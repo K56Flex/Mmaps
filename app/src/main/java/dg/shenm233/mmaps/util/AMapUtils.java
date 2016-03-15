@@ -3,6 +3,8 @@ package dg.shenm233.mmaps.util;
 import android.content.Context;
 
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.navi.AMapNavi;
+import com.amap.api.navi.model.NaviLatLng;
 import com.amap.api.services.busline.BusLineItem;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
@@ -47,6 +49,10 @@ public class AMapUtils {
         }
 
         return newList;
+    }
+
+    public static NaviLatLng convertToNaviLatLng(LatLonPoint latLonPoint) {
+        return new NaviLatLng(latLonPoint.getLatitude(), latLonPoint.getLongitude());
     }
 
     /**
@@ -140,6 +146,41 @@ public class AMapUtils {
                 booleans[0] = booleans[1] = booleans[2] = false;
         }
         return booleans;
+    }
+
+    /**
+     * 转换RouteSearch的驾车模式为对应的导航模式
+     *
+     * @param mode RouteSearch的驾车模式
+     * @return 对应的驾车导航模式
+     */
+    public static int convertDriveModeForNavi(int mode) {
+        switch (mode) {
+            case RouteSearch.DrivingDefault:
+                return AMapNavi.DrivingDefault;
+            case RouteSearch.DrivingSaveMoney:
+                return AMapNavi.DrivingSaveMoney;
+            case RouteSearch.DrivingAvoidCongestion:
+                return AMapNavi.DrivingAvoidCongestion;
+            /*
+            case RouteSearch.DrivingNoHighWay:
+                return AMapNavi.DrivingNoHighWay;
+            case RouteSearch.DrivingSaveMoneyAvoidCongestion:
+                return AMapNavi.DrivingSaveMoneyAvoidCongestion;
+            case RouteSearch.DrivingNoHighWaySaveMoney:
+                return AMapNavi.DrivingNoHighWaySaveMoney;
+            case RouteSearch.DrivingNoHighAvoidCongestionSaveMoney:
+                return AMapNavi.DrivingNoHighAvoidCongestionSaveMoney;
+            */
+            case RouteSearch.DrivingShortDistance:
+                return AMapNavi.DrivingShortDistance;
+            case RouteSearch.DrivingNoExpressways:
+                return AMapNavi.DrivingNoExpressways;
+        }
+
+        // TODO: AMapNavi.DrivingFastestTime (时间优先，躲避拥堵)
+
+        return -1;
     }
 
     /**

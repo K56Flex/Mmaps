@@ -22,6 +22,7 @@
     <string name="starting_point">出发点</string>
     <string name="arrive_destination">到达目的地</string>
     <string name="ride_x_stops">途经%1$d站</string>
+    <string name="duration_and_distance">%1$s (%2$s)</string>
 
     <string-array name="route_options_drive">
         <item>省钱</item>
@@ -79,4 +80,11 @@
     <string name="download_list">下载列表</string>
     <string name="city_list">城市列表</string>
     <string name="really_remove_offline_map">真的要删除该城市的离线地图？</string>
+
+    <string name="note">提示</string>
+
+    <string name="navi_really_exit">要退出导航？</string>
+    <string name="navi_not_supported_strategy">不支持该驾驶方案，请选择其他方案</string>
+    <string name="navi_failure">导航失败</string>
+    <string name="navi_permission_failed">导航需要电话和位置权限</string>
 </resources>

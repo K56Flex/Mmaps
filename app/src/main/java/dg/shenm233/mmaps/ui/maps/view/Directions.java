@@ -192,7 +192,7 @@ public class Directions extends ViewContainerManager.ViewContainer
         view.findViewById(R.id.action_navigation).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "Working in process", Toast.LENGTH_SHORT).show();
+                startNavigation();
             }
         });
 
@@ -354,6 +354,16 @@ public class Directions extends ViewContainerManager.ViewContainer
         // 隐藏交换按钮，显示三点
         mMoreBtn.setVisibility(View.VISIBLE);
         mSwapBtn.setVisibility(View.INVISIBLE);
+    }
+
+    private void startNavigation() {
+        if (curSelectedTab == ROUTE_DRIVE) {
+            mDirectionsPresenter.startDriveNavigation(curDriveRouteMode);
+        } else if (curSelectedTab == ROUTE_WALK) {
+            mDirectionsPresenter.startWalkNavigation(curWalkRouteMode);
+        } else {
+            Toast.makeText(mContext, "sorry,not supported", Toast.LENGTH_SHORT).show();
+        }
     }
 
     //TODO: 这部分涉及硬编码，注意一下高德sdk的更新
