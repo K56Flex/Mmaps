@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.ui.maps.MapsFragment;
 
@@ -35,6 +36,12 @@ public class MainActivity extends BaseActivity implements IDrawerView {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_content, getMapsFragment(), MapsFragment.class.getName());
         ft.commit();
+    }
+
+    @Override
+    public void onDestroy() {
+        LocationManager.destroy();
+        super.onDestroy();
     }
 
     private Fragment getMapsFragment() {

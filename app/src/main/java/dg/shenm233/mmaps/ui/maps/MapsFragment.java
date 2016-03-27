@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import dg.shenm233.mmaps.R;
-import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.presenter.SearchMapsPresenter;
@@ -110,7 +109,6 @@ public class MapsFragment extends Fragment
     @Override
     public void onDestroy() {
         mMapView.onDestroy();
-        LocationManager.destroy();
         super.onDestroy();
     }
 
