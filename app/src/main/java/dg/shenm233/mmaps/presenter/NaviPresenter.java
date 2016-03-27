@@ -49,7 +49,7 @@ public class NaviPresenter {
     }
 
     public boolean startRealNavi() {
-        return mAMapNavi.startNavi(AMapNavi.GPSNaviMode);
+        return mAMapNavi.startGPS() && mAMapNavi.startNavi(AMapNavi.GPSNaviMode);
     }
 
     public boolean startEmulatorNavi() {
