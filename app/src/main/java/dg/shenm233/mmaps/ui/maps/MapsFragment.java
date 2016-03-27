@@ -94,7 +94,6 @@ public class MapsFragment extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        mMapsModule.onStart();
         if (PermissionUtils.checkLocationPermission(getContext())) {
             mMapsModule.setMyLocationEnabled(true);
         }
@@ -104,6 +103,7 @@ public class MapsFragment extends Fragment
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        mMapsModule.onResume();
     }
 
     @Override

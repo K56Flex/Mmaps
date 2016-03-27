@@ -89,7 +89,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         setTrafficEnabled(false);
     }
 
-    public void onStart() {
+    public void onResume() {
         mCompass.start();
     }
 
