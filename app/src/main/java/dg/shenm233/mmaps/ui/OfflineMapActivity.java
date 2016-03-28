@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapProvince;
+import com.amap.api.maps.offlinemap.OfflineMapService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,6 @@ import dg.shenm233.mmaps.adapter.ViewPagerAdapter;
 import dg.shenm233.mmaps.model.BasePager;
 import dg.shenm233.mmaps.model.offlinemap.ProvinceListItem;
 import dg.shenm233.mmaps.service.IOfflineMapCallback;
-import dg.shenm233.mmaps.service.OfflineMapService;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 import dg.shenm233.mmaps.viewholder.OnViewLongClickListener;
 

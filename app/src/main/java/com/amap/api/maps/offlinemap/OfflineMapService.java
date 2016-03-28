@@ -1,4 +1,4 @@
-package dg.shenm233.mmaps.service;
+package com.amap.api.maps.offlinemap;
 
 import android.app.Service;
 import android.content.Intent;
@@ -10,14 +10,12 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.amap.api.maps.AMapException;
-import com.amap.api.maps.offlinemap.OfflineMapCity;
-import com.amap.api.maps.offlinemap.OfflineMapManager;
 import com.amap.api.maps.offlinemap.OfflineMapManager.OfflineMapDownloadListener;
-import com.amap.api.maps.offlinemap.OfflineMapProvince;
-import com.amap.api.maps.offlinemap.OfflineMapStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dg.shenm233.mmaps.service.IOfflineMapCallback;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
@@ -31,8 +29,6 @@ public class OfflineMapService extends Service {
     private ServiceBinder mBinder;
     private volatile OfflineMapManager mMapManager; // 由于是异步建立对象，需要先检查是否null
     private List<IOfflineMapCallback> mCallbacks = new ArrayList<>();
-
-    private boolean mIsDownloading = false;
 
     public OfflineMapService() {
     }
@@ -63,10 +59,8 @@ public class OfflineMapService extends Service {
             try {
                 //异步下载
                 if (TYPE_CITY.equals(type)) {
-                    mIsDownloading = true;
                     mMapManager.downloadByCityName(name);
                 } else if (TYPE_PROVINCE.equals(type)) {
-                    mIsDownloading = true;
                     mMapManager.downloadByProvinceName(name);
                 }
             } catch (AMapException e) {
@@ -97,7 +91,6 @@ public class OfflineMapService extends Service {
         if (mMapManager != null) {
             mMapManager.destroy();
         }
-        mIsDownloading = false;
         super.onDestroy();
     }
 
@@ -314,7 +307,6 @@ public class OfflineMapService extends Service {
         }
 
         public void pause() {
-            mIsDownloading = false;
             // prevent NPE
             if (mMapManager == null) {
                 return;
@@ -327,7 +319,6 @@ public class OfflineMapService extends Service {
             if (mMapManager == null) {
                 return;
             }
-            mIsDownloading = true;
             OfflineMapManager mapManager = mMapManager;
 
             int length;
@@ -372,7 +363,6 @@ public class OfflineMapService extends Service {
         }
 
         public void stop() {
-            mIsDownloading = false;
             // prevent NPE
             if (mMapManager == null) {
                 return;
@@ -381,7 +371,7 @@ public class OfflineMapService extends Service {
         }
 
         public boolean isDownloading() {
-            return mIsDownloading;
+            return mMapManager != null && mMapManager.isStart();
         }
     }
 }
