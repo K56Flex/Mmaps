@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapProvince;
-import com.amap.api.maps.offlinemap.OfflineMapService;
+import dg.shenm233.mmaps.service.OfflineMapService;
 
 import java.util.ArrayList;
 import java.util.List;

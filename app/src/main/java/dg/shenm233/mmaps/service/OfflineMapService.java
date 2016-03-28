@@ -1,6 +1,5 @@
-package com.amap.api.maps.offlinemap;
+package dg.shenm233.mmaps.service;
 
-import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
@@ -10,16 +9,19 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.amap.api.maps.AMapException;
+import com.amap.api.maps.offlinemap.OfflineMapCity;
+import com.amap.api.maps.offlinemap.OfflineMapManager;
 import com.amap.api.maps.offlinemap.OfflineMapManager.OfflineMapDownloadListener;
+import com.amap.api.maps.offlinemap.OfflineMapProvince;
+import com.amap.api.maps.offlinemap.OfflineMapServiceStub;
+import com.amap.api.maps.offlinemap.OfflineMapStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import dg.shenm233.mmaps.service.IOfflineMapCallback;
-
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
-public class OfflineMapService extends Service {
+public class OfflineMapService extends OfflineMapServiceStub {
     final public static String TYPE_PROVINCE = "province";
     final public static String TYPE_CITY = "city";
     final public static String DOWHAT_ADD_MAP = "addMap";
@@ -27,7 +29,6 @@ public class OfflineMapService extends Service {
     final public static String DOWHAT_CHECK_UPDATE_MAP = "checkMap";
 
     private ServiceBinder mBinder;
-    private volatile OfflineMapManager mMapManager; // 由于是异步建立对象，需要先检查是否null
     private List<IOfflineMapCallback> mCallbacks = new ArrayList<>();
 
     public OfflineMapService() {
@@ -371,7 +372,7 @@ public class OfflineMapService extends Service {
         }
 
         public boolean isDownloading() {
-            return mMapManager != null && mMapManager.isStart();
+            return isStart();
         }
     }
 }

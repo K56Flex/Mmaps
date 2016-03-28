@@ -41,7 +41,7 @@
         <service android:name="com.amap.api.location.APSService" />
 
         <service
-            android:name="com.amap.api.maps.offlinemap.OfflineMapService"
+            android:name=".service.OfflineMapService"
             android:enabled="true"
             android:exported="false" />
 
