@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/settings">
+
+    <Preference
+        android:key="navi_settings"
+        android:title="@string/navi_settings" />
+
+    <PreferenceCategory android:title="@string/about">
+
+        <Preference
+            android:key="version"
+            android:title="@string/version" />
+
+        <Preference
+            android:summary="shenm233 (darkgenlotus@gmail.com)"
+            android:title="@string/dev" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -58,6 +58,12 @@
 
         </activity>
 
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:label="@string/settings">
+
+        </activity>
+
     </application>
 
 </manifest>

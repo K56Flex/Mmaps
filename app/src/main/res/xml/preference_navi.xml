@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="navi_keep_screen_bright"
+        android:title="@string/navi_keep_screen_bright" />
+
+    <CheckBoxPreference
+        android:key="navi_night_mode"
+        android:title="@string/navi_night_mode" />
+
+    <CheckBoxPreference
+        android:key="navi_reclac_for_jam"
+        android:summary="@string/navi_recalc_for_jam_summary"
+        android:title="@string/navi_recalc_for_jam" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="navi_recalc_for_yaw"
+        android:summary="@string/navi_recalc_for_yaw_summary"
+        android:title="@string/navi_recalc_for_yaw" />
+
+</PreferenceScreen>

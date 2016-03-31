@@ -22,6 +22,11 @@
             android:icon="@drawable/ic_file_download_black_24dp"
             android:title="@string/offline_map_download" />
 
+        <item
+            android:id="@+id/navigation_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/settings" />
+
     </group>
 
 </menu>

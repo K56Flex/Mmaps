@@ -87,4 +87,17 @@
     <string name="navi_not_supported_strategy">不支持该驾驶方案，请选择其他方案</string>
     <string name="navi_failure">导航失败</string>
     <string name="navi_permission_failed">导航需要电话和位置权限</string>
+
+    <string name="settings">设置</string>
+    <string name="about">关于</string>
+    <string name="dev">开发</string>
+    <string name="version">版本号</string>
+
+    <string name="navi_settings">导航设置</string>
+    <string name="navi_keep_screen_bright">保持屏幕常亮</string>
+    <string name="navi_night_mode">夜间模式</string>
+    <string name="navi_recalc_for_jam">交通拥挤时重新规划路径</string>
+    <string name="navi_recalc_for_jam_summary">仅支持驾车模式，同时需要网络连接</string>
+    <string name="navi_recalc_for_yaw">偏离方向时重新规划路径</string>
+    <string name="navi_recalc_for_yaw_summary">仅支持驾车模式，同时需要网络连接</string>
 </resources>

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.model.NaviSettings;
 import dg.shenm233.mmaps.presenter.AMapNaviListenerS;
 import dg.shenm233.mmaps.presenter.NaviPresenter;
 import dg.shenm233.mmaps.util.PermissionUtils;
@@ -41,12 +43,15 @@ public class NaviActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        PreferenceManager.setDefaultValues(this, R.xml.preference_navi, false);
+
         mNaviPresenter = new NaviPresenter(this);
         mNaviPresenter.setAMapNaviListener(mAMapNaviListenerS);
 
         setContentView(R.layout.activity_navigation);
         mAMapNaviView = (AMapNaviView) findViewById(R.id.navi_map);
         mAMapNaviView.onCreate(savedInstanceState);
+        NaviSettings.init(this);
         initAMapNaviView();
     }
 
@@ -61,6 +66,7 @@ public class NaviActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        loadNaviSettings(mAMapNaviViewOptions);
         mAMapNaviView.onResume();
     }
 
@@ -79,6 +85,7 @@ public class NaviActivity extends Activity {
     protected void onDestroy() {
         mAMapNaviView.onDestroy();
         mNaviPresenter.onDestroy();
+        NaviSettings.destroy();
         super.onDestroy();
     }
 
@@ -92,7 +99,9 @@ public class NaviActivity extends Activity {
         mAMapNaviView.setAMapNaviViewListener(new AMapNaviViewListener() {
             @Override
             public void onNaviSetting() {
-
+                Intent intent = new Intent(NaviActivity.this, SettingsActivity.class);
+                intent.putExtra(SettingsActivity.FRAGMENT_TO_START, SettingsActivity.NAVI_FRAGMENT);
+                startActivity(intent);
             }
 
             @Override
@@ -134,13 +143,24 @@ public class NaviActivity extends Activity {
         setAMapNaviViewOptions();
     }
 
+    private AMapNaviViewOptions mAMapNaviViewOptions = new AMapNaviViewOptions();
+
     private void setAMapNaviViewOptions() {
         if (mAMapNaviView == null) {
             return;
         }
-        AMapNaviViewOptions viewOptions = new AMapNaviViewOptions();
+        AMapNaviViewOptions viewOptions = mAMapNaviViewOptions;
         viewOptions.setSettingMenuEnabled(true);
         viewOptions.setNaviViewTopic(AMapNaviViewOptions.BLUE_COLOR_TOPIC);
+
+        loadNaviSettings(viewOptions);
+    }
+
+    private void loadNaviSettings(AMapNaviViewOptions viewOptions) {
+        viewOptions.setScreenAlwaysBright(NaviSettings.getScreenBright());
+        viewOptions.setNaviNight(NaviSettings.getNightMode());
+        viewOptions.setReCalculateRouteForTrafficJam(NaviSettings.getRecalcForJam());
+        viewOptions.setReCalculateRouteForYaw(NaviSettings.getRecalcForYaw());
 
         mAMapNaviView.setViewOptions(viewOptions);
     }

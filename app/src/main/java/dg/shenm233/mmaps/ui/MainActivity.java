@@ -73,6 +73,9 @@ public class MainActivity extends BaseActivity implements IDrawerView {
                 } else if (itemId == R.id.navigation_offline) {
                     Intent intent = new Intent(MainActivity.this, OfflineMapActivity.class);
                     startActivity(intent);
+                } else if (itemId == R.id.navigation_settings) {
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
                 }
                 return true;
             }
