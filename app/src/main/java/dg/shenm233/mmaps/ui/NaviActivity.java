@@ -83,16 +83,16 @@ public class NaviActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         mAMapNaviView.onDestroy();
         mNaviPresenter.onDestroy();
         NaviSettings.destroy();
-        super.onDestroy();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle bundle) {
-        mAMapNaviView.onSaveInstanceState(bundle);
         super.onSaveInstanceState(bundle);
+        mAMapNaviView.onSaveInstanceState(bundle);
     }
 
     private void initAMapNaviView() {

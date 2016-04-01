@@ -40,8 +40,8 @@ public class MainActivity extends BaseActivity implements IDrawerView {
 
     @Override
     public void onDestroy() {
-        LocationManager.destroy();
         super.onDestroy();
+        LocationManager.destroy();
     }
 
     private Fragment getMapsFragment() {
