@@ -54,15 +54,11 @@ public class FloatingButton extends ImageButton {
         @Override
         public boolean onDependentViewChanged(CoordinatorLayout parent, FloatingButton child,
                                               View dependency) {
-            // get original bottom margin for more space between views
-            int bottomYMargin = ((CoordinatorLayout.LayoutParams) dependency.getLayoutParams()).bottomMargin;
             float targetTransY = getFabTranslationYForOtherView(parent, child);
-            targetTransY -= bottomYMargin;
 
             if (mFabTranslationY != targetTransY) { // only
                 mFabTranslationY = targetTransY;
                 child.setTranslationY(targetTransY);
-                return true;
             }
             return false;
         }
@@ -90,8 +86,10 @@ public class FloatingButton extends ImageButton {
                             v.getTranslationY() - ((Drag2ExpandView) v).getHeaderHeight());
                 } else {
                     if (parent.doViewsOverlap(v, child)) {
-                        targetTransY = Math.min(targetTransY,
-                                v.getTranslationY() - v.getHeight());
+                        int bottomYMargin = ((CoordinatorLayout.LayoutParams) v.getLayoutParams()).bottomMargin;
+                        float offset = v.getTranslationY() - v.getHeight() - bottomYMargin;
+
+                        targetTransY = Math.min(targetTransY, offset);
                     }
                 }
             }
@@ -111,7 +109,10 @@ public class FloatingButton extends ImageButton {
                 if (v instanceof Drag2ExpandView) {
                     minOffset = v.getTranslationY() - ((Drag2ExpandView) v).getHeaderHeight();
                 } else if (parent.doViewsOverlap(v, fab)) {
-                    minOffset = Math.min(minOffset, v.getTranslationY() - v.getHeight());
+                    int bottomYMargin = ((CoordinatorLayout.LayoutParams) v.getLayoutParams()).bottomMargin;
+                    float offset = v.getTranslationY() - v.getHeight() - bottomYMargin;
+
+                    minOffset = Math.min(minOffset, offset);
                 }
             }
             return minOffset;
