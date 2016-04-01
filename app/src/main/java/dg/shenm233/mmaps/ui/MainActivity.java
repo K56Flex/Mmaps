@@ -108,6 +108,10 @@ public class MainActivity extends BaseActivity implements IDrawerView {
 
     @Override
     public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            mDrawerLayout.closeDrawers();
+            return;
+        }
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_content);
         if (fragment instanceof IDrawerView) {
             if (!((IDrawerView) fragment).onBackKeyPressed())
