@@ -304,7 +304,7 @@ public class DirectionsPresenter {
                             CommonUtils.getFriendlyDuration(mContext, drivePath.getDuration()),
                             CommonUtils.getFriendlyLength((int) drivePath.getDistance()));
                     directionsView.setDistanceTextOnAbstractView(s);
-                    directionsView.setEtcTextOnAbstractView("");
+                    directionsView.setEtcTextOnAbstractView(getPartialRoads(drivePath));
                     directionsView.showPathOnMap();
                 } else {
                     showError(rCode, true);
@@ -341,7 +341,7 @@ public class DirectionsPresenter {
                             CommonUtils.getFriendlyDuration(mContext, walkPath.getDuration()),
                             CommonUtils.getFriendlyLength((int) walkPath.getDistance()));
                     directionsView.setDistanceTextOnAbstractView(s);
-                    directionsView.setEtcTextOnAbstractView("");
+                    directionsView.setEtcTextOnAbstractView(getPartialRoads(walkPath));
                     directionsView.showPathOnMap();
                 } else {
                     showError(rCode, true);
@@ -349,6 +349,59 @@ public class DirectionsPresenter {
             } else {
                 showError(rCode, true);
             }
+        }
+
+        private String getPartialRoads(DrivePath path) {
+            List<DriveStep> steps = path.getSteps();
+
+            final int maxCount = 10;
+            StringBuilder sb = new StringBuilder();
+            for (int length = steps.size(), i = 0; i < length; i++) {
+                if (length == maxCount) {
+                    break;
+                }
+
+                String road = steps.get(i).getRoad();
+                if (CommonUtils.isStringEmpty(road)) {
+                    continue;
+                }
+
+                sb.append(road).append("\\");
+            }
+
+            return mContext.getString(R.string.via_roads, removeLastSlash(sb));
+        }
+
+        private String getPartialRoads(WalkPath path) {
+            List<WalkStep> steps = path.getSteps();
+
+            final int maxCount = 10;
+            StringBuilder sb = new StringBuilder();
+            for (int length = steps.size(), i = 0; i < length; i++) {
+                if (length == maxCount) {
+                    break;
+                }
+
+                String road = steps.get(i).getRoad();
+                if (CommonUtils.isStringEmpty(road)) {
+                    continue;
+                }
+
+                sb.append(road).append("\\");
+            }
+
+            return mContext.getString(R.string.via_roads, removeLastSlash(sb));
+        }
+
+        private String removeLastSlash(StringBuilder sb) {
+            int length = sb.length();
+            if (length <= 1) {
+                return sb.toString();
+            }
+            if (sb.charAt(length - 1) == '\\') {
+                sb.deleteCharAt(length - 1);
+            }
+            return sb.toString();
         }
 
         private void showError(int rCode, boolean isEmptyResult) {

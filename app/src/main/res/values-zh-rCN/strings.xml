@@ -54,6 +54,8 @@
     <string name="chosen_on_map">地图上的选点</string>
     <string name="map_under_pin">平移和缩放图钉周围的地图</string>
 
+    <string name="via_roads">途经 %1$s</string>
+
     <string name="error_unknown">未知错误</string>
     <string name="error_no_connection">没有网络连接</string>
     <string name="error_over_directions_range">超出路径规划范围</string>

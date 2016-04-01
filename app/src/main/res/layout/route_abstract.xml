@@ -38,6 +38,7 @@
                     android:id="@+id/route_tv_etc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
                     android:textColor="@color/black" />
 
             </LinearLayout>
