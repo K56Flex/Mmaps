@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="28dp"
-                    android:background="@drawable/list_item_background_light"
+                    android:background="@drawable/panel_background"
                     android:orientation="vertical"
                     android:padding="5dp">
 

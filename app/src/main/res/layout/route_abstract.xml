@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="28dp"
-                android:background="#F5F5F5"
+                android:background="@drawable/panel_background"
                 android:orientation="vertical"
                 android:padding="10dp">
 
@@ -60,7 +60,7 @@
             android:id="@id/route_steps_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#F5F5F5"
+            android:background="#FAFAFA"
             android:padding="@dimen/card_view_padding" />
 
     </LinearLayout>
