@@ -28,8 +28,8 @@ import java.util.Map;
 import dg.shenm233.drag2expandview.Drag2ExpandView;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.BusStepsAdapter;
+import dg.shenm233.mmaps.adapter.CardListAdapter;
 import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
-import dg.shenm233.mmaps.adapter.RouteResultAdapter;
 import dg.shenm233.mmaps.presenter.DirectionsPresenter;
 import dg.shenm233.mmaps.presenter.IDirectionsView;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
@@ -71,7 +71,7 @@ public class Directions extends ViewContainerManager.ViewContainer
     private ProgressBar mProgressBar;
     private RecyclerView mRouteResultListView;
 
-    private RouteResultAdapter mResultAdapter;
+    private CardListAdapter mResultAdapter;
 
     private int curSelectedTab = ROUTE_BUS; // 当前被选择Tab 值为 ROUTE_DRIVE,ROUTE_BUS or ROUTE_WALK
 
@@ -177,7 +177,7 @@ public class Directions extends ViewContainerManager.ViewContainer
         RecyclerView listView = (RecyclerView) resultViewContainer.findViewById(R.id.route_listview);
         mRouteResultListView = listView;
         listView.setLayoutManager(new LinearLayoutManager(mContext));
-        listView.setAdapter(mResultAdapter = new RouteResultAdapter());
+        listView.setAdapter(mResultAdapter = new CardListAdapter());
     }
 
     private void initRouteAbstractView(LayoutInflater inflater) {
@@ -466,7 +466,7 @@ public class Directions extends ViewContainerManager.ViewContainer
     }
 
     @Override
-    public RouteResultAdapter getResultAdapter() {
+    public CardListAdapter getResultAdapter() {
         return mResultAdapter;
     }
 

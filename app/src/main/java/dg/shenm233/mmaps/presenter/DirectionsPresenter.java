@@ -28,8 +28,8 @@ import dg.shenm233.api.maps.overlay.DrivingRouteOverlayS;
 import dg.shenm233.api.maps.overlay.WalkRouteOverlayS;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.BusStepsAdapter;
+import dg.shenm233.mmaps.adapter.CardListAdapter;
 import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
-import dg.shenm233.mmaps.adapter.RouteResultAdapter;
 import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.model.card.BusRouteCard;
 import dg.shenm233.mmaps.model.card.Card;
@@ -240,7 +240,7 @@ public class DirectionsPresenter {
     private class ResultListener extends OnDirectionsResultListener {
         @Override
         public void onBusRouteSearched(BusRouteResult busRouteResult, int rCode) {
-            final RouteResultAdapter adapter = mDirectionsView.getResultAdapter();
+            final CardListAdapter adapter = mDirectionsView.getResultAdapter();
             adapter.clear();
             if (rCode == 0) {
                 List<BusPath> busPaths = busRouteResult.getPaths();
@@ -416,7 +416,7 @@ public class DirectionsPresenter {
         }
 
         private void showError(int rCode, boolean isEmptyResult) {
-            final RouteResultAdapter adapter = mDirectionsView.getResultAdapter();
+            final CardListAdapter adapter = mDirectionsView.getResultAdapter();
             adapter.clear();
             MsgCard card = new MsgCard(mContext);
             String s;

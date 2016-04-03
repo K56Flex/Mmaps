@@ -9,7 +9,7 @@ import java.util.List;
 
 import dg.shenm233.mmaps.model.card.Card;
 
-public class RouteResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CardListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Card> mCardList = new ArrayList<>();
 
     public void add(Card card) {
