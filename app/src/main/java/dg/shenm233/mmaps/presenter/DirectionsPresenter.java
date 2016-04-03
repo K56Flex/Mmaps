@@ -2,6 +2,7 @@ package dg.shenm233.mmaps.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.view.View;
 
 import com.amap.api.maps.model.BitmapDescriptorFactory;
@@ -32,6 +33,7 @@ import dg.shenm233.mmaps.adapter.RouteResultAdapter;
 import dg.shenm233.mmaps.model.MyPath;
 import dg.shenm233.mmaps.model.card.BusRouteCard;
 import dg.shenm233.mmaps.model.card.Card;
+import dg.shenm233.mmaps.model.card.HeaderCard;
 import dg.shenm233.mmaps.model.card.MsgCard;
 import dg.shenm233.mmaps.ui.NaviActivity;
 import dg.shenm233.mmaps.util.AMapUtils;
@@ -244,7 +246,7 @@ public class DirectionsPresenter {
                 List<BusPath> busPaths = busRouteResult.getPaths();
                 final int length = busPaths.size();
                 if (length > 0) {
-                    List<BusRouteCard> cards = new ArrayList<>(length);
+                    List<Card> cards = new ArrayList<>(length);
 
                     final Card.OnCardClickListener listener = new Card.OnCardClickListener() {
                         @Override
@@ -256,10 +258,19 @@ public class DirectionsPresenter {
                         }
                     };
 
+                    final Resources res = mContext.getResources();
+                    String header = res.getStringArray(R.array.route_options_bus)[mDirectionsView.getBusRouteMode()];
+
+                    HeaderCard headerCard = new HeaderCard(mContext);
+                    headerCard.setType(0);
+                    headerCard.setHeader(header);
+                    cards.add(headerCard);
+
                     for (int i = 0; i < length; i++) {
                         final BusPath busPath = busPaths.get(i);
 
                         BusRouteCard card = new BusRouteCard(mContext);
+                        card.setType(1);
                         card.setBusPath(AMapUtils.convertBusPathToText(mContext, busPath));
                         card.setDuration(busPath.getDuration());
                         card.setTag(new MyPath(busPath,

@@ -20,4 +20,10 @@ public interface IDirectionsView {
     void setEtcTextOnAbstractView(String s);
 
     int getRouteType();
+
+    int getDriveRouteMode();
+
+    int getBusRouteMode();
+
+    int getWalkRouteMode();
 }

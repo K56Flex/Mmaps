@@ -495,6 +495,21 @@ public class Directions extends ViewContainerManager.ViewContainer
         return curSelectedTab;
     }
 
+    @Override
+    public int getDriveRouteMode() {
+        return curDriveRouteMode;
+    }
+
+    @Override
+    public int getBusRouteMode() {
+        return curBusRouteMode;
+    }
+
+    @Override
+    public int getWalkRouteMode() {
+        return curWalkRouteMode;
+    }
+
     private class CustomOnClickListener implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
         @Override
         public void onClick(View v) {
