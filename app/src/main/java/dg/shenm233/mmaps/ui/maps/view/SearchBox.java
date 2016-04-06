@@ -1,15 +1,14 @@
 package dg.shenm233.mmaps.ui.maps.view;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.amap.api.services.help.Tip;
 
@@ -23,9 +22,10 @@ import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AnimUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
+import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
 public class SearchBox extends ViewContainerManager.ViewContainer
-        implements View.OnClickListener, AdapterView.OnItemClickListener {
+        implements View.OnClickListener {
     public interface OnSearchItemClickListener {
         void onSearchItemClick(Tip tip);
     }
@@ -116,16 +116,27 @@ public class SearchBox extends ViewContainerManager.ViewContainer
         mChooseOnMapBtn = chooseOnMapBtn;
         chooseOnMapBtn.setOnClickListener(this);
 
-        ListView resultListView = (ListView) searchResultContainer.findViewById(R.id.result_listview);
+        RecyclerView resultListView = (RecyclerView) searchResultContainer.findViewById(R.id.result_listview);
         SearchTipsAdapter searchTipsAdapter = new SearchTipsAdapter(mContext);
         mResultAdapter = searchTipsAdapter;
         resultListView.setAdapter(searchTipsAdapter);
-        resultListView.setOnItemClickListener(this);
+        searchTipsAdapter.setOnViewClickListener(new OnViewClickListener() {
+            @Override
+            public void onClick(View v, Object data) {
+                Tip tip = (Tip) data;
+                if (getOnlySearchBox()) {
+                    enableTextTip = false;
+                    mSearchEditText.setText(tip.getName());
+                    enableTextTip = true;
+                }
+                ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
+            }
+        });
 
         mSearchMapsPresenter.setOnTipsListener(new SearchMapsPresenter.OnTipsListener() {
             @Override
             public void onGetInputTips(List<Tip> tipList) {
-                mResultAdapter.newTipsList(tipList);
+                mResultAdapter.setList(tipList);
             }
         });
     }
@@ -241,17 +252,6 @@ public class SearchBox extends ViewContainerManager.ViewContainer
             mMapsFragment.getViewContainerManager().putViewContainer(
                     new ChooseOnMap(rootView, mMapsFragment), null, false, ChooseOnMap.ID);
         }
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Tip tip = mResultAdapter.getItem(position);
-        if (getOnlySearchBox()) {
-            enableTextTip = false;
-            mSearchEditText.setText(tip.getName());
-            enableTextTip = true;
-        }
-        ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
     }
 
     public void clearSearchText() {
