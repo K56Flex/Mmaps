@@ -56,14 +56,12 @@ public class Drag2ExpandView extends ViewGroup {
 
     private boolean mIsUpSliding = false;
 
-    private float mFirstDownX = 0;
-    private float mFirstDownY = 0;
+    private float mPreviousDownX = 0;
+    private float mPreviousDownY = 0;
 
     private int mViewState = DEFAULT_STATE;
 
     private boolean isFirstLayout = true;
-
-    private int mSquareOfSlop;
 
     private ScrollableViewHelper mScrollableViewHelper;
     private boolean mLetScrollableViewHandle;
@@ -93,9 +91,9 @@ public class Drag2ExpandView extends ViewGroup {
 
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Drag2ExpandView);
             if (a != null) {
-                mHeaderHeight = a.getDimensionPixelSize(0, -1);
-                mScrollableViewResId = a.getResourceId(1, -1);
-                mDragViewResId = a.getResourceId(2, -1);
+                mHeaderHeight = a.getDimensionPixelSize(R.styleable.Drag2ExpandView_sHeaderHeight, -1);
+                mScrollableViewResId = a.getResourceId(R.styleable.Drag2ExpandView_sScrollableView, -1);
+                mDragViewResId = a.getResourceId(R.styleable.Drag2ExpandView_sViewToDrag, -1);
                 a.recycle();
             }
         }
@@ -103,8 +101,6 @@ public class Drag2ExpandView extends ViewGroup {
         mViewDragHelper = ViewDragHelper.create(this, 1.0f, mViewDragCallback = new ViewDragCallback());
         mScrollableViewHelper = new ScrollableViewHelper();
 
-        int slop = mViewDragHelper.getTouchSlop();
-        mSquareOfSlop = slop * slop;
     }
 
     @Override
@@ -177,8 +173,8 @@ public class Drag2ExpandView extends ViewGroup {
         int maskAction = action & MotionEvent.ACTION_MASK;
         if (maskAction == MotionEvent.ACTION_DOWN) {
             mLetScrollableViewHandle = false;
-            mFirstDownX = x;
-            mFirstDownY = y;
+            mPreviousDownX = x;
+            mPreviousDownY = y;
         } else if (maskAction == MotionEvent.ACTION_MOVE) {
             if (!isViewUnder(mScrollableView, (int) x, (int) y)) {
                 return super.dispatchTouchEvent(ev);
@@ -221,12 +217,13 @@ public class Drag2ExpandView extends ViewGroup {
         final int action = ev.getAction();
         int maskAction = action & MotionEvent.ACTION_MASK;
         if (maskAction == MotionEvent.ACTION_DOWN) {
-            mFirstDownX = x;
-            mFirstDownY = y;
+            mPreviousDownX = x;
+            mPreviousDownY = y;
         } else if (maskAction == MotionEvent.ACTION_UP) {
-            float dx = mFirstDownX - x;
-            float dy = mFirstDownY - y;
-            if (dx * dx + dy * dy < mSquareOfSlop && isDragViewUnder) {
+            float dx = mPreviousDownX - x;
+            float dy = mPreviousDownY - y;
+            int slop = mViewDragHelper.getTouchSlop();
+            if (dx * dx + dy * dy < slop * slop && isDragViewUnder) {
                 if (mViewState == STATE_COLLAPSE) {
                     smoothSlideViewTo(1.0f); //expand
                 } else if (mViewState == STATE_EXPAND) {
