@@ -20,9 +20,10 @@
 
     <dg.shenm233.drag2expandview.Drag2ExpandView
         android:layout_width="match_parent"
-        android:layout_height="380dp"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom"
         android:gravity="bottom"
+        app:sAnchorOffset="0.5"
         app:sHeaderHeight="100dp"
         app:sViewToDrag="@+id/poi_detail_title">
 
