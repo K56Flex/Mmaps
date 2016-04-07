@@ -21,6 +21,7 @@ public class Drag2ExpandView extends ViewGroup {
     public final static int STATE_DRAGGING = 1;
     public final static int STATE_EXPAND = 2;
     public final static int STATE_COLLAPSE = 3;
+    public final static int STATE_ANCHORED = 4;
 
     public final static int DEFAULT_STATE = STATE_COLLAPSE;
 
@@ -50,6 +51,11 @@ public class Drag2ExpandView extends ViewGroup {
      * the view that to be dragged
      */
     private View mDragView;
+
+    /**
+     * anchor offset is that sliding to special position
+     */
+    private float mAnchorOffset = 1.0f;
 
     private int mDragRange = 0; // always > 0
     private float mDragOffset;
@@ -96,6 +102,7 @@ public class Drag2ExpandView extends ViewGroup {
                 mHeaderHeight = a.getDimensionPixelSize(R.styleable.Drag2ExpandView_sHeaderHeight, -1);
                 mScrollableViewResId = a.getResourceId(R.styleable.Drag2ExpandView_sScrollableView, -1);
                 mDragViewResId = a.getResourceId(R.styleable.Drag2ExpandView_sViewToDrag, -1);
+                mAnchorOffset = a.getFloat(R.styleable.Drag2ExpandView_sAnchorOffset, 1.0f);
                 a.recycle();
             }
         }
@@ -227,8 +234,8 @@ public class Drag2ExpandView extends ViewGroup {
             int slop = mViewDragHelper.getTouchSlop();
             if (dx * dx + dy * dy < slop * slop && isDragViewUnder) {
                 if (mViewState == STATE_COLLAPSE) {
-                    smoothSlideViewTo(1.0f); //expand
-                } else if (mViewState == STATE_EXPAND) {
+                    smoothSlideViewTo(mAnchorOffset); //expand
+                } else {
                     smoothSlideViewTo(0.0f); // collapse
                 }
             }
@@ -392,6 +399,9 @@ public class Drag2ExpandView extends ViewGroup {
                 if (mDragOffset == 0.0f) {
                     mViewState = STATE_COLLAPSE;
                     dispatchOnDragStateChanged(oldState, STATE_COLLAPSE);
+                } else if (mDragOffset == mAnchorOffset) {
+                    mViewState = STATE_ANCHORED;
+                    dispatchOnDragStateChanged(oldState, STATE_ANCHORED);
                 } else {
                     mViewState = STATE_EXPAND;
                     dispatchOnDragStateChanged(oldState, STATE_EXPAND);
@@ -408,11 +418,17 @@ public class Drag2ExpandView extends ViewGroup {
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
             // up:yvel < 0,down:yvel > 0
             float direction = mIsUpSliding ? -yvel : yvel;
-            if (direction > 0) {
-                smoothSlideViewTo(1.0f); // expand
-            } else if (direction < 0) {
-                smoothSlideViewTo(0.0f); // collapse
+            float offset = mDragOffset;
+            if (direction > 0 && mDragOffset < mAnchorOffset) {
+                offset = mAnchorOffset;
+            } else if (direction > 0 && mDragOffset >= mAnchorOffset) {
+                offset = 1.0f; // expand
+            } else if (direction < 0 && mDragOffset > mAnchorOffset) {
+                offset = mAnchorOffset;
+            } else if (direction < 0 && mDragOffset <= mAnchorOffset) {
+                offset = 0.0f; // collapse
             }
+            smoothSlideViewTo(offset);
         }
 
         @Override

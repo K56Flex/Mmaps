@@ -4,5 +4,6 @@
         <attr name="sHeaderHeight" format="dimension" />
         <attr name="sScrollableView" format="reference" />
         <attr name="sViewToDrag" format="reference" />
+        <attr name="sAnchorOffset" format="float" />
     </declare-styleable>
 </resources>
