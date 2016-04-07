@@ -17,7 +17,7 @@ import android.view.ViewGroup;
  */
 
 public class Drag2ExpandView extends ViewGroup {
-    public final static int STATE_IDLE = 0;
+    //    public final static int STATE_IDLE = 0;
     public final static int STATE_DRAGGING = 1;
     public final static int STATE_EXPAND = 2;
     public final static int STATE_COLLAPSE = 3;
@@ -65,6 +65,8 @@ public class Drag2ExpandView extends ViewGroup {
 
     private ScrollableViewHelper mScrollableViewHelper;
     private boolean mLetScrollableViewHandle;
+
+    private OnDragListener mOnDragListener;
 
     public Drag2ExpandView(Context context) {
         this(context, null);
@@ -302,6 +304,10 @@ public class Drag2ExpandView extends ViewGroup {
         mDragView = dragView;
     }
 
+    public void setOnDragListener(OnDragListener l) {
+        mOnDragListener = l;
+    }
+
     private boolean smoothSlideViewTo(float offset) {
         int finalY = computePanelTopPosition(offset);
         final View slidingView = mMainView;
@@ -311,6 +317,24 @@ public class Drag2ExpandView extends ViewGroup {
             return true;
         }
         return false;
+    }
+
+    private void onDragView(int top) {
+        mDragOffset = computeSlideOffset(top);
+        requestLayout();
+        dispatchOnDrag();
+    }
+
+    private void dispatchOnDrag() {
+        if (mOnDragListener != null) {
+            mOnDragListener.onDrag(this, mDragOffset);
+        }
+    }
+
+    private void dispatchOnDragStateChanged(int oldState, int newState) {
+        if (mOnDragListener != null) {
+            mOnDragListener.onStateChanged(this, oldState, newState);
+        }
     }
 
     private boolean isViewUnder(View view, int x, int y) {
@@ -359,21 +383,25 @@ public class Drag2ExpandView extends ViewGroup {
 
         @Override
         public void onViewDragStateChanged(int state) {
+            int oldState = mViewState;
+
             if (state == ViewDragHelper.STATE_DRAGGING) {
                 mViewState = STATE_DRAGGING;
+                dispatchOnDragStateChanged(oldState, STATE_DRAGGING);
             } else if (state == ViewDragHelper.STATE_IDLE) {
                 if (mDragOffset == 0.0f) {
                     mViewState = STATE_COLLAPSE;
+                    dispatchOnDragStateChanged(oldState, STATE_COLLAPSE);
                 } else {
                     mViewState = STATE_EXPAND;
+                    dispatchOnDragStateChanged(oldState, STATE_EXPAND);
                 }
             }
         }
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
-            mDragOffset = computeSlideOffset(top);
-            requestLayout();
+            onDragView(top);
         }
 
         @Override
@@ -403,5 +431,11 @@ public class Drag2ExpandView extends ViewGroup {
                 return Math.min(Math.max(top, collapsedTop), expandedTop);
             }
         }
+    }
+
+    public interface OnDragListener {
+        void onDrag(Drag2ExpandView v, float dragOffset);
+
+        void onStateChanged(Drag2ExpandView v, int oldState, int newState);
     }
 }
