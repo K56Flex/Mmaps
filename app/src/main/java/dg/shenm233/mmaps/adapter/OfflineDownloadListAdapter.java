@@ -53,10 +53,10 @@ public class OfflineDownloadListAdapter extends BaseRecyclerViewAdapter<OfflineD
         }
     }
 
-    protected static class DownloadVH extends BaseRecyclerViewHolder {
-        protected TextView mCity;
-        protected TextView mSize;
-        protected TextView mState;
+    static class DownloadVH extends BaseRecyclerViewHolder {
+        TextView mCity;
+        TextView mSize;
+        TextView mState;
 
         public DownloadVH(ViewGroup itemView) {
             super(itemView);

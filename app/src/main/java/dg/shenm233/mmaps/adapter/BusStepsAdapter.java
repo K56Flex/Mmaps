@@ -227,10 +227,10 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         return isFirstRouteBusWalkItem;
     }
 
-    protected class BusItemViewHolder extends StepViewHolder {
-        protected ImageView mUnfoldImageView;
-        protected TextView mBusBaseTextView;
-        protected ViewGroup mDetailView;
+    class BusItemViewHolder extends StepViewHolder {
+        ImageView mUnfoldImageView;
+        TextView mBusBaseTextView;
+        ViewGroup mDetailView;
 
         private boolean isExpanded = false;
 
@@ -268,7 +268,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         }
 
         // 设置公交站总数，用于删除多余的View
-        protected void setTotalStationCount(int count) {
+        void setTotalStationCount(int count) {
             final ViewGroup detailView = mDetailView;
             final List<TextView> textViewList = mStationTextViewList;
 
@@ -279,7 +279,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
             }
         }
 
-        protected void addStationText(int index, String s) {
+        void addStationText(int index, String s) {
             TextView textView;
             if (index >= mStationTextViewList.size()) {
                 textView = (TextView) mLayoutInflater.inflate(R.layout.bus_step_bus_station_item,
@@ -294,9 +294,9 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         }
     }
 
-    protected static class WalkItemViewHolder extends StepViewHolder {
-        protected ImageView mDetailIcon;
-        protected TextView mDetailView;
+    static class WalkItemViewHolder extends StepViewHolder {
+        ImageView mDetailIcon;
+        TextView mDetailView;
 
         public WalkItemViewHolder(ViewGroup itemView) {
             super(itemView);
@@ -305,10 +305,10 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         }
     }
 
-    protected static class StepViewHolder extends BaseRecyclerViewHolder {
-        protected ImageView mTransitIcon;
-        protected TextView mDepartureText;
-        protected TextView mSecondText;
+    static class StepViewHolder extends BaseRecyclerViewHolder {
+        ImageView mTransitIcon;
+        TextView mDepartureText;
+        TextView mSecondText;
 
         public StepViewHolder(ViewGroup itemView) {
             super(itemView);

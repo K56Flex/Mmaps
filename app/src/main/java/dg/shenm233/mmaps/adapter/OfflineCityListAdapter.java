@@ -77,9 +77,9 @@ public class OfflineCityListAdapter
         mOnViewClickListener = l;
     }
 
-    protected static class ProvinceVH extends ParentViewHolder {
-        protected TextView mProvince;
-        protected ImageView mExpandBtn;
+    static class ProvinceVH extends ParentViewHolder {
+        TextView mProvince;
+        ImageView mExpandBtn;
 
         public ProvinceVH(View itemView) {
             super(itemView);
@@ -88,12 +88,12 @@ public class OfflineCityListAdapter
         }
     }
 
-    protected static class CityVH extends ChildViewHolder {
+    static class CityVH extends ChildViewHolder {
         private OnViewClickListener mOnViewClickListener;
 
-        protected TextView mCity;
-        protected TextView mSize;
-        protected Button mDownBtn;
+        TextView mCity;
+        TextView mSize;
+        Button mDownBtn;
 
         private Object mTag;
 

@@ -18,7 +18,7 @@ import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.viewholder.BaseRecyclerViewHolder;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
-public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStepsAdapter.StepViewHolder> {
+public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStepsAdapter.ViewHolder> {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
 
@@ -108,13 +108,13 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
     }
 
     @Override
-    public StepViewHolder onCreateViewHolderS(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolderS(ViewGroup parent, int viewType) {
         ViewGroup stepView = (ViewGroup) mLayoutInflater.inflate(R.layout.drive_walk_step_item, parent, false);
-        return new StepViewHolder(stepView);
+        return new ViewHolder(stepView);
     }
 
     @Override
-    public void onBindViewHolderS(StepViewHolder holder, int position) {
+    public void onBindViewHolderS(ViewHolder holder, int position) {
         if (position == 0) {
             holder.mDirection.setImageResource(getIconFromPlace(mStartingPointText));
             holder.mInstruction.setText(mStartingPointText);
@@ -213,12 +213,12 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
         }
     }
 
-    protected static class StepViewHolder extends BaseRecyclerViewHolder {
-        protected ImageView mDirection;
-        protected TextView mInstruction;
-        protected TextView mDistance;
+    static class ViewHolder extends BaseRecyclerViewHolder {
+        ImageView mDirection;
+        TextView mInstruction;
+        TextView mDistance;
 
-        public StepViewHolder(ViewGroup itemView) {
+        public ViewHolder(ViewGroup itemView) {
             super(itemView);
             mDirection = (ImageView) itemView.findViewById(R.id.step_direction_icon);
             mInstruction = (TextView) itemView.findViewById(R.id.step_instruction);
