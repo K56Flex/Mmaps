@@ -155,8 +155,9 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     public void changeMyLocationMode(int myLocationCurType) {
         switch (myLocationCurType) {
             case MY_LOCATION_LOCATE:
-                needZoom = true; // 用于位置回调时自动放大地图
+                setMyLocationEnabled(false); // 临时屏蔽
                 mAMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
+                setMyLocationEnabled(true);
                 mCompass.start();
                 break;
             case MY_LOCATION_FOLLOW:
@@ -223,7 +224,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     public void onTouch(MotionEvent motionEvent) {
         if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             if (isPrevTouchUp) {
-                if (getMyLocationMode() != MY_LOCATION_LOCATE) {
+                if (getMyLocationMode() == MY_LOCATION_FOLLOW) {
                     changeMyLocationMode(MY_LOCATION_LOCATE);
                 }
                 isPrevTouchUp = false;
