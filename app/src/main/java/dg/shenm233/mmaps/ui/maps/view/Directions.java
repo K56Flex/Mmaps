@@ -37,6 +37,7 @@ import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.AnimUtils;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
+import dg.shenm233.mmaps.widget.FloatingButton;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
@@ -187,6 +188,8 @@ public class Directions extends ViewContainerManager.ViewContainer
         mRouteAbstractView = view;
 
         ViewGroup headerView = (ViewGroup) view.findViewById(R.id.route_abstract_header);
+        final FloatingButton button = (FloatingButton) headerView.findViewById(R.id.action_navigation);
+        final View headerText = headerView.findViewById(R.id.route_abstract_header_text);
         mDistanceTextView = (TextView) headerView.findViewById(R.id.route_tv_distance_duration);
         mEtcTextView = (TextView) headerView.findViewById(R.id.route_tv_etc);
         view.findViewById(R.id.action_navigation).setOnClickListener(new View.OnClickListener() {
@@ -198,6 +201,25 @@ public class Directions extends ViewContainerManager.ViewContainer
 
         mStepListView = (RecyclerView) view.findViewById(R.id.route_steps_listview);
         mStepListView.setLayoutManager(new LinearLayoutManager(mContext));
+
+        view.setOnDragListener(new Drag2ExpandView.OnDragListener() {
+            @Override
+            public void onDrag(Drag2ExpandView v, float dragOffset) {
+                int buttonHeight = button.getHeight();
+                if (dragOffset >= 0.9f && dragOffset <= 1.f) {
+                    button.setTranslationY(dragOffset * buttonHeight);
+                    headerText.setTop(0);
+                } else if (dragOffset >= 0.f && dragOffset <= 0.1f) {
+                    button.setTranslationY(dragOffset * buttonHeight);
+                    headerText.setTop(buttonHeight / 2);
+                }
+            }
+
+            @Override
+            public void onStateChanged(Drag2ExpandView v, int oldState, int newState) {
+
+            }
+        });
     }
 
     private void initAdapters() {
