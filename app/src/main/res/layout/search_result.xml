@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/search_box_height"
+    android:elevation="17dp"
     android:orientation="vertical"
     android:paddingBottom="@dimen/card_view_padding"
     android:paddingEnd="@dimen/card_view_padding"

@@ -5,4 +5,5 @@
     <dimen name="search_box_height">48dp</dimen>
     <dimen name="directions_box_height">120dp</dimen>
     <dimen name="card_view_padding">5dp</dimen>
+    <dimen name="drag2expandview_elevation">16dp</dimen>
 </resources>

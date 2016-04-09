@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
+    android:elevation="@dimen/drag2expandview_elevation"
     android:gravity="bottom"
     app:sHeaderHeight="128dp"
     app:sScrollableView="@+id/route_steps_listview"
