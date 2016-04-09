@@ -16,6 +16,10 @@
             android:summary="shenm233 (darkgenlotus@gmail.com)"
             android:title="@string/dev" />
 
+        <Preference
+            android:key="license"
+            android:title="@string/license" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
