@@ -31,13 +31,13 @@
                 <TextView
                     android:id="@+id/route_tv_distance_duration"
                     style="@style/TextAppearance.AppCompat.Large"
-                    android:layout_width="match_parent"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/route_tv_etc"
-                    android:layout_width="match_parent"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:textColor="@color/black" />

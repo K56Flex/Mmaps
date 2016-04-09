@@ -207,7 +207,7 @@ public class Directions extends ViewContainerManager.ViewContainer
             public void onDrag(Drag2ExpandView v, float dragOffset) {
                 int buttonHeight = button.getHeight();
                 if (dragOffset >= 0.9f && dragOffset <= 1.f) {
-                    button.setTranslationY(dragOffset * buttonHeight);
+                    button.setTranslationY(dragOffset * buttonHeight / 2);
                     headerText.setTop(0);
                 } else if (dragOffset >= 0.f && dragOffset <= 0.1f) {
                     button.setTranslationY(dragOffset * buttonHeight);
