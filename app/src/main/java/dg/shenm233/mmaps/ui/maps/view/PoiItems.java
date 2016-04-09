@@ -19,12 +19,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dg.shenm233.drag2expandview.Drag2ExpandView;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.databinding.PoiDetailBinding;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
+import dg.shenm233.mmaps.widget.FloatingButton;
 
 public class PoiItems extends ViewContainerManager.ViewContainer implements AMap.OnMarkerClickListener {
     public static final int ID = 3;
@@ -74,6 +76,29 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
 
                 vm.putViewContainer(new Directions(rootView, mMapsFragment),
                         args, false, Directions.ID);
+            }
+        });
+
+        Drag2ExpandView view = (Drag2ExpandView) mPoiDetailBinding.getRoot();
+        ViewGroup headerView = (ViewGroup) view.findViewById(R.id.poi_detail_header);
+        final FloatingButton button = (FloatingButton) headerView.findViewById(R.id.action_directions);
+        final View headerText = headerView.findViewById(R.id.poi_detail_header_text);
+        view.setOnDragListener(new Drag2ExpandView.OnDragListener() {
+            @Override
+            public void onDrag(Drag2ExpandView v, float dragOffset) {
+                int buttonHeight = button.getHeight();
+                if (dragOffset >= 0.9f && dragOffset <= 1.f) {
+                    button.setTranslationY(dragOffset * buttonHeight / 2);
+                    headerText.setTop(0);
+                } else if (dragOffset >= 0.f && dragOffset <= 0.1f) {
+                    button.setTranslationY(dragOffset * buttonHeight);
+                    headerText.setTop(buttonHeight / 2);
+                }
+            }
+
+            @Override
+            public void onStateChanged(Drag2ExpandView v, int oldState, int newState) {
+
             }
         });
 
