@@ -24,6 +24,8 @@
 
 -keep class dg.shenm233.mmaps.model.**{*;}
 
+-keep class dg.shenm233.mmaps.widget.**{*;}
+
 #3D 地图
 -keep class com.amap.api.mapcore.**{*;}
 -keep class com.amap.api.maps.**{*;}
