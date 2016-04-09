@@ -28,27 +28,28 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <dg.shenm233.mmaps.widget.FloatingButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/action_my_location"
             android:layout_width="@dimen/fab_d"
             android:layout_height="@dimen/fab_d"
             android:layout_gravity="right|bottom"
             android:layout_margin="20dp"
-            android:background="@drawable/circle_btn_background"
             android:contentDescription="@string/my_location"
             android:src="@drawable/ic_my_location_grey600"
-            app:layout_behavior="dg.shenm233.mmaps.widget.FloatingButton$Behavior" />
+            app:backgroundTint="@color/white"
+            app:elevation="0dp"
+            app:layout_behavior="dg.shenm233.mmaps.widget.FabBehavior" />
 
-        <dg.shenm233.mmaps.widget.FloatingButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/action_directions"
             android:layout_width="@dimen/fab_d"
             android:layout_height="@dimen/fab_d"
             android:layout_gravity="right|bottom"
             android:layout_margin="20dp"
-            android:background="@drawable/circle_btn_background"
-            android:backgroundTint="@color/primary_color"
             android:contentDescription="@string/directions"
-            android:src="@drawable/ic_directions" />
+            android:src="@drawable/ic_directions"
+            app:backgroundTint="@color/primary_color"
+            app:elevation="0dp" />
 
     </android.support.design.widget.CoordinatorLayout>
 

@@ -3,6 +3,7 @@ package dg.shenm233.mmaps.ui.maps.view;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,7 +38,6 @@ import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.AnimUtils;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
-import dg.shenm233.mmaps.widget.FloatingButton;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
@@ -188,7 +188,7 @@ public class Directions extends ViewContainerManager.ViewContainer
         mRouteAbstractView = view;
 
         ViewGroup headerView = (ViewGroup) view.findViewById(R.id.route_abstract_header);
-        final FloatingButton button = (FloatingButton) headerView.findViewById(R.id.action_navigation);
+        final FloatingActionButton button = (FloatingActionButton) headerView.findViewById(R.id.action_navigation);
         final View headerText = headerView.findViewById(R.id.route_abstract_header_text);
         mDistanceTextView = (TextView) headerView.findViewById(R.id.route_tv_distance_duration);
         mEtcTextView = (TextView) headerView.findViewById(R.id.route_tv_etc);

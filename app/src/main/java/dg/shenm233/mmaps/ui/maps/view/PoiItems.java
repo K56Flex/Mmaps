@@ -3,6 +3,7 @@ package dg.shenm233.mmaps.ui.maps.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,6 @@ import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
-import dg.shenm233.mmaps.widget.FloatingButton;
 
 public class PoiItems extends ViewContainerManager.ViewContainer implements AMap.OnMarkerClickListener {
     public static final int ID = 3;
@@ -81,7 +81,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
 
         Drag2ExpandView view = (Drag2ExpandView) mPoiDetailBinding.getRoot();
         ViewGroup headerView = (ViewGroup) view.findViewById(R.id.poi_detail_header);
-        final FloatingButton button = (FloatingButton) headerView.findViewById(R.id.action_directions);
+        final FloatingActionButton button = (FloatingActionButton) headerView.findViewById(R.id.action_directions);
         final View headerText = headerView.findViewById(R.id.poi_detail_header_text);
         view.setOnDragListener(new Drag2ExpandView.OnDragListener() {
             @Override

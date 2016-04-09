@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,6 @@ import dg.shenm233.mmaps.ui.maps.view.Directions;
 import dg.shenm233.mmaps.ui.maps.view.PoiItems;
 import dg.shenm233.mmaps.ui.maps.view.SearchBox;
 import dg.shenm233.mmaps.util.PermissionUtils;
-import dg.shenm233.mmaps.widget.FloatingButton;
 
 public class MapsFragment extends Fragment
         implements IMapsFragment, IDrawerView, View.OnClickListener, SearchBox.OnSearchItemClickListener {
@@ -47,8 +47,8 @@ public class MapsFragment extends Fragment
     private View mMapsMask;
 
     //    private StatusBarView mStatusBarView;
-    private FloatingButton mMyLocationBtn;
-    private FloatingButton mDirectionsBtn;
+    private FloatingActionButton mMyLocationBtn;
+    private FloatingActionButton mDirectionsBtn;
 
     public MapsFragment() {
     }
@@ -73,9 +73,9 @@ public class MapsFragment extends Fragment
 
         viewContainer.setStatusBarBackgroundColor(Color.TRANSPARENT); // remove status bar color
 
-        mDirectionsBtn = (FloatingButton) viewContainer.findViewById(R.id.action_directions);
+        mDirectionsBtn = (FloatingActionButton) viewContainer.findViewById(R.id.action_directions);
         mDirectionsBtn.setOnClickListener(this);
-        mMyLocationBtn = (FloatingButton) viewContainer.findViewById(R.id.action_my_location);
+        mMyLocationBtn = (FloatingActionButton) viewContainer.findViewById(R.id.action_my_location);
         mMyLocationBtn.setOnClickListener(this);
 
         ViewContainerManager viewContainerManager = new ViewContainerManager();
