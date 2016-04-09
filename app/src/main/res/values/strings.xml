@@ -82,6 +82,8 @@
     <string name="download_list">Download list</string>
     <string name="city_list">City list</string>
     <string name="really_remove_offline_map">Really remove this city\'s offline map?</string>
+    <string name="remove_maps_success">Removed %1$s \'s offline maps</string>
+    <string name="remove_maps_failed">Removing %1$s \'s offline maps failed</string>
 
     <string name="note">Note</string>
 

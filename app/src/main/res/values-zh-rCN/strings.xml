@@ -83,6 +83,8 @@
     <string name="download_list">下载列表</string>
     <string name="city_list">城市列表</string>
     <string name="really_remove_offline_map">真的要删除该城市的离线地图？</string>
+    <string name="remove_maps_success">已删除%1$s的离线地图</string>
+    <string name="remove_maps_failed">删除%1$s的离线地图失败</string>
 
     <string name="note">提示</string>
 

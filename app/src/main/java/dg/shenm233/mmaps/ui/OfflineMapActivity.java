@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -22,7 +23,6 @@ import android.widget.Toast;
 
 import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapProvince;
-import dg.shenm233.mmaps.service.OfflineMapService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +34,15 @@ import dg.shenm233.mmaps.adapter.ViewPagerAdapter;
 import dg.shenm233.mmaps.model.BasePager;
 import dg.shenm233.mmaps.model.offlinemap.ProvinceListItem;
 import dg.shenm233.mmaps.service.IOfflineMapCallback;
+import dg.shenm233.mmaps.service.OfflineMapService;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 import dg.shenm233.mmaps.viewholder.OnViewLongClickListener;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
 public class OfflineMapActivity extends BaseActivity {
+    private ViewGroup mMainContentVG;
+
     private DownloadListPager mDownloadListPager;
     private CityListPager mCityListPager;
 
@@ -67,6 +70,8 @@ public class OfflineMapActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offline_map);
+
+        mMainContentVG = (ViewGroup) findViewById(R.id.main_content);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.offline_tab);
         ViewPager viewPager = (ViewPager) findViewById(R.id.offline_viewpager);
@@ -172,8 +177,16 @@ public class OfflineMapActivity extends BaseActivity {
             if (success) {
                 refreshDownloadList();
             }
+
+            onRemoveMaps(success, name, describe);
         }
     };
+
+    private void onRemoveMaps(boolean success, String name, String describe) {
+        String s = success ? getString(R.string.remove_maps_success, name) :
+                getString(R.string.remove_maps_failed, name) + "\n" + describe;
+        Snackbar.make(mMainContentVG, s, Snackbar.LENGTH_SHORT).show();
+    }
 
     private class DownloadListPager extends BasePager
             implements View.OnClickListener, OnViewLongClickListener {
