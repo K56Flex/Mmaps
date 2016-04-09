@@ -399,7 +399,7 @@ public class Drag2ExpandView extends ViewGroup {
                 if (mDragOffset == 0.0f) {
                     mViewState = STATE_COLLAPSE;
                     dispatchOnDragStateChanged(oldState, STATE_COLLAPSE);
-                } else if (mDragOffset == mAnchorOffset) {
+                } else if (mDragOffset == mAnchorOffset && mDragOffset != 1.0f) {
                     mViewState = STATE_ANCHORED;
                     dispatchOnDragStateChanged(oldState, STATE_ANCHORED);
                 } else {
