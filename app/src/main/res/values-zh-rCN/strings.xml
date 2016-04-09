@@ -88,6 +88,12 @@
 
     <string name="note">提示</string>
 
+    <string name="navi_attention">注意！</string>
+    <string name="navi_attention_msg">该导航功能是实验性功能（事实上还没实现完整）。请自行承担风险。
+        \n本应用不为生命财产的损失，道路准确性，道路费用等负责。
+        \n请遵守当地法律法规，安全驾驶！
+    </string>
+
     <string name="navi_really_exit">要退出导航？</string>
     <string name="navi_not_supported_strategy">不支持该驾驶方案，请选择其他方案</string>
     <string name="navi_failure">导航失败</string>

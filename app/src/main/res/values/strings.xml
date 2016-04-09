@@ -87,6 +87,12 @@
 
     <string name="note">Note</string>
 
+    <string name="navi_attention">Attention!</string>
+    <string name="navi_attention_msg">This feature is experimental,not fully implemented.use it at your risk!\n
+        This app is not responsible for losses of lives and property,route accuracy,route fees,and so on.\n
+        please abide by the local law,and drive safely.
+    </string>
+
     <string name="navi_really_exit">Do you really exit navigation?</string>
     <string name="navi_not_supported_strategy">this strategy is not supported,please consider another.</string>
     <string name="navi_failure">Navigation failed.</string>

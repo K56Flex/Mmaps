@@ -379,6 +379,20 @@ public class Directions extends ViewContainerManager.ViewContainer
     }
 
     private void startNavigation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setCancelable(true)
+                .setTitle(R.string.navi_attention)
+                .setMessage(R.string.navi_attention_msg)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startNavigationReal();
+                    }
+                })
+                .show();
+    }
+
+    private void startNavigationReal() {
         if (curSelectedTab == ROUTE_DRIVE) {
             mDirectionsPresenter.startDriveNavigation(curDriveRouteMode);
         } else if (curSelectedTab == ROUTE_WALK) {
