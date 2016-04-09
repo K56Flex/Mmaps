@@ -53,6 +53,7 @@
     <string name="chosen_on_map">Chosen on map</string>
     <string name="map_under_pin">Pan &amp; zoom map under pin</string>
 
+    <string name="bus_duration_start_from">start from %1$s</string>
     <string name="via_roads">Via %1$s</string>
 
     <string name="error_unknown">Unknown error</string>

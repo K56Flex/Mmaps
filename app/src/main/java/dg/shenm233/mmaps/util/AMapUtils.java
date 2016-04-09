@@ -10,6 +10,7 @@ import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusStep;
+import com.amap.api.services.route.RouteBusLineItem;
 import com.amap.api.services.route.RouteBusWalkItem;
 import com.amap.api.services.route.RouteSearch;
 
@@ -211,6 +212,21 @@ public class AMapUtils {
             }
         }
         return sb.toString();
+    }
+
+    // TODO; 高德还没支持显示每班车的间隔时间
+    public static String getFirstStationDuration(Context context, BusPath path) {
+        String s = null;
+        List<BusStep> busSteps = path.getSteps();
+        for (BusStep busStep : busSteps) {
+            RouteBusLineItem busLineItem = busStep.getBusLine();
+            if (busLineItem != null) {
+                s = context.getString(R.string.bus_duration_start_from,
+                        busLineItem.getDepartureBusStation().getBusStationName());
+                return s;
+            }
+        }
+        return s;
     }
 
     public static String convertErrorCodeToText(Context context, int code) {

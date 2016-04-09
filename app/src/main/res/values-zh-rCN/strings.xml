@@ -55,6 +55,7 @@
     <string name="map_under_pin">平移和缩放图钉周围的地图</string>
 
     <string name="via_roads">途经 %1$s</string>
+    <string name="bus_duration_start_from">从%1$s发车</string>
 
     <string name="error_unknown">未知错误</string>
     <string name="error_no_connection">没有网络连接</string>

@@ -14,6 +14,7 @@ import dg.shenm233.mmaps.widget.BusPathView;
 public class BusRouteCard extends Card<BusRouteCard.ViewHolder> {
     private Context mContext;
     private String mPathText;
+    private String aStationDurationText;
     private long mDuration = 0;
 
     public BusRouteCard(Context context) {
@@ -29,6 +30,10 @@ public class BusRouteCard extends Card<BusRouteCard.ViewHolder> {
         mDuration = duration;
     }
 
+    public void setFirstStationDuration(String s) {
+        aStationDurationText = s;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -42,16 +47,19 @@ public class BusRouteCard extends Card<BusRouteCard.ViewHolder> {
         ViewHolder vh = (ViewHolder) viewHolder;
         vh.busPathView.setBusPath(mPathText);
         vh.durationView.setText(CommonUtils.getFriendlyDuration(mContext, mDuration));
+        vh.aStationDurationView.setText(aStationDurationText);
     }
 
     static class ViewHolder extends Card.CardViewHolder {
         private BusPathView busPathView;
         private TextView durationView;
+        private TextView aStationDurationView;
 
         ViewHolder(View itemView) {
             super(itemView);
             busPathView = (BusPathView) itemView.findViewById(R.id.route_bus_path);
-            durationView = (TextView) itemView.findViewById(R.id.route_bus_time);
+            durationView = (TextView) itemView.findViewById(R.id.route_bus_duration);
+            aStationDurationView = (TextView) itemView.findViewById(R.id.route_bus_a_station_duration);
         }
     }
 }

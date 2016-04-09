@@ -281,6 +281,7 @@ public class DirectionsPresenter {
                 card.setType(1);
                 card.setBusPath(AMapUtils.convertBusPathToText(context, busPath));
                 card.setDuration(busPath.getDuration());
+                card.setFirstStationDuration(AMapUtils.getFirstStationDuration(context, busPath));
                 card.setTag(new MyPath(busPath,
                         busRouteResult.getStartPos(), busRouteResult.getTargetPos()));
                 card.setOnClickListener(listener);
