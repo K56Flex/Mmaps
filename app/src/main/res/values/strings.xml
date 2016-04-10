@@ -94,6 +94,7 @@
         please abide by the local law,and drive safely.
     </string>
 
+    <string name="navi_please_enable_gps">Please enable GPS</string>
     <string name="navi_really_exit">Do you really exit navigation?</string>
     <string name="navi_not_supported_strategy">this strategy is not supported,please consider another.</string>
     <string name="navi_failure">Navigation failed.</string>

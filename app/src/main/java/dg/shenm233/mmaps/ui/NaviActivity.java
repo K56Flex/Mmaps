@@ -50,8 +50,9 @@ public class NaviActivity extends Activity {
 
         setContentView(R.layout.activity_navigation);
         mAMapNaviView = (AMapNaviView) findViewById(R.id.navi_map);
-        mAMapNaviView.onCreate(savedInstanceState);
+
         NaviSettings.init(this);
+        mAMapNaviView.onCreate(savedInstanceState);
         initAMapNaviView();
     }
 
@@ -181,12 +182,25 @@ public class NaviActivity extends Activity {
         @Override
         public void onCalculateRouteSuccess() {
 //            mNaviPresenter.startEmulatorNavi();
-            mNaviPresenter.startRealNavi();
+            boolean success = mNaviPresenter.startRealNavi();
+            if (!success) {
+                promptNoteAndExit(R.string.navi_failure);
+                return;
+            }
+//          mAMapNaviView.setCarLock(true);
         }
 
         @Override
         public void onCalculateRouteFailure(int i) {
             promptNoteAndExit(R.string.navi_failure);
+        }
+
+        @Override
+        public void onGpsOpenStatus(boolean b) {
+            if (!b) {
+                Toast.makeText(NaviActivity.this, R.string.navi_please_enable_gps, Toast.LENGTH_LONG)
+                        .show();
+            }
         }
     };
 

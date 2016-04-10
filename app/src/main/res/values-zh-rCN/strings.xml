@@ -95,6 +95,7 @@
         \n请遵守当地法律法规，安全驾驶！
     </string>
 
+    <string name="navi_please_enable_gps">请打开设备的GPS</string>
     <string name="navi_really_exit">要退出导航？</string>
     <string name="navi_not_supported_strategy">不支持该驾驶方案，请选择其他方案</string>
     <string name="navi_failure">导航失败</string>
