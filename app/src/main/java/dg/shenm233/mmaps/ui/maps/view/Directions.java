@@ -80,7 +80,7 @@ public class Directions extends ViewContainerManager.ViewContainer
     private int curBusRouteMode = 0; // 当前规划公交路径的策略
     private int curWalkRouteMode = 0; // 当前规划行走路径的策略
 
-    private boolean nightBus = false; // 是否包括夜班车
+    private boolean nightBus = true; // 是否包括夜班车
 
     private Drag2ExpandView mRouteAbstractView;
     private TextView mDistanceTextView;
