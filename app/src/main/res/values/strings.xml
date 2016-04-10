@@ -112,6 +112,8 @@
     <string name="navi_recalc_for_jam_summary">only used for driving,requires network connection</string>
     <string name="navi_recalc_for_yaw">Recalculate route for yaw</string>
     <string name="navi_recalc_for_yaw_summary">only used for driving,requires network connection</string>
+    <string name="navi_voice_navigation">Voice Navigation</string>
+    <string name="navi_voice_navigation_enable">Enable Voice Navigation</string>
 
     <string name="license">Open source License</string>
 </resources>

@@ -20,4 +20,13 @@
         android:summary="@string/navi_recalc_for_yaw_summary"
         android:title="@string/navi_recalc_for_yaw" />
 
+    <PreferenceCategory android:title="@string/navi_voice_navigation">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="navi_enable_tts"
+            android:title="@string/navi_voice_navigation_enable" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

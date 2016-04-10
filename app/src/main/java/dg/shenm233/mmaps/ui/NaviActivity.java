@@ -162,6 +162,7 @@ public class NaviActivity extends Activity {
         viewOptions.setNaviNight(NaviSettings.getNightMode());
         viewOptions.setReCalculateRouteForTrafficJam(NaviSettings.getRecalcForJam());
         viewOptions.setReCalculateRouteForYaw(NaviSettings.getRecalcForYaw());
+        mNaviPresenter.enableTTS(NaviSettings.getTTSEnable());
 
         mAMapNaviView.setViewOptions(viewOptions);
     }

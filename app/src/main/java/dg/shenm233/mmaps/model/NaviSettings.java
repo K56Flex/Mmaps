@@ -9,6 +9,7 @@ public class NaviSettings {
     private static final String KEY_PREF_NIGHT_MODE = "navi_night_mode";
     private static final String KEY_PREF_RECALC_FOR_JAM = "navi_reclac_for_jam";
     private static final String KEY_PREF_RECALC_FOR_YAW = "navi_recalc_for_yaw";
+    private static final String KEY_ENABLE_TTS = "navi_enable_tts";
 
     private static SharedPreferences mPreferences;
 
@@ -60,5 +61,15 @@ public class NaviSettings {
         if (mPreferences != null) {
             mPreferences.edit().putBoolean(KEY_PREF_RECALC_FOR_YAW, enable).apply();
         }
+    }
+
+    public static void enableTTS(boolean enable) {
+        if (mPreferences != null) {
+            mPreferences.edit().putBoolean(KEY_ENABLE_TTS, enable).apply();
+        }
+    }
+
+    public static boolean getTTSEnable() {
+        return mPreferences != null && mPreferences.getBoolean(KEY_ENABLE_TTS, false);
     }
 }
