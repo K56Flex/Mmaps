@@ -47,3 +47,6 @@
 -dontwarn com.amap.api.navi.**
 -keep class com.amap.api.navi.**{*;}
 -keep class com.autonavi.**{*;}
+
+#语音
+-keep class com.iflytek.**{*;}
