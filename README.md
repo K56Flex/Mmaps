@@ -1,7 +1,7 @@
 # MMaps
-ÕâÊÇÒ»¿î»ùÓÚ¸ßµÂµØÍ¼sdk¿ª·¢µÄµØÍ¼app¡£(ÊµÑéĞÔ×÷Æ·)
+è¿™æ˜¯ä¸€æ¬¾åŸºäºé«˜å¾·åœ°å›¾sdkå¼€å‘çš„åœ°å›¾appã€‚(å®éªŒæ€§ä½œå“)
 
-### ½çÃæ½ØÍ¼
+### ç•Œé¢æˆªå›¾
 ![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/0.png)
 ![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/1.png)
 ![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/2.png)
@@ -12,12 +12,12 @@
 ![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/7.png)
 ![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/8.png)
 
-### ¸ĞĞ»
-Ö¸Â·ÕßµØÍ¼ - andforce
+### æ„Ÿè°¢
+æŒ‡è·¯è€…åœ°å›¾ - andforce
 AndroidSlidingUpPanel - Anton Lopyrev
 Expandable RecyclerView - Big Nerd Ranch
 
-### ¿ªÔ´Ğ­Òé
+### å¼€æºåè®®
  Copyright 2016 Shen Zhang
 
   Licensed under the Apache License, Version 2.0 (the "License");
