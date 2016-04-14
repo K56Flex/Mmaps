@@ -119,7 +119,7 @@ public class DirectionsPresenter {
         adapter.setDestPoint(myPath.endPoint);
 
         String s = mContext.getString(R.string.duration_and_distance,
-                CommonUtils.getFriendlyDuration(mContext, busPath.getDuration()),
+                CommonUtils.getFriendlyDuration(busPath.getDuration()),
                 CommonUtils.getFriendlyLength((int) busPath.getDistance()));
         directionsView.setDistanceTextOnAbstractView(s);
         directionsView.setEtcTextOnAbstractView(CommonUtils.getFriendlyCost(busPath.getCost()));
@@ -295,9 +295,9 @@ public class DirectionsPresenter {
 
                 BusRouteCard card = new BusRouteCard(context);
                 card.setType(1);
-                card.setBusPath(AMapUtils.convertBusPathToText(context, busPath));
+                card.setBusPath(AMapUtils.convertBusPathToText(busPath));
                 card.setDuration(busPath.getDuration());
-                card.setFirstStationDuration(AMapUtils.getFirstStationDuration(context, busPath));
+                card.setFirstStationDuration(AMapUtils.getFirstStationDuration(busPath));
                 card.setIncludeNightBus(busPath.isNightBus());
                 card.setTag(new MyPath(busPath,
                         busRouteResult.getStartPos(), busRouteResult.getTargetPos()));
@@ -339,7 +339,7 @@ public class DirectionsPresenter {
             setDestinationPoint(destPoint);
 
             String s = mContext.getString(R.string.duration_and_distance,
-                    CommonUtils.getFriendlyDuration(mContext, drivePath.getDuration()),
+                    CommonUtils.getFriendlyDuration(drivePath.getDuration()),
                     CommonUtils.getFriendlyLength((int) drivePath.getDistance()));
             directionsView.setDistanceTextOnAbstractView(s);
             directionsView.setEtcTextOnAbstractView(getPartialRoads(drivePath));
@@ -377,7 +377,7 @@ public class DirectionsPresenter {
             setDestinationPoint(destPoint);
 
             String s = mContext.getString(R.string.duration_and_distance,
-                    CommonUtils.getFriendlyDuration(mContext, walkPath.getDuration()),
+                    CommonUtils.getFriendlyDuration(walkPath.getDuration()),
                     CommonUtils.getFriendlyLength((int) walkPath.getDistance()));
             directionsView.setDistanceTextOnAbstractView(s);
             directionsView.setEtcTextOnAbstractView(getPartialRoads(walkPath));
@@ -445,7 +445,7 @@ public class DirectionsPresenter {
             if (rCode == 0 && isEmptyResult) {
                 s = mContext.getString(R.string.no_result);
             } else {
-                s = AMapUtils.convertErrorCodeToText(mContext, rCode);
+                s = AMapUtils.convertErrorCodeToText(rCode);
             }
             card.setText(s);
             adapter.add(card);

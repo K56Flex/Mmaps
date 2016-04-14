@@ -67,7 +67,7 @@ public class BusRouteCard extends Card<BusRouteCard.ViewHolder> {
         super.updateViewHolder(viewHolder);
         ViewHolder vh = (ViewHolder) viewHolder;
         vh.busPathView.setBusPath(mPathText);
-        vh.durationView.setText(CommonUtils.getFriendlyDuration(mContext, mDuration));
+        vh.durationView.setText(CommonUtils.getFriendlyDuration(mDuration));
         vh.aStationDurationView.setText(aStationDurationText);
         vh.includeNightBus.setVisibility(includeNightBus ? View.VISIBLE : View.GONE);
     }

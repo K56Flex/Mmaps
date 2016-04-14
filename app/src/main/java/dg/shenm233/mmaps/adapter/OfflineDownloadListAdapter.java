@@ -56,7 +56,7 @@ public class OfflineDownloadListAdapter extends BaseRecyclerViewAdapter<OfflineD
         holder.mCity.setText(city.getCity());
         holder.mSize.setText(CommonUtils.getFriendlyBytes(city.getSize()));
         holder.mState.setText(
-                OffLineMapUtils.convertStateToText(mContext, city.getState(), city.getcompleteCode()));
+                OffLineMapUtils.convertStateToText(city.getState(), city.getcompleteCode()));
         holder.setTag(city);
     }
 

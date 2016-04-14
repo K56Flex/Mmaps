@@ -33,6 +33,7 @@ import com.amap.api.services.route.RouteSearch;
 import java.util.ArrayList;
 import java.util.List;
 
+import dg.shenm233.mmaps.MainApplication;
 import dg.shenm233.mmaps.R;
 
 public class AMapUtils {
@@ -206,11 +207,10 @@ public class AMapUtils {
      * 56路 > 58路 > W58min
      * W 代表 步行
      *
-     * @param context
      * @param path
      * @return
      */
-    public static String convertBusPathToText(Context context, BusPath path) {
+    public static String convertBusPathToText(BusPath path) {
         StringBuilder sb = new StringBuilder();
         List<BusStep> busSteps = path.getSteps();
         for (BusStep busStep : busSteps) {
@@ -222,7 +222,7 @@ public class AMapUtils {
                 RouteBusWalkItem busWalkItem = busStep.getWalk();
                 if (busWalkItem != null) {
                     sb.append("W")
-                            .append(CommonUtils.getFriendlyDuration(context, busWalkItem.getDuration()))
+                            .append(CommonUtils.getFriendlyDuration(busWalkItem.getDuration()))
                             .append(" > ");
                 }
             }
@@ -231,7 +231,8 @@ public class AMapUtils {
     }
 
     // TODO; 高德还没支持显示每班车的间隔时间
-    public static String getFirstStationDuration(Context context, BusPath path) {
+    public static String getFirstStationDuration(BusPath path) {
+        Context context = MainApplication.getAppContext();
         String s = null;
         List<BusStep> busSteps = path.getSteps();
         for (BusStep busStep : busSteps) {
@@ -245,7 +246,8 @@ public class AMapUtils {
         return s;
     }
 
-    public static String convertErrorCodeToText(Context context, int code) {
+    public static String convertErrorCodeToText(int code) {
+        Context context = MainApplication.getAppContext();
         switch (code) {
             case AMapException.ERROR_CODE_CONNECTION:
                 return context.getString(R.string.error_no_connection);

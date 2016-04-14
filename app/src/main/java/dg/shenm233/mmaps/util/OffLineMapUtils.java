@@ -23,6 +23,7 @@ import com.amap.api.maps.offlinemap.OfflineMapStatus;
 
 import java.io.File;
 
+import dg.shenm233.mmaps.MainApplication;
 import dg.shenm233.mmaps.R;
 
 public class OffLineMapUtils {
@@ -44,7 +45,8 @@ public class OffLineMapUtils {
         }
     }
 
-    public static String convertStateToText(Context context, int state, int completePercent) {
+    public static String convertStateToText(int state, int completePercent) {
+        Context context = MainApplication.getAppContext();
         String string = "";
         switch (state) {
             case OfflineMapStatus.LOADING:

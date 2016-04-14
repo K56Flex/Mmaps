@@ -17,18 +17,28 @@
 package dg.shenm233.mmaps;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.amap.api.maps.MapsInitializer;
 
 import dg.shenm233.mmaps.util.OffLineMapUtils;
 
 public class MainApplication extends Application {
+    private static Context mAppContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        mAppContext = this;
         String sdFilesDir = OffLineMapUtils.getSdFilesDir(this.getApplicationContext());
         if (!sdFilesDir.isEmpty()) {
             MapsInitializer.sdcardDir = sdFilesDir;
         }
+    }
+
+    public static Context getAppContext() {
+        if (mAppContext == null) throw new RuntimeException();
+
+        return mAppContext;
     }
 }

@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.text.DecimalFormat;
 
+import dg.shenm233.mmaps.MainApplication;
 import dg.shenm233.mmaps.R;
 
 public class CommonUtils {
@@ -34,7 +35,8 @@ public class CommonUtils {
     /**
      * 将秒转换为时:分的形式
      */
-    public static String getFriendlyDuration(Context context, long sec) {
+    public static String getFriendlyDuration(long sec) {
+        Context context = MainApplication.getAppContext();
         StringBuilder sb = new StringBuilder();
         if (sec <= 60)
             return sb.append(1).append(context.getText(R.string.minute))
