@@ -79,6 +79,7 @@ public class OfflineMapActivity extends BaseActivity {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             isServiceBound = false;
+            mBinder = null;
         }
     };
 
@@ -135,7 +136,13 @@ public class OfflineMapActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
         Intent intent = new Intent(this, OfflineMapService.class);
-        isServiceBound = bindService(intent, mConnection, BIND_AUTO_CREATE);
+        bindService(intent, mConnection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mDownloadListPager.onResume();
     }
 
     @Override
@@ -145,11 +152,12 @@ public class OfflineMapActivity extends BaseActivity {
             mBinder.removeCallback(mCallback);
             unbindService(mConnection);
             isServiceBound = false;
+            mBinder = null;
         }
     }
 
     private void refreshDownloadList() {
-        if (!isServiceBound) {
+        if (mBinder == null) {
             return;
         }
         OfflineMapService.ServiceBinder binder = mBinder;
@@ -158,7 +166,7 @@ public class OfflineMapActivity extends BaseActivity {
         downloadListPager.clearAll();
         downloadListPager.addDownloadingList(binder.getDownloadingCityList());
         downloadListPager.addDownloadList(binder.getDownloadOfflineMapCityList());
-        downloadListPager.updateDataList();
+        downloadListPager.notifyDataSetChanged();
     }
 
     private IOfflineMapCallback mCallback = new IOfflineMapCallback() {
@@ -249,7 +257,7 @@ public class OfflineMapActivity extends BaseActivity {
         /**
          * 通知列表已有变化
          */
-        public void updateDataList() {
+        public void notifyDataSetChanged() {
             currentCity = "";
             mAdapter.notifyDataSetChanged();
             if (mDownBtn != null) {
@@ -308,6 +316,18 @@ public class OfflineMapActivity extends BaseActivity {
             mAdapter.setOnViewLongClickListener(this);
             mListView = listView;
             return view;
+        }
+
+        public void onResume() {
+            OfflineMapService.ServiceBinder binder = mBinder;
+            if (binder == null) {
+                return;
+            }
+            if (binder.isDownloading()) {
+                mDownBtn.setText(R.string.action_download_pause);
+            } else {
+                mDownBtn.setText(R.string.action_download_start);
+            }
         }
 
         @Override
