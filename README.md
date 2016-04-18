@@ -3,14 +3,6 @@
 
 ### 界面截图
 ![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/0.png)
-![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/1.png)
-![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/2.png)
-![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/3.png)
-![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/4.png)
-![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/5.png)
-![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/6.png)
-![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/7.png)
-![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/8.png)
 
 ### 感谢
 指路者地图 - andforce
