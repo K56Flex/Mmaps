@@ -63,7 +63,9 @@ public class OfflineCityListAdapter
     @Override
     public ProvinceVH onCreateParentViewHolder(ViewGroup parentViewGroup) {
         View view = mLayoutInflater.inflate(R.layout.offline_province_item, parentViewGroup, false);
-        return new ProvinceVH(view);
+        ProvinceVH vh = new ProvinceVH(view);
+        vh.setOnViewClickListener(mOnViewClickListener);
+        return vh;
     }
 
     @Override
@@ -79,6 +81,8 @@ public class OfflineCityListAdapter
                                        ParentListItem parentListItem) {
         OfflineMapProvince province = ((ProvinceListItem) parentListItem).getOfflineMapProvince();
         parentViewHolder.mProvince.setText(province.getProvinceName());
+        parentViewHolder.mSize.setText(CommonUtils.getFriendlyBytes(province.getSize()));
+        parentViewHolder.setTag(province);
     }
 
     @Override
@@ -94,13 +98,41 @@ public class OfflineCityListAdapter
     }
 
     static class ProvinceVH extends ParentViewHolder {
+        private OnViewClickListener mOnViewClickListener;
+
         TextView mProvince;
+        TextView mSize;
         ImageView mExpandBtn;
+        Button mDownBtn;
+
+        private Object mTag;
 
         public ProvinceVH(View itemView) {
             super(itemView);
             mProvince = (TextView) itemView.findViewById(R.id.offline_province);
+            mSize = (TextView) itemView.findViewById(R.id.offline_size);
             mExpandBtn = (ImageView) itemView.findViewById(R.id.offline_expand);
+            mDownBtn = (Button) itemView.findViewById(R.id.download_province);
+            mDownBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnViewClickListener != null) {
+                        mOnViewClickListener.onClick(v, getTag());
+                    }
+                }
+            });
+        }
+
+        public void setTag(Object o) {
+            mTag = o;
+        }
+
+        public Object getTag() {
+            return mTag;
+        }
+
+        public final void setOnViewClickListener(OnViewClickListener l) {
+            mOnViewClickListener = l;
         }
     }
 

@@ -415,18 +415,34 @@ public class OfflineMapActivity extends BaseActivity {
 
         @Override
         public void onClick(View v, Object data) {
-            OfflineMapCity city = (OfflineMapCity) data;
+            int id = v.getId();
+            if (id == R.id.download) {
+                OfflineMapCity city = (OfflineMapCity) data;
 
-            if (DEBUG) {
-                Toast.makeText(mContext, city.getCity(), Toast.LENGTH_SHORT).show();
+                if (DEBUG) {
+                    Toast.makeText(mContext, city.getCity(), Toast.LENGTH_SHORT).show();
+                }
+
+                Intent intent = new Intent();
+                intent.setClass(mContext, OfflineMapService.class);
+                intent.putExtra("name", city.getCity());
+                intent.putExtra("type", OfflineMapService.TYPE_CITY);
+                intent.putExtra("dowhat", OfflineMapService.DOWHAT_ADD_MAP);
+                OfflineMapActivity.this.startService(intent);
+            } else if (id == R.id.download_province) {
+                OfflineMapProvince province = (OfflineMapProvince) data;
+
+                if (DEBUG) {
+                    Toast.makeText(mContext, province.getProvinceName(), Toast.LENGTH_SHORT).show();
+                }
+
+                Intent intent = new Intent();
+                intent.setClass(mContext, OfflineMapService.class);
+                intent.putExtra("name", province.getProvinceName());
+                intent.putExtra("type", OfflineMapService.TYPE_PROVINCE);
+                intent.putExtra("dowhat", OfflineMapService.DOWHAT_ADD_MAP);
+                OfflineMapActivity.this.startService(intent);
             }
-
-            Intent intent = new Intent();
-            intent.setClass(mContext, OfflineMapService.class);
-            intent.putExtra("name", city.getCity());
-            intent.putExtra("type", OfflineMapService.TYPE_CITY);
-            intent.putExtra("dowhat", OfflineMapService.DOWHAT_ADD_MAP);
-            OfflineMapActivity.this.startService(intent);
         }
     }
 }
