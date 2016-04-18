@@ -50,6 +50,7 @@ import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
 import dg.shenm233.mmaps.presenter.DirectionsPresenter;
 import dg.shenm233.mmaps.presenter.IDirectionsView;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
+import dg.shenm233.mmaps.ui.maps.ViewContainer;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.AnimUtils;
@@ -57,7 +58,7 @@ import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
-public class Directions extends ViewContainerManager.ViewContainer
+public class Directions extends ViewContainer
         implements IDirectionsView, SearchBox.OnSearchItemClickListener {
     public final static int ID = 1;
     public final static String CLEAR_ALL = "clear_all"; // boolean
@@ -579,7 +580,7 @@ public class Directions extends ViewContainerManager.ViewContainer
                     case R.id.maps_directions_to:
                         curProcessingText = destinationText;
                 }
-                ViewContainerManager.ViewContainer searchBox = new SearchBox(rootView, mMapsFragment);
+                ViewContainer searchBox = new SearchBox(rootView, mMapsFragment);
                 exit();
                 Map<String, Object> args = new HashMap<>();
                 args.put(SearchBox.SHOW_CHOOSE_ON_MAP, true);

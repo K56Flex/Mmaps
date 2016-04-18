@@ -41,10 +41,11 @@ import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.databinding.PoiDetailBinding;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
+import dg.shenm233.mmaps.ui.maps.ViewContainer;
 import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
 
-public class PoiItems extends ViewContainerManager.ViewContainer implements AMap.OnMarkerClickListener {
+public class PoiItems extends ViewContainer implements AMap.OnMarkerClickListener {
     public static final int ID = 3;
     public static final String POI_ITEM_LIST = "poi_item_list"; // List<PoiItem>
 
@@ -130,7 +131,7 @@ public class PoiItems extends ViewContainerManager.ViewContainer implements AMap
         MapsModule mapsModule = mapsFragment.getMapsModule();
 
         // Hack: 显示搜索条
-        ViewContainerManager.ViewContainer searchBox =
+        ViewContainer searchBox =
                 mapsFragment.getViewContainerManager().getViewContainer(SearchBox.ID);
 //        Map<String, Object> searchBoxArguments = searchBox.getArguments();
 //        searchBoxArguments.put(SearchBox.BACK_BTN_AS_DRAWER, true);

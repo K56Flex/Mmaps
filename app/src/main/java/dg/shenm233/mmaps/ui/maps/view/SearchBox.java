@@ -35,12 +35,12 @@ import dg.shenm233.mmaps.adapter.SearchTipsAdapter;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.SearchMapsPresenter;
 import dg.shenm233.mmaps.ui.IDrawerView;
-import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
+import dg.shenm233.mmaps.ui.maps.ViewContainer;
 import dg.shenm233.mmaps.util.AnimUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
-public class SearchBox extends ViewContainerManager.ViewContainer
+public class SearchBox extends ViewContainer
         implements View.OnClickListener {
     public interface OnSearchItemClickListener {
         void onSearchItemClick(Tip tip);

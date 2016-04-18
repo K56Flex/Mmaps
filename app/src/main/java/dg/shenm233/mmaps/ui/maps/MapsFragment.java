@@ -57,8 +57,8 @@ public class MapsFragment extends Fragment
 
     private ViewContainerManager mViewContainerManager;
 
-    private ViewContainerManager.ViewContainer mSearchBox;
-    private ViewContainerManager.ViewContainer mDirections;
+    private ViewContainer mSearchBox;
+    private ViewContainer mDirections;
 
     private View mMapsMask;
 
@@ -97,7 +97,7 @@ public class MapsFragment extends Fragment
         ViewContainerManager viewContainerManager = new ViewContainerManager();
         mViewContainerManager = viewContainerManager;
 
-        ViewContainerManager.ViewContainer searchBox = new SearchBox(viewContainer, this);
+        ViewContainer searchBox = new SearchBox(viewContainer, this);
         mSearchBox = searchBox;
         Map<String, Object> searchBoxArgs = new HashMap<>();
         searchBoxArgs.put(SearchBox.BACK_BTN_AS_DRAWER, true);
@@ -223,7 +223,7 @@ public class MapsFragment extends Fragment
     @Override
     public boolean onBackKeyPressed() {
         ViewContainerManager vm = mViewContainerManager;
-        ViewContainerManager.ViewContainer v = vm.peek();
+        ViewContainer v = vm.peek();
         if (v != null && v.onBackPressed()) {
             return true;
         } else {
@@ -237,7 +237,7 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onMarkerClick(Marker marker) {
-        ViewContainerManager.ViewContainer v = mViewContainerManager.peek();
+        ViewContainer v = mViewContainerManager.peek();
         if (v instanceof AMap.OnMarkerClickListener) {
             ((AMap.OnMarkerClickListener) v).onMarkerClick(marker);
         }
@@ -297,7 +297,7 @@ public class MapsFragment extends Fragment
             return;
         }
 
-        ViewContainerManager.ViewContainer v = vm.peek();
+        ViewContainer v = vm.peek();
         if (isMain()) {
             Map<String, Object> args = v.getArguments();
             args.put(SearchBox.BACK_BTN_AS_DRAWER, true);
@@ -312,7 +312,7 @@ public class MapsFragment extends Fragment
     @Override
     public void onClearSearchText() {
         ViewContainerManager vm = mViewContainerManager;
-        ViewContainerManager.ViewContainer v = vm.peek();
+        ViewContainer v = vm.peek();
         if (v instanceof PoiItems) {
             vm.popBackStack();
         }
@@ -339,7 +339,7 @@ public class MapsFragment extends Fragment
      * 判断是否为主界面
      */
     private boolean isMain() {
-        ViewContainerManager.ViewContainer v = mViewContainerManager.peek();
+        ViewContainer v = mViewContainerManager.peek();
         if (v instanceof SearchBox) { // 只显示搜索框，一般认为当前是主界面
             Map<String, Object> args = v.getArguments();
             Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);

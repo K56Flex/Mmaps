@@ -33,11 +33,11 @@ import com.amap.api.services.help.Tip;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.ui.IDrawerView;
-import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
+import dg.shenm233.mmaps.ui.maps.ViewContainer;
 import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.AnimUtils;
 
-public class ChooseOnMap extends ViewContainerManager.ViewContainer
+public class ChooseOnMap extends ViewContainer
         implements View.OnClickListener {
     public static final int ID = 2;
 

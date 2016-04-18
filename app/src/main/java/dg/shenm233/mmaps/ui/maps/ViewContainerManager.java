@@ -16,7 +16,6 @@
 
 package dg.shenm233.mmaps.ui.maps;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
@@ -123,49 +122,4 @@ public class ViewContainerManager {
         }
     }
 
-    public static abstract class ViewContainer {
-        protected final Map<String, Object> args = new HashMap<>();
-
-        /**
-         * 创建界面
-         */
-        public abstract void onCreateView();
-
-        /**
-         * 显示界面
-         */
-        public abstract void show();
-
-        /**
-         * 退出界面
-         */
-        public abstract void exit();
-
-        /**
-         * 销毁界面
-         */
-        public abstract void onDestroyView();
-
-        /**
-         * 处理返回键的事件
-         *
-         * @return true为已经处理了该事件, false为忽略该事件
-         */
-        public abstract boolean onBackPressed();
-
-        /**
-         * 设置参数,设置前会清除原有参数
-         *
-         * @param args
-         */
-        public void setArguments(Map<String, Object> args) {
-            this.args.clear();
-            if (args != null)
-                this.args.putAll(args);
-        }
-
-        public Map<String, Object> getArguments() {
-            return args;
-        }
-    }
 }
