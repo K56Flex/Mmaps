@@ -61,6 +61,13 @@
     <string name="error_unknown">未知错误</string>
     <string name="error_no_connection">没有网络连接</string>
     <string name="error_over_directions_range">超出路径规划范围</string>
+    <string name="error_invalid_parameter">无效参数 \n
+        如果你查询的是公交，不支持跨城市查询公交。</string>
+    <string name="error_socket_timeout">连接超时</string>
+    <string name="error_out_of_service">超出服务范围 \n
+        仅支持中国大陆内查询</string>
+    <string name="error_out_of_quota">超出查询次数（受高德限制）</string>
+    <string name="error_route_failure">查询路径规划失败</string>
 
     <string name="satellite">卫星图</string>
     <string name="traffic">实时路况</string>

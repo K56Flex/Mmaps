@@ -249,10 +249,21 @@ public class AMapUtils {
     public static String convertErrorCodeToText(int code) {
         Context context = MainApplication.getAppContext();
         switch (code) {
+            case AMapException.ERROR_CODE_SOCKET:
             case AMapException.ERROR_CODE_CONNECTION:
                 return context.getString(R.string.error_no_connection);
             case AMapException.ERROR_CODE_OVER_DIRECTION_RANGE:
                 return context.getString(R.string.error_over_directions_range);
+            case AMapException.ERROR_CODE_INVALID_PARAMETER:
+                return context.getString(R.string.error_invalid_parameter);
+            case AMapException.ERROR_CODE_SOCKE_TIME_OUT:
+                return context.getString(R.string.error_socket_timeout);
+            case AMapException.ERROR_CODE_OUT_OF_SERVICE:
+                return context.getString(R.string.error_out_of_service);
+            case AMapException.ERROR_CODE_QUOTA:
+                return context.getString(R.string.error_out_of_quota);
+            case AMapException.ERROR_CODE_ROUTE_FAILURE:
+                return context.getString(R.string.error_route_failure);
 
             default:
                 return context.getString(R.string.error_unknown);

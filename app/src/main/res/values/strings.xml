@@ -60,6 +60,13 @@
     <string name="error_unknown">Unknown error</string>
     <string name="error_no_connection">No Internet Connection</string>
     <string name="error_over_directions_range">Over directions range</string>
+    <string name="error_invalid_parameter">Invalid parameter \n
+        if you are querying bus route,the query not supports cross city.</string>
+    <string name="error_socket_timeout">Connection timeout</string>
+    <string name="error_out_of_service">Out of service \n
+        only support China mainland.</string>
+    <string name="error_out_of_quota">Out of query quota</string>
+    <string name="error_route_failure">Query route failed</string>
 
     <string name="satellite">Satellite</string>
     <string name="traffic">Traffic</string>
