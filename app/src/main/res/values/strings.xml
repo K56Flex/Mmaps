@@ -110,7 +110,9 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="dev">Dev</string>
+    <string name="thanks">Thanks</string>
     <string name="version">Version</string>
+    <string name="license">Open source License</string>
 
     <string name="navi_settings">Navigation Settings</string>
     <string name="navi_keep_screen_bright">Keep screen bright</string>
@@ -122,5 +124,4 @@
     <string name="navi_voice_navigation">Voice Navigation</string>
     <string name="navi_voice_navigation_enable">Enable Voice Navigation</string>
 
-    <string name="license">Open source License</string>
 </resources>

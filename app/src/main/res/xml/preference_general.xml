@@ -17,6 +17,10 @@
             android:title="@string/dev" />
 
         <Preference
+            android:summary="icons by shiunghanching@coolapk"
+            android:title="@string/thanks" />
+
+        <Preference
             android:key="license"
             android:title="@string/license" />
 

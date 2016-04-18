@@ -5,8 +5,12 @@
 ![screenshot](https://github.com/shenm233/Mmaps/blob/master/screenshots/0.png)
 
 ### 感谢
+图标 - shiunghanching
+
 指路者地图 - andforce
+
 AndroidSlidingUpPanel - Anton Lopyrev
+
 Expandable RecyclerView - Big Nerd Ranch
 
 ### 开源协议
