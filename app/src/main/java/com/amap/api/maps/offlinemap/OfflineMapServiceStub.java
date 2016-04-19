@@ -26,7 +26,9 @@ public abstract class OfflineMapServiceStub extends Service {
     @Override
     public abstract IBinder onBind(Intent intent);
 
+    /*
     protected boolean isStart() {
         return mMapManager != null && mMapManager.isStart();
     }
+    */
 }

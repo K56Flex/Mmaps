@@ -47,6 +47,8 @@ public class OfflineMapService extends OfflineMapServiceStub {
     private ServiceBinder mBinder;
     private List<IOfflineMapCallback> mCallbacks = new ArrayList<>();
 
+    private boolean isDownloading = false;
+
     public OfflineMapService() {
     }
 
@@ -123,6 +125,11 @@ public class OfflineMapService extends OfflineMapServiceStub {
             if (DEBUG) {
                 Log.d("OfflineMapService", String.format("download %s %d", name, completeCode));
             }
+            if (status == OfflineMapStatus.LOADING) {
+                isDownloading = true;
+            } else {
+                isDownloading = false;
+            }
             for (IOfflineMapCallback callback : mCallbacks) {
                 if (callback != null) {
                     callback.onDownload(status, completeCode, name);
@@ -180,24 +187,28 @@ public class OfflineMapService extends OfflineMapServiceStub {
          */
         public void initOfflineMapManager(final IOfflineMapCallback callback) {
             if (mMapManager == null) {
+                /* OfflineMapManager只能在主线程创建
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        long t = System.currentTimeMillis();
-                        // 建立OfflineMapManager对象所需的时间大约200ms~
-                        mMapManager = new OfflineMapManager(OfflineMapService.this, mOfflineMapListener);
-                        if (DEBUG) {
-                            Log.d("OfflineMapService", "OfflineMapManager construction method takes "
-                                    + (System.currentTimeMillis() - t) + " ms");
-                        }
-                        mMainThreadHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.onOfflineMapManagerReady();
-                            }
-                        });
+                */
+                long t = System.currentTimeMillis();
+                // 建立OfflineMapManager对象所需的时间大约200ms~
+                mMapManager = new OfflineMapManager(OfflineMapService.this, mOfflineMapListener);
+                if (DEBUG) {
+                    Log.d("OfflineMapService", "OfflineMapManager construction method takes "
+                            + (System.currentTimeMillis() - t) + " ms");
+                }
+                mMainThreadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onOfflineMapManagerReady();
+                    }
+                });
+                /*
                     }
                 }).start();
+                */
             } else {
                 callback.onOfflineMapManagerReady();
             }
@@ -328,6 +339,7 @@ public class OfflineMapService extends OfflineMapServiceStub {
             if (mMapManager == null) {
                 return;
             }
+            isDownloading = false;
             mMapManager.pause();
         }
 
@@ -388,7 +400,7 @@ public class OfflineMapService extends OfflineMapServiceStub {
         }
 
         public boolean isDownloading() {
-            return isStart();
+            return isDownloading;
         }
     }
 }

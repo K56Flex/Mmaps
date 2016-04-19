@@ -32,11 +32,26 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <Button
-        android:id="@+id/action_download"
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_download_start" />
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <Button
+            android:id="@+id/action_download"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_download_start" />
+
+        <Button
+            android:id="@+id/action_download_pause"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_download_pause" />
+
+    </LinearLayout>
 
 </LinearLayout>

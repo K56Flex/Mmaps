@@ -142,7 +142,6 @@ public class OfflineMapActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mDownloadListPager.onResume();
     }
 
     @Override
@@ -217,7 +216,6 @@ public class OfflineMapActivity extends BaseActivity {
         private boolean showProgressBar = true;
         private ProgressBar mProgressBar;
         private RecyclerView mListView;
-        private Button mDownBtn;
 
         /**
          * 包含所有下载(正在下载，已下载)
@@ -260,10 +258,6 @@ public class OfflineMapActivity extends BaseActivity {
         public void notifyDataSetChanged() {
             currentCity = "";
             mAdapter.notifyDataSetChanged();
-            if (mDownBtn != null) {
-                mDownBtn.setText(mBinder.isDownloading() ?
-                        R.string.action_download_pause : R.string.action_download_start);
-            }
         }
 
         /**
@@ -308,7 +302,9 @@ public class OfflineMapActivity extends BaseActivity {
             }
             Button downBtn = (Button) view.findViewById(R.id.action_download);
             downBtn.setOnClickListener(this);
-            mDownBtn = downBtn;
+
+            Button pauseBtn = (Button) view.findViewById(R.id.action_download_pause);
+            pauseBtn.setOnClickListener(this);
 
             RecyclerView listView = (RecyclerView) view.findViewById(R.id.offline_down_list);
             listView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -316,18 +312,6 @@ public class OfflineMapActivity extends BaseActivity {
             mAdapter.setOnViewLongClickListener(this);
             mListView = listView;
             return view;
-        }
-
-        public void onResume() {
-            OfflineMapService.ServiceBinder binder = mBinder;
-            if (binder == null) {
-                return;
-            }
-            if (binder.isDownloading()) {
-                mDownBtn.setText(R.string.action_download_pause);
-            } else {
-                mDownBtn.setText(R.string.action_download_start);
-            }
         }
 
         @Override
@@ -343,13 +327,13 @@ public class OfflineMapActivity extends BaseActivity {
                 if (binder == null) {
                     return;
                 }
-                if (binder.isDownloading()) {
-                    mDownBtn.setText(R.string.action_download_start);
-                    binder.pause();
-                } else {
-                    mDownBtn.setText(R.string.action_download_pause);
-                    binder.restart();
+                binder.restart();
+            } else if (id == R.id.action_download_pause) {
+                OfflineMapService.ServiceBinder binder = mBinder;
+                if (binder == null) {
+                    return;
                 }
+                binder.pause();
             }
         }
 
