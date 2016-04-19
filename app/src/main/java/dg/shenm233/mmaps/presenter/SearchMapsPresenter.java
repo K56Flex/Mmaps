@@ -32,6 +32,7 @@ import com.amap.api.services.poisearch.PoiSearch;
 import java.util.List;
 
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.util.AMapUtils;
 
 public class SearchMapsPresenter {
     public interface OnPoiSearchListener {
@@ -115,7 +116,7 @@ public class SearchMapsPresenter {
                 @Override
                 public void onPoiSearched(PoiResult poiResult, int rCode) {
                     List<PoiItem> poiItems = null;
-                    if (rCode == 0) {
+                    if (rCode == AMapUtils.AMAP_CORE_SUCCESS) {
                         if (poiResult != null && poiResult.getQuery() != null) { // 搜索poi的结果
                             if (poiResult.getQuery().equals(curQuery)) { // 是否查找同一条
                                 poiItems = poiResult.getPois();// 取得第一页的poiItem数据，页数从数字0开始
@@ -142,7 +143,7 @@ public class SearchMapsPresenter {
             new Inputtips.InputtipsListener() {
                 @Override
                 public void onGetInputtips(List<Tip> list, int rCode) {
-                    if (rCode == 0) {
+                    if (rCode == AMapUtils.AMAP_CORE_SUCCESS) {
                         if (mOnTipsListener != null)
                             mOnTipsListener.onGetInputTips(list);
                     }

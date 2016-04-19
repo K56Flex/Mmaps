@@ -37,6 +37,8 @@ import dg.shenm233.mmaps.MainApplication;
 import dg.shenm233.mmaps.R;
 
 public class AMapUtils {
+    public static final int AMAP_CORE_SUCCESS = 1000;
+
     /**
      * 把LatLonPoint对象转化为LatLon对象
      */
