@@ -66,8 +66,6 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     private int MY_LOCATION_CUR_TYPE = MY_LOCATION_LOCATE;
     private boolean needZoom = true;
 
-    private MyLocationStyle mMyLocationStyle;
-
     public MapsModule(Context context, IMapsFragment mapsFragment, AMap aMap) {
         mContext = context;
         mMapsFragment = mapsFragment;
@@ -94,12 +92,6 @@ public class MapsModule implements AMap.OnMarkerClickListener,
                 mAMap.setMyLocationRotateAngle(degree);
             }
         }); // 设置 我的位置 的旋转角度监听器
-
-        final int color = Color.parseColor("#66D5E6FE");
-        mMyLocationStyle = new MyLocationStyle()
-                .myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_qu_my_location))
-                .radiusFillColor(color)
-                .strokeColor(color);
 
         setMapType(MAP_TYPE_NORMAL);
         setTrafficEnabled(false);
@@ -202,6 +194,11 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         mAMap.setMyLocationEnabled(enabled);
         // 修复Activity.onStart()后导致自定义"我的位置"样式丢失
         if (enabled) {
+            final int color = Color.parseColor("#66D5E6FE");
+            MyLocationStyle mMyLocationStyle = new MyLocationStyle()
+                    .myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_qu_my_location))
+                    .radiusFillColor(color)
+                    .strokeColor(color);
             mAMap.setMyLocationStyle(mMyLocationStyle);
         }
     }
