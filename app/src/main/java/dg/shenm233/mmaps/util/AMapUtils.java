@@ -256,6 +256,7 @@ public class AMapUtils {
             case AMapException.CODE_AMAP_OVER_DIRECTION_RANGE:
                 return context.getString(R.string.error_over_directions_range);
             case AMapException.CODE_AMAP_SERVICE_INVALID_PARAMS:
+            case AMapException.CODE_AMAP_SERVICE_MISSING_REQUIRED_PARAMS:
                 return context.getString(R.string.error_invalid_parameter);
             case AMapException.CODE_AMAP_CLIENT_SOCKET_TIMEOUT_EXCEPTION:
                 return context.getString(R.string.error_socket_timeout);
