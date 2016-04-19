@@ -249,20 +249,19 @@ public class AMapUtils {
     public static String convertErrorCodeToText(int code) {
         Context context = MainApplication.getAppContext();
         switch (code) {
-            case AMapException.ERROR_CODE_SOCKET:
-            case AMapException.ERROR_CODE_CONNECTION:
+            case AMapException.CODE_AMAP_CLIENT_NETWORK_EXCEPTION:
                 return context.getString(R.string.error_no_connection);
-            case AMapException.ERROR_CODE_OVER_DIRECTION_RANGE:
+            case AMapException.CODE_AMAP_OVER_DIRECTION_RANGE:
                 return context.getString(R.string.error_over_directions_range);
-            case AMapException.ERROR_CODE_INVALID_PARAMETER:
+            case AMapException.CODE_AMAP_SERVICE_INVALID_PARAMS:
                 return context.getString(R.string.error_invalid_parameter);
-            case AMapException.ERROR_CODE_SOCKE_TIME_OUT:
+            case AMapException.CODE_AMAP_CLIENT_SOCKET_TIMEOUT_EXCEPTION:
                 return context.getString(R.string.error_socket_timeout);
-            case AMapException.ERROR_CODE_OUT_OF_SERVICE:
+            case AMapException.CODE_AMAP_ROUTE_OUT_OF_SERVICE:
                 return context.getString(R.string.error_out_of_service);
-            case AMapException.ERROR_CODE_QUOTA:
+            case AMapException.CODE_AMAP_DAILY_QUERY_OVER_LIMIT:
                 return context.getString(R.string.error_out_of_quota);
-            case AMapException.ERROR_CODE_ROUTE_FAILURE:
+            case AMapException.CODE_AMAP_ROUTE_FAIL:
                 return context.getString(R.string.error_route_failure);
 
             default:

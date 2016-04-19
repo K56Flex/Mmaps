@@ -21,10 +21,14 @@ import android.util.Log;
 
 import com.amap.api.navi.AMapNavi;
 import com.amap.api.navi.AMapNaviListener;
+import com.amap.api.navi.model.AMapLaneInfo;
+import com.amap.api.navi.model.AMapNaviCross;
 import com.amap.api.navi.model.AMapNaviInfo;
 import com.amap.api.navi.model.AMapNaviLocation;
+import com.amap.api.navi.model.AMapNaviTrafficFacilityInfo;
 import com.amap.api.navi.model.NaviInfo;
 import com.amap.api.navi.model.NaviLatLng;
+import com.autonavi.tbt.TrafficFacilityInfo;
 
 import java.util.List;
 
@@ -218,6 +222,46 @@ public class NaviPresenter {
             if (mAMapNaviListenerS != null) {
                 mAMapNaviListenerS.onNaviInfoUpdate(naviInfo);
             }
+        }
+
+        @Override
+        public void OnUpdateTrafficFacility(TrafficFacilityInfo trafficFacilityInfo) {
+
+        }
+
+        @Override
+        public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo aMapNaviTrafficFacilityInfo) {
+
+        }
+
+        @Override
+        public void showCross(AMapNaviCross aMapNaviCross) {
+
+        }
+
+        @Override
+        public void hideCross() {
+
+        }
+
+        @Override
+        public void showLaneInfo(AMapLaneInfo[] aMapLaneInfos, byte[] bytes, byte[] bytes1) {
+
+        }
+
+        @Override
+        public void hideLaneInfo() {
+
+        }
+
+        @Override
+        public void onCalculateMultipleRoutesSuccess(int[] ints) {
+
+        }
+
+        @Override
+        public void notifyParallelRoad(int i) {
+
         }
     };
 }

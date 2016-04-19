@@ -156,6 +156,11 @@ public class NaviActivity extends Activity {
             public void onLockMap(boolean b) {
 
             }
+
+            @Override
+            public void onNaviViewLoaded() {
+
+            }
         });
         setAMapNaviViewOptions();
     }

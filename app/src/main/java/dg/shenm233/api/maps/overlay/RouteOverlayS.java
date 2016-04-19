@@ -18,21 +18,37 @@ package dg.shenm233.api.maps.overlay;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.overlay.RouteOverlay;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.LatLngBounds;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.Polyline;
+import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.services.core.LatLonPoint;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.util.AMapUtils;
 
-public abstract class RouteOverlayS extends RouteOverlay {
+public abstract class RouteOverlayS {
     private Context mContext;
+    protected AMap mAMap;
+    protected List<Polyline> allPolyLines = new ArrayList<>();
+    protected Marker startMarker;
+    protected Marker endMarker;
+    protected LatLng startPoint;
+    protected LatLng endPoint;
 
     public RouteOverlayS(Context context, AMap aMap, LatLonPoint start, LatLonPoint end) {
-        super(context);
         mContext = context;
         mAMap = aMap;
         startPoint = AMapUtils.convertToLatLng(start);
@@ -41,17 +57,31 @@ public abstract class RouteOverlayS extends RouteOverlay {
 
     public abstract void addToMap();
 
-    @Override
     public void removeFromMap() {
-        super.removeFromMap();
+        if (startMarker != null) {
+            startMarker.remove();
+        }
+
+        if (endMarker != null) {
+            endMarker.remove();
+        }
+
+        Iterator iterator;
+        iterator = allPolyLines.iterator();
+        while (iterator.hasNext()) {
+            Polyline next = (Polyline) iterator.next();
+            next.remove();
+        }
     }
 
-    @Override
+    public void setNodeIconVisibility(boolean visibility) {
+
+    }
+
     protected BitmapDescriptor getStartBitmapDescriptor() {
         return getBitmapDescriptorFromRes(R.drawable.startpoint_measle);
     }
 
-    @Override
     protected BitmapDescriptor getEndBitmapDescriptor() {
         return getBitmapDescriptorFromRes(R.drawable.pin);
     }
@@ -60,5 +90,61 @@ public abstract class RouteOverlayS extends RouteOverlay {
         // 原Bitmap会在BitmapDescriptor创建时回收
         return BitmapDescriptorFactory.fromBitmap(
                 BitmapFactory.decodeResource(mContext.getResources(), resId));
+    }
+
+    protected void addStartAndEndMarker() {
+        startMarker = mAMap.addMarker((new MarkerOptions())
+                .position(startPoint)
+                .icon(getStartBitmapDescriptor())
+                .title("起点"));
+        endMarker = mAMap.addMarker((new MarkerOptions())
+                .position(endPoint)
+                .icon(getEndBitmapDescriptor())
+                .title("终点"));
+    }
+
+    public void zoomToSpan() {
+        if (startPoint != null) {
+            if (mAMap == null) {
+                return;
+            }
+
+            try {
+                LatLngBounds bounds = getLatLngBounds();
+                mAMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    protected LatLngBounds getLatLngBounds() {
+        LatLngBounds.Builder builder = LatLngBounds.builder();
+        builder.include(new LatLng(startPoint.latitude, startPoint.longitude));
+        builder.include(new LatLng(endPoint.latitude, endPoint.longitude));
+        return builder.build();
+    }
+
+    protected void addPolyLine(PolylineOptions options) {
+        if (options != null) {
+            Polyline polyline = mAMap.addPolyline(options);
+            allPolyLines.add(polyline);
+        }
+    }
+
+    protected float getRouteWidth() {
+        return 18.0F;
+    }
+
+    protected int getWalkColor() {
+        return Color.parseColor("#6db74d");
+    }
+
+    protected int getBusColor() {
+        return Color.parseColor("#537edc");
+    }
+
+    protected int getDriveColor() {
+        return Color.parseColor("#537edc");
     }
 }
