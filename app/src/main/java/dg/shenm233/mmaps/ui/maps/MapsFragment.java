@@ -16,14 +16,13 @@
 
 package dg.shenm233.mmaps.ui.maps;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -160,49 +159,46 @@ public class MapsFragment extends Fragment
             args.put(Directions.STARTING_POINT, tip);
             mViewContainerManager.putViewContainer(mDirections, args, false, Directions.ID);
         } else if (viewId == R.id.action_my_location) {
-            if (!requestLocationPermission()) {
-                return;
-            }
-
-            int myLocationMode = mMapsModule.getMyLocationMode();
-            if (!isMain()) {
-                myLocationMode = MapsModule.MY_LOCATION_LOCATE;
-            } else {
-                if (++myLocationMode > MapsModule.MY_LOCATION_ROTATE) {
-                    myLocationMode = MapsModule.MY_LOCATION_LOCATE;
-                }
-            }
-
-            mMapsModule.changeMyLocationMode(myLocationMode);
+            changeMyLocationModeDummy();
         }
     }
 
-    private boolean requestLocationPermission() {
-        if (PermissionUtils.checkLocationPermission(getContext())) {
-            return true;
+
+    private void changeMyLocationModeDummy() {
+        PermissionUtils.PermsCallback permsCallback = new PermissionUtils.PermsCallback() {
+            @Override
+            public void onAllGranted() {
+                changeMyLocationMode();
+            }
+
+            @Override
+            public void onAllDenied() {
+                Snackbar.make(mViewContainer, R.string.error_no_location_permission, Snackbar.LENGTH_SHORT)
+                        .show();
+            }
+        };
+
+        PermissionUtils.requestPermissionsAndThen(this, 0x2b,
+                PermissionUtils.LOCATION_PERMISSION, permsCallback);
+    }
+
+    private void changeMyLocationMode() {
+        int myLocationMode = mMapsModule.getMyLocationMode();
+        if (!isMain()) {
+            myLocationMode = MapsModule.MY_LOCATION_LOCATE;
+        } else {
+            if (++myLocationMode > MapsModule.MY_LOCATION_ROTATE) {
+                myLocationMode = MapsModule.MY_LOCATION_LOCATE;
+            }
         }
 
-        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-                || shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            // TODO: balabala
-            requestPermissions(PermissionUtils.LOCATION_PERMISSION, 0x2b);
-        } else {
-            requestPermissions(PermissionUtils.LOCATION_PERMISSION, 0x2b);
-        }
-        return false;
+        mMapsModule.changeMyLocationMode(myLocationMode);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == 0x2b) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                mMapsModule.setMyLocationEnabled(true);
-            } else {
-                mMapsModule.setMyLocationEnabled(false);
-            }
-        }
+        PermissionUtils.dispatchPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

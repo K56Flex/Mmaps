@@ -294,8 +294,6 @@ public class NaviActivity extends Activity {
                 .show();
     }
 
-    private PermissionUtils.OnRequestPermissionsResult mPermissionsResult;
-
     private void prepareNavi() {
         String[] perms = new String[]{
                 Manifest.permission.READ_PHONE_STATE,
@@ -315,14 +313,12 @@ public class NaviActivity extends Activity {
             }
         };
 
-        mPermissionsResult = PermissionUtils.requestPermissionsAndThen(this, perms, permsCallback);
+        PermissionUtils.requestPermissionsAndThen(this, 0x2c, perms, permsCallback);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (mPermissionsResult != null) {
-            mPermissionsResult.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+        PermissionUtils.dispatchPermissionsResult(requestCode, permissions, grantResults);
     }
 }

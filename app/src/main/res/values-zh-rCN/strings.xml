@@ -58,6 +58,7 @@
     <string name="bus_duration_start_from">从%1$s发车</string>
     <string name="bus_include_night_bus"> 含夜班车 </string>
 
+    <string name="error_no_location_permission">需要位置权限。</string>
     <string name="error_unknown">未知错误</string>
     <string name="error_no_connection">没有网络连接</string>
     <string name="error_over_directions_range">超出路径规划范围</string>

@@ -57,6 +57,7 @@
     <string name="bus_duration_start_from">start from %1$s</string>
     <string name="via_roads">Via %1$s</string>
 
+    <string name="error_no_location_permission">require location permission.</string>
     <string name="error_unknown">Unknown error</string>
     <string name="error_no_connection">No Internet Connection</string>
     <string name="error_over_directions_range">Over directions range</string>
