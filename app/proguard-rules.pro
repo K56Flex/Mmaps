@@ -22,6 +22,8 @@
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
 
+-keep class dg.shenm233.mmaps.CrashHandler{*;}
+
 -keep class dg.shenm233.mmaps.model.**{*;}
 
 -keep class dg.shenm233.mmaps.widget.**{*;}

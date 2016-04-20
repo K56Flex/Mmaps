@@ -17,20 +17,29 @@
 package dg.shenm233.mmaps.ui.setting;
 
 import android.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.widget.Toast;
+
+import java.io.File;
 
 import dg.shenm233.mmaps.BuildConfig;
+import dg.shenm233.mmaps.CrashHandler;
+import dg.shenm233.mmaps.MainApplication;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.ui.LicenseActivity;
+import dg.shenm233.mmaps.util.CommonUtils;
 
 public class GeneralSettingsFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
     private static final String navi_settings = "navi_settings";
     private static final String version = "version";
     private static final String license = "license";
+    private static final String feedback = "feedback";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +48,7 @@ public class GeneralSettingsFragment extends PreferenceFragment
         findPreference(navi_settings).setOnPreferenceClickListener(this);
         findPreference(version).setSummary(BuildConfig.VERSION_NAME);
         findPreference(license).setOnPreferenceClickListener(this);
+        findPreference(feedback).setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -54,8 +64,33 @@ public class GeneralSettingsFragment extends PreferenceFragment
         } else if (license.equals(key)) {
             Intent intent = new Intent(getActivity(), LicenseActivity.class);
             startActivity(intent);
+        } else if (feedback.equals(key)) {
+            sendFeedback();
         }
 
         return false;
+    }
+
+    private void sendFeedback() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"darkgenlotus@gmail.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "MMaps 应用反馈");
+
+        String last_log = CommonUtils.getStringFromFile(CrashHandler.getLastLogPath());
+        if (!CommonUtils.isStringEmpty(last_log)) {
+            last_log = last_log.trim();
+            File attachment = new File(MainApplication.getCrashReportsPath() + "/" + last_log);
+            if (attachment.exists() && attachment.canRead()) {
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(attachment));
+            }
+        }
+        try {
+            if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                startActivity(intent);
+            }
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getActivity(), R.string.not_installed_email, Toast.LENGTH_SHORT).show();
+        }
     }
 }

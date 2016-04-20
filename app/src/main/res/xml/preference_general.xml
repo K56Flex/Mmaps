@@ -24,6 +24,11 @@
             android:key="license"
             android:title="@string/license" />
 
+        <Preference
+            android:key="feedback"
+            android:summary="@string/feedback_summary"
+            android:title="@string/feedback" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

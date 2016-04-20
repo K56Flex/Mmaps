@@ -20,6 +20,15 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.text.DecimalFormat;
 
 import dg.shenm233.mmaps.MainApplication;
@@ -90,5 +99,45 @@ public class CommonUtils {
 
     public static boolean isStringEmpty(String s) {
         return s == null || s.isEmpty();
+    }
+
+    public static void writeToFile(String s, String filePath, boolean append) {
+        File f = new File(filePath);
+        Writer writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(f, append));
+            writer.write(s);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (writer != null) {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static String getStringFromFile(String filePath) {
+        String s = null;
+        File f = new File(filePath);
+        Reader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(f));
+            StringBuilder sb = new StringBuilder();
+            char[] buff = new char[50];
+            int length;
+            while ((length = reader.read(buff)) != -1) {
+                sb.append(buff, 0, length);
+            }
+            s = sb.toString();
+        } catch (FileNotFoundException e) {
+            s = null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 }

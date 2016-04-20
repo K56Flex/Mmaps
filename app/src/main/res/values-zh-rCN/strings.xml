@@ -58,6 +58,7 @@
     <string name="bus_duration_start_from">从%1$s发车</string>
     <string name="bus_include_night_bus"> 含夜班车 </string>
 
+    <string name="last_boom">已收集上一次崩溃日志，请到[设置]->[发送反馈]</string>
     <string name="error_no_location_permission">需要位置权限。</string>
     <string name="error_unknown">未知错误</string>
     <string name="error_no_connection">没有网络连接</string>
@@ -115,6 +116,11 @@
     <string name="thanks">感谢</string>
     <string name="version">版本号</string>
     <string name="license">开源协议</string>
+    <string name="feedback">发送反馈</string>
+    <string name="feedback_summary">发送最近一次的崩溃日志</string>
+    <string name="feedback_no_crash_reports">没有找到崩溃日志</string>
+
+    <string name="not_installed_email">本机没有安装电子邮件应用</string>
 
     <string name="navi_settings">导航设置</string>
     <string name="navi_keep_screen_bright">保持屏幕常亮</string>

@@ -57,6 +57,7 @@
     <string name="bus_duration_start_from">start from %1$s</string>
     <string name="via_roads">Via %1$s</string>
 
+    <string name="last_boom">already collected last crash log,please go to [Settings]->[Send feedback]</string>
     <string name="error_no_location_permission">require location permission.</string>
     <string name="error_unknown">Unknown error</string>
     <string name="error_no_connection">No Internet Connection</string>
@@ -114,6 +115,11 @@
     <string name="thanks">Thanks</string>
     <string name="version">Version</string>
     <string name="license">Open source License</string>
+    <string name="feedback">Send Feedback</string>
+    <string name="feedback_summary">send recent crash report</string>
+    <string name="feedback_no_crash_reports">crash reports not found</string>
+
+    <string name="not_installed_email">could not find email apps</string>
 
     <string name="navi_settings">Navigation Settings</string>
     <string name="navi_keep_screen_bright">Keep screen bright</string>

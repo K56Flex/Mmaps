@@ -18,21 +18,34 @@ package dg.shenm233.mmaps;
 
 import android.app.Application;
 import android.content.Context;
+import android.widget.Toast;
 
 import com.amap.api.maps.MapsInitializer;
+
+import java.io.File;
+import java.io.IOException;
 
 import dg.shenm233.mmaps.util.OffLineMapUtils;
 
 public class MainApplication extends Application {
     private static Context mAppContext;
+    private static String crashReportsPath;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mAppContext = this;
+        initCrashReportsPath();
+        CrashHandler.getInstance().init(this);
         String sdFilesDir = OffLineMapUtils.getSdFilesDir(this.getApplicationContext());
         if (!sdFilesDir.isEmpty()) {
             MapsInitializer.sdcardDir = sdFilesDir;
+        }
+
+        File crash = new File(MainApplication.getCrashReportsPath() + "/crashed");
+        if (crash.exists()) {
+            crash.delete();
+            Toast.makeText(this, R.string.last_boom, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -40,5 +53,22 @@ public class MainApplication extends Application {
         if (mAppContext == null) throw new RuntimeException();
 
         return mAppContext;
+    }
+
+    public static String getCrashReportsPath() {
+        return crashReportsPath;
+    }
+
+    private void initCrashReportsPath() {
+        File filesDir = getExternalFilesDir(null);
+        if (filesDir != null) {
+            File crashReports = new File(filesDir.getAbsolutePath() + "/../crashReports");
+            crashReports.mkdir();
+            try {
+                crashReportsPath = crashReports.getCanonicalPath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
