@@ -16,6 +16,7 @@
 
 package dg.shenm233.mmaps.ui;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,7 +35,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amap.api.maps.offlinemap.OfflineMapCity;
@@ -57,6 +57,8 @@ import dg.shenm233.mmaps.viewholder.OnViewLongClickListener;
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
 public class OfflineMapActivity extends BaseActivity {
+    private ProgressDialog mProgressDialog;
+
     private ViewGroup mMainContentVG;
 
     private DownloadListPager mDownloadListPager;
@@ -135,6 +137,7 @@ public class OfflineMapActivity extends BaseActivity {
     @Override
     public void onStart() {
         super.onStart();
+        showProgressDialog();
         Intent intent = new Intent(this, OfflineMapService.class);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
     }
@@ -153,6 +156,18 @@ public class OfflineMapActivity extends BaseActivity {
             isServiceBound = false;
             mBinder = null;
         }
+        mProgressDialog.dismiss();
+    }
+
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setCancelable(false);
+        }
+        mProgressDialog.show();
     }
 
     private void refreshDownloadList() {
@@ -171,8 +186,10 @@ public class OfflineMapActivity extends BaseActivity {
     private IOfflineMapCallback mCallback = new IOfflineMapCallback() {
         @Override
         public void onOfflineMapManagerReady() {
-            mDownloadListPager.removeProgressBar();
-            mCityListPager.removeProgressBar();
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+
             refreshDownloadList();
             mCityListPager.setOfflineProvinceList(mBinder.getOfflineMapProvinceList());
         }
@@ -213,8 +230,6 @@ public class OfflineMapActivity extends BaseActivity {
 
     private class DownloadListPager extends BasePager
             implements View.OnClickListener, OnViewLongClickListener {
-        private boolean showProgressBar = true;
-        private ProgressBar mProgressBar;
         private RecyclerView mListView;
 
         /**
@@ -285,21 +300,10 @@ public class OfflineMapActivity extends BaseActivity {
             mAdapter.notifyItemChanged(currentCityToPosition);
         }
 
-        public void removeProgressBar() {
-            showProgressBar = false;
-            if (mProgressBar != null) {
-                mProgressBar.setVisibility(View.GONE);
-            }
-        }
-
         @Override
         public View onCreateView(ViewGroup rootView) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.offline_down_list, rootView, false);
-            mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-            if (!showProgressBar) {
-                mProgressBar.setVisibility(View.GONE);
-            }
             Button downBtn = (Button) view.findViewById(R.id.action_download);
             downBtn.setOnClickListener(this);
 
@@ -368,8 +372,6 @@ public class OfflineMapActivity extends BaseActivity {
 
     private class CityListPager extends BasePager
             implements OnViewClickListener {
-        private boolean showProgressBar = true;
-        private ProgressBar mProgressBar;
         private RecyclerView mListView;
 
         private List<ProvinceListItem> mProvinceListItems = new ArrayList<>(35);
@@ -388,21 +390,10 @@ public class OfflineMapActivity extends BaseActivity {
             mAdapter.notifyParentListChanged();
         }
 
-        public void removeProgressBar() {
-            showProgressBar = false;
-            if (mProgressBar != null) {
-                mProgressBar.setVisibility(View.GONE);
-            }
-        }
-
         @Override
         public View onCreateView(ViewGroup rootView) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
             View view = inflater.inflate(R.layout.offline_city_list, rootView, false);
-            mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-            if (!showProgressBar) {
-                mProgressBar.setVisibility(View.GONE);
-            }
 
             RecyclerView listView = (RecyclerView) view.findViewById(R.id.offline_city_list);
             mListView = listView;
