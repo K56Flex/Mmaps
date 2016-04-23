@@ -115,6 +115,7 @@
     <string name="dev">开发</string>
     <string name="thanks">感谢</string>
     <string name="version">版本号</string>
+    <string name="open_source">开源地址</string>
     <string name="license">开源协议</string>
     <string name="feedback">发送反馈</string>
     <string name="feedback_summary">发送最近一次的崩溃日志</string>

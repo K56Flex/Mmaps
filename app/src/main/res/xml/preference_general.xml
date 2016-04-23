@@ -21,6 +21,10 @@
             android:title="@string/thanks" />
 
         <Preference
+            android:key="open_source"
+            android:title="@string/open_source" />
+
+        <Preference
             android:key="license"
             android:title="@string/license" />
 

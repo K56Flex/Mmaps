@@ -36,10 +36,13 @@ import dg.shenm233.mmaps.util.CommonUtils;
 
 public class GeneralSettingsFragment extends PreferenceFragment
         implements Preference.OnPreferenceClickListener {
+    private static final String source_code = "https://github.com/shenm233/Mmaps";
+
     private static final String navi_settings = "navi_settings";
     private static final String version = "version";
     private static final String license = "license";
     private static final String feedback = "feedback";
+    private static final String open_source = "open_source";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,10 @@ public class GeneralSettingsFragment extends PreferenceFragment
         findPreference(version).setSummary(BuildConfig.VERSION_NAME);
         findPreference(license).setOnPreferenceClickListener(this);
         findPreference(feedback).setOnPreferenceClickListener(this);
+
+        Preference open = findPreference(open_source);
+        open.setOnPreferenceClickListener(this);
+        open.setSummary(source_code);
     }
 
     @Override
@@ -66,6 +73,9 @@ public class GeneralSettingsFragment extends PreferenceFragment
             startActivity(intent);
         } else if (feedback.equals(key)) {
             sendFeedback();
+        } else if (open_source.equals(key)) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(source_code));
+            startActivity(intent);
         }
 
         return false;

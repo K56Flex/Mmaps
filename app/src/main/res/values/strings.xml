@@ -114,6 +114,7 @@
     <string name="dev">Dev</string>
     <string name="thanks">Thanks</string>
     <string name="version">Version</string>
+    <string name="open_source">Open source</string>
     <string name="license">Open source License</string>
     <string name="feedback">Send Feedback</string>
     <string name="feedback_summary">send recent crash report</string>
