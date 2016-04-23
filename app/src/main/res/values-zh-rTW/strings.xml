@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2016 Shen Zhang
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="app_name">Mmaps</string>
+    <string name="app_name_debug">Mmaps (debug)</string>
+    <string name="action_settings">設定</string>
+    <string name="action_back">返回</string>
+    <string name="action_search">搜索</string>
+    <string name="search_in_maps">搜索地圖</string>
+    <string name="directions_from">从</string>
+    <string name="directions_to">到</string>
+    <string name="directions">路徑</string>
+    <string name="my_location">我的位置</string>
+    <string name="searching">正在搜索...</string>
+    <string name="no_result">抱歉，沒有結果</string>
+    <string name="reverse">返回路線</string>
+    <string name="route_options">路線選項</string>
+    <string name="done">完成</string>
+    <string name="cancel">取消</string>
+    <string name="ok">確定</string>
+    <string name="back">返回</string>
+    <string name="walk">步行</string>
+    <string name="starting_point">出發點</string>
+    <string name="arrive_destination">到達目的地</string>
+    <string name="ride_x_stops">途徑%1$d站</string>
+    <string name="duration_and_distance">%1$s (%2$s)</string>
+
+    <string-array name="route_options_drive">
+        <item>省錢</item>
+        <item>避開擁堵</item>
+        <item>不走高速</item>
+        <item>距離優先</item>
+        <item>不走快速路</item>
+    </string-array>
+
+    <string-array name="route_options_bus">
+        <item>默認</item>
+        <item>省錢</item>
+        <item>較少換乘</item>
+        <item>較少步行</item>
+        <item>更舒適</item>
+        <item>不乘捷運</item>
+    </string-array>
+
+    <string-array name="route_options_walk">
+        <item>默認</item>
+        <item>多種方案</item>
+    </string-array>
+
+    <string name="hour">小時</string>
+    <string name="minute">分鐘</string>
+    <string name="second">秒</string>
+
+    <string name="choose_on_map">從地圖選點</string>
+    <string name="chosen_on_map">地圖上的選點</string>
+    <string name="map_under_pin">平移和縮放圖釘周圍的地圖</string>
+
+    <string name="via_roads">途徑 %1$s</string>
+    <string name="bus_duration_start_from">从%1$s發車</string>
+    <string name="bus_include_night_bus"> 含夜班車 </string>
+
+    <string name="last_boom">已收集上一次崩潰日誌，請到[設定]->[發送反饋]</string>
+    <string name="error_no_location_permission">需要位置權限。</string>
+    <string name="error_unknown">未知錯誤</string>
+    <string name="error_no_connection">沒有網路連接</string>
+    <string name="error_over_directions_range">超出路徑規劃範圍</string>
+    <string name="error_invalid_parameter">無效參數 \n
+        如果你查詢的是公交，不支持跨城市查詢公交。</string>
+    <string name="error_socket_timeout">連接超時</string>
+    <string name="error_out_of_service">超出服務範圍 \n
+        僅支持中國大陸內查詢</string>
+    <string name="error_out_of_quota">超出查詢次數（受高德限制）</string>
+    <string name="error_route_failure">查詢路徑規劃失敗</string>
+
+    <string name="satellite">衛星圖</string>
+    <string name="traffic">實時路況</string>
+
+    <string name="action_download_start">開始下載</string>
+    <string name="action_download_pause">暫停下載</string>
+
+    <string name="download">下載</string>
+    <string name="downloaded">已下載</string>
+    <string name="downloading_with_percent">下載中 %d %%</string>
+    <string name="unzipping_with_percent">解壓中 %d %%</string>
+    <string name="paused">已暫停</string>
+    <string name="stopped">已停止</string>
+    <string name="io_exception">IO錯誤</string>
+    <string name="network_exception">網路錯誤</string>
+    <string name="waiting_downloading">等待中</string>
+    <string name="error_redownload">錯誤，請重新下載</string>
+    <string name="already_downloaded">已下載</string>
+
+    <string name="offline_map_download">離線地圖下載</string>
+    <string name="download_list">下載列表</string>
+    <string name="city_list">城市列表</string>
+    <string name="really_remove_offline_map">真的要刪除該城市的離線地圖？</string>
+    <string name="remove_maps_success">已刪除%1$s的離線地圖</string>
+    <string name="remove_maps_failed">删除%1$s的離線地圖失敗</string>
+
+    <string name="note">提示</string>
+
+    <string name="navi_attention">注意！</string>
+    <string name="navi_attention_msg">該導航功能是實驗性功能（事實上還沒實現完整）。請自行承擔風險。
+        \n本應用不為生命財產的損失，道路準確性，道路費用等負責。
+        \n請遵守當地法律法規，安全駕駛！
+    </string>
+
+    <string name="navi_please_enable_gps">請打開設備的GPS</string>
+    <string name="navi_really_exit">要退出導航？</string>
+    <string name="navi_not_supported_strategy">不支持該駕駛方案，請選擇其他方案</string>
+    <string name="navi_failure">導航失敗</string>
+    <string name="navi_permission_failed">導航需要電話和位置權限</string>
+
+    <string name="settings">設定</string>
+    <string name="about">關於</string>
+    <string name="dev">開發</string>
+    <string name="thanks">感謝</string>
+    <string name="version">版本號</string>
+    <string name="open_source">開源地址</string>
+    <string name="license">開源協議</string>
+    <string name="feedback">發送反饋</string>
+    <string name="feedback_summary">發送最近一次的崩潰日誌</string>
+    <string name="feedback_no_crash_reports">沒有找到崩潰日誌</string>
+
+    <string name="not_installed_email">本機沒有安裝電子郵件程式</string>
+
+    <string name="navi_settings">導航設置</string>
+    <string name="navi_keep_screen_bright">保持屏幕常亮</string>
+    <string name="navi_night_mode">夜間模式</string>
+    <string name="navi_recalc_for_jam">交通擁擠時重新規劃路線</string>
+    <string name="navi_recalc_for_jam_summary">僅支持駕車模式，同時需要網絡連接</string>
+    <string name="navi_recalc_for_yaw">偏離方向時重新規劃路線</string>
+    <string name="navi_recalc_for_yaw_summary">僅支持駕車模式，同時需要網絡連接</string>
+    <string name="navi_voice_navigation">語音導航</string>
+    <string name="navi_voice_navigation_enable">啟用語音導航</string>
+
+</resources>

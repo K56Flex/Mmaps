@@ -17,7 +17,7 @@
             android:title="@string/dev" />
 
         <Preference
-            android:summary="icons by shiunghanching@coolapk"
+            android:summary="icons and 繁体中文 by shiunghanching@coolapk"
             android:title="@string/thanks" />
 
         <Preference
