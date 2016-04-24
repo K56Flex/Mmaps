@@ -36,6 +36,7 @@ import java.lang.ref.WeakReference;
 
 import dg.shenm233.mmaps.model.RouteQuery;
 import dg.shenm233.mmaps.model.RouteQuery.RouteType;
+import dg.shenm233.mmaps.util.CommonUtils;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
@@ -181,8 +182,10 @@ public class DirectionsInteractor {
             try {
                 //反查出地理地址，用于获取城市
                 RegeocodeAddress regeocodeAddress = geocodeSearch.getFromLocation(regeocodeQuery);
+                String cityName = CommonUtils.isStringEmpty(regeocodeAddress.getCity())
+                        ? regeocodeAddress.getProvince() : regeocodeAddress.getCity();
                 RouteSearch.BusRouteQuery query = new RouteSearch.BusRouteQuery(fromAndTo, busMode,
-                        regeocodeAddress.getCity(),
+                        cityName,
                         routeQuery.getIncludeNightBus() ? 1 : 0);
                 RouteSearch routeSearch = new RouteSearch(mContext);
                 busRouteResult = routeSearch.calculateBusRoute(query);
