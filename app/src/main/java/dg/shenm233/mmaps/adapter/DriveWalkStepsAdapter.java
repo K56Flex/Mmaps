@@ -71,13 +71,11 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
     public void setDriveStepList(List<DriveStep> driveSteps) {
         mDriveStepList = driveSteps;
         mWalkStepList = null;
-        notifyDataSetChanged();
     }
 
     public void setWalkStepList(List<WalkStep> walkSteps) {
         mDriveStepList = null;
         mWalkStepList = walkSteps;
-        notifyDataSetChanged();
     }
 
     public void clear() {

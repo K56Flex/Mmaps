@@ -79,7 +79,6 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         final List<Object> itemList = mItemList;
         itemList.clear();
         if (busSteps == null) {
-            notifyDataSetChanged();
             return;
         }
 
@@ -99,8 +98,6 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         }
 
         isFirstRouteBusWalkItem = (mItemList.get(0) instanceof RouteBusWalkItem);
-
-        notifyDataSetChanged();
     }
 
     public void clear() {

@@ -117,6 +117,7 @@ public class DirectionsPresenter {
         adapter.setBusStepList(((BusPath) myPath.path).getSteps());
         adapter.setStartingPoint(myPath.startPoint);
         adapter.setDestPoint(myPath.endPoint);
+        adapter.notifyDataSetChanged();
 
         String s = mContext.getString(R.string.duration_and_distance,
                 CommonUtils.getFriendlyDuration(busPath.getDuration()),

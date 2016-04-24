@@ -36,12 +36,10 @@ public class ViewPagerAdapter extends PagerAdapter {
             throw new IllegalArgumentException("~boom~ pager should not be null");
         }
         mPagers.add(pager);
-        //TODO: call notifyDataSetChanged()
     }
 
     public void remove(int position) {
         mPagers.remove(position);
-        notifyDataSetChanged();
     }
 
     @Override

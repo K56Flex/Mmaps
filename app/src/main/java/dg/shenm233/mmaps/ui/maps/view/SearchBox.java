@@ -153,6 +153,7 @@ public class SearchBox extends ViewContainer
             @Override
             public void onGetInputTips(List<Tip> tipList) {
                 mResultAdapter.setList(tipList);
+                mResultAdapter.notifyDataSetChanged();
             }
         });
     }

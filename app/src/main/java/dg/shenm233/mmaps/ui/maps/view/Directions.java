@@ -269,6 +269,7 @@ public class Directions extends ViewContainer
             destinationText.setText("");
             destinationText.setTag(null);
             mResultAdapter.clear();
+            mResultAdapter.notifyDataSetChanged();
         }
 
         setStartingPointFromArgs();
@@ -500,9 +501,11 @@ public class Directions extends ViewContainer
             case ROUTE_DRIVE:
             case ROUTE_WALK:
                 mStepListView.setAdapter(mDriveWalkStepsAdapter);
+                mDriveWalkStepsAdapter.notifyDataSetChanged();
                 break;
             case ROUTE_BUS:
                 mStepListView.setAdapter(mBusStepsAdapter);
+                mBusStepsAdapter.notifyDataSetChanged();
                 break;
         }
         mMapsFragment.setMapViewVisibility(View.VISIBLE);
@@ -516,6 +519,7 @@ public class Directions extends ViewContainer
         mResultViewContainer.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
         mRouteResultListView.setVisibility(View.VISIBLE);
+        mResultAdapter.notifyDataSetChanged();
     }
 
     @Override

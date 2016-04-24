@@ -30,17 +30,14 @@ public class CardListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void add(Card card) {
         mCardList.add(card);
-        notifyDataSetChanged();
     }
 
     public void addAll(Collection<? extends Card> cardCollection) {
         mCardList.addAll(cardCollection);
-        notifyDataSetChanged();
     }
 
     public void clear() {
         mCardList.clear();
-        notifyDataSetChanged();
     }
 
     @Override

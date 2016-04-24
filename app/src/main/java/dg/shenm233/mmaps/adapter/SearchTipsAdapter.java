@@ -43,7 +43,6 @@ public class SearchTipsAdapter extends BaseRecyclerViewAdapter<SearchTipsAdapter
     public void setList(List<Tip> tipList) {
         //考虑到性能问题，不打算一个个地复制Tip
         mTipsList = tipList;
-        notifyDataSetChanged();
     }
 
     @Override
