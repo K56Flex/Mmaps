@@ -88,8 +88,15 @@ public class BusRouteOverlayS extends RouteOverlayS {
     }
 
     private void linkWalkAndBus(RouteBusWalkItem walkItem, RouteBusLineItem busItem) {
-        LatLng walkEnd = AMapUtils.convertToLatLng(getWalkEnd(walkItem));
-        LatLng busStart = AMapUtils.convertToLatLng(getBusStart(busItem));
+        LatLonPoint walkEndm = getWalkEnd(walkItem);
+        LatLonPoint busStartm = getBusStart(busItem);
+
+        if (walkEndm == null || busStartm == null) {
+            return;
+        }
+
+        LatLng walkEnd = AMapUtils.convertToLatLng(walkEndm);
+        LatLng busStart = AMapUtils.convertToLatLng(busStartm);
 
         if (!walkEnd.equals(busStart)) {
             addWalkPolyline(walkEnd, busStart);
@@ -97,8 +104,15 @@ public class BusRouteOverlayS extends RouteOverlayS {
     }
 
     private void linkBusAndWalk(RouteBusLineItem busItem, RouteBusWalkItem walkItem) {
-        LatLng busEnd = AMapUtils.convertToLatLng(getBusEnd(busItem));
-        LatLng walkStart = AMapUtils.convertToLatLng(getWalkStart(walkItem));
+        LatLonPoint busEndm = getBusEnd(busItem);
+        LatLonPoint walkStartm = getWalkStart(walkItem);
+
+        if (busEndm == null || walkStartm == null) {
+            return;
+        }
+
+        LatLng busEnd = AMapUtils.convertToLatLng(busEndm);
+        LatLng walkStart = AMapUtils.convertToLatLng(walkStartm);
 
         if (!busEnd.equals(walkStart)) {
             addWalkPolyline(busEnd, walkStart);
@@ -106,8 +120,15 @@ public class BusRouteOverlayS extends RouteOverlayS {
     }
 
     private void switchBus(RouteBusLineItem a, RouteBusLineItem b) {
-        LatLng aEnd = AMapUtils.convertToLatLng(getBusEnd(a));
-        LatLng bStart = AMapUtils.convertToLatLng(getBusStart(b));
+        LatLonPoint busEndm = getBusEnd(a);
+        LatLonPoint busStartm = getBusStart(b);
+
+        if (busEndm == null || busStartm == null) {
+            return;
+        }
+
+        LatLng aEnd = AMapUtils.convertToLatLng(busEndm);
+        LatLng bStart = AMapUtils.convertToLatLng(busStartm);
 
         if (!aEnd.equals(bStart)) {
             drawLineWithDot(aEnd, bStart);
@@ -116,16 +137,16 @@ public class BusRouteOverlayS extends RouteOverlayS {
 
     private void drawLineWithDot(LatLng start, LatLng end) {
         addPolyLine(new PolylineOptions().add(start, end)
-                        .width(getRouteWidth())
-                        .color(getBusColor())
-                        .setDottedLine(true)
+                .width(getRouteWidth())
+                .color(getBusColor())
+                .setDottedLine(true)
         );
     }
 
     private void addWalkPolyline(LatLng a, LatLng b) {
         addPolyLine(new PolylineOptions().add(a, b)
-                        .color(getWalkColor())
-                        .width(getRouteWidth())
+                .color(getWalkColor())
+                .width(getRouteWidth())
         );
     }
 
@@ -145,8 +166,8 @@ public class BusRouteOverlayS extends RouteOverlayS {
         }
 
         addPolyLine(new PolylineOptions().addAll(pointList)
-                        .color(getWalkColor())
-                        .width(getRouteWidth())
+                .color(getWalkColor())
+                .width(getRouteWidth())
         );
     }
 
@@ -154,29 +175,42 @@ public class BusRouteOverlayS extends RouteOverlayS {
         List<LatLng> list = AMapUtils.convertToLatLng(busLineItem.getPolyline());
 
         addPolyLine(new PolylineOptions().addAll(list)
-                        .color(getBusColor())
-                        .width(getRouteWidth())
+                .color(getBusColor())
+                .width(getRouteWidth())
         );
     }
 
     private LatLonPoint getWalkStart(RouteBusWalkItem walkItem) {
         List<WalkStep> walkSteps = walkItem.getSteps();
+        if (walkSteps.size() == 0) {
+            return null;
+        }
         List<LatLonPoint> list = walkSteps.get(0).getPolyline();
         return list.get(0);
     }
 
     private LatLonPoint getWalkEnd(RouteBusWalkItem walkItem) {
         List<WalkStep> walkSteps = walkItem.getSteps();
+        if (walkSteps.size() == 0) {
+            return null;
+        }
         List<LatLonPoint> list = walkSteps.get(walkSteps.size() - 1).getPolyline();
         return list.get(list.size() - 1);
     }
 
     private LatLonPoint getBusStart(RouteBusLineItem busLineItem) {
-        return busLineItem.getPolyline().get(0);
+        List<LatLonPoint> list = busLineItem.getPolyline();
+        if (list.size() == 0) {
+            return null;
+        }
+        return list.get(0);
     }
 
     private LatLonPoint getBusEnd(RouteBusLineItem busLineItem) {
         List<LatLonPoint> list = busLineItem.getPolyline();
+        if (list.size() == 0) {
+            return null;
+        }
         return list.get(list.size() - 1);
     }
 }
