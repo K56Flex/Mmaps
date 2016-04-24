@@ -63,8 +63,8 @@ public class BusRouteCard extends Card<BusRouteCard.ViewHolder> {
     }
 
     @Override
-    public void updateViewHolder(RecyclerView.ViewHolder viewHolder) {
-        super.updateViewHolder(viewHolder);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder) {
+        super.onBindViewHolder(viewHolder);
         ViewHolder vh = (ViewHolder) viewHolder;
         vh.busPathView.setBusPath(mPathText);
         vh.durationView.setText(CommonUtils.getFriendlyDuration(mDuration));

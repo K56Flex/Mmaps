@@ -42,8 +42,8 @@ public class HeaderCard extends Card<HeaderCard.ViewHolder> {
     }
 
     @Override
-    public void updateViewHolder(RecyclerView.ViewHolder viewHolder) {
-        super.updateViewHolder(viewHolder);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder) {
+        super.onBindViewHolder(viewHolder);
         ((ViewHolder) viewHolder).mHeader.setText(mHeaderText);
     }
 

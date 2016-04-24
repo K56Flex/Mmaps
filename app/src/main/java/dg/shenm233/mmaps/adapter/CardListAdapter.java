@@ -55,7 +55,7 @@ public class CardListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        mCardList.get(position).updateViewHolder(holder);
+        mCardList.get(position).onBindViewHolder(holder);
     }
 
     @Override

@@ -102,7 +102,7 @@ public abstract class Card<VH extends Card.CardViewHolder> {
      * @param vh
      */
     @CallSuper
-    public void updateViewHolder(RecyclerView.ViewHolder vh) {
+    public void onBindViewHolder(RecyclerView.ViewHolder vh) {
         CardViewHolder viewHolder = (CardViewHolder) vh;
         viewHolder.setCard(this);
         viewHolder.setCardClickListener(mOnCardClickListener);

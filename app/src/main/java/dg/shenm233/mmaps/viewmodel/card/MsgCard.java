@@ -57,8 +57,8 @@ public class MsgCard extends Card<MsgCard.ViewHolder> {
     }
 
     @Override
-    public void updateViewHolder(RecyclerView.ViewHolder viewHolder) {
-        super.updateViewHolder(viewHolder);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder) {
+        super.onBindViewHolder(viewHolder);
         ViewHolder vh = (ViewHolder) viewHolder;
         vh.mMsgText.setText(mText);
     }
