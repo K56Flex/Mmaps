@@ -75,7 +75,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         mDestPoint = destPoint;
     }
 
-    public void setBusStepList(List<BusStep> busSteps) {
+    public synchronized void setBusStepList(List<BusStep> busSteps) {
         final List<Object> itemList = mItemList;
         itemList.clear();
         if (busSteps == null) {
@@ -100,7 +100,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
         isFirstRouteBusWalkItem = (mItemList.get(0) instanceof RouteBusWalkItem);
     }
 
-    public void clear() {
+    public synchronized void clear() {
         mItemList.clear();
     }
 
@@ -111,7 +111,7 @@ public class BusStepsAdapter extends BaseRecyclerViewAdapter<BusStepsAdapter.Ste
      * @return 当position为0时，返回可能为null，也有可能是RouteBusWalkItem类型的
      * 当position为getItemCount() - 1时，返回为null(因为getItemCount() - 1的位置作为目的地)
      */
-    public Object getItem(int position) {
+    private Object getItem(int position) {
         if (position < 0 || position >= getItemCount() - 1) {
             return null;
         }

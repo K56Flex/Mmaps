@@ -28,15 +28,15 @@ import dg.shenm233.mmaps.viewmodel.card.Card;
 public class CardListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Card> mCardList = new ArrayList<>();
 
-    public void add(Card card) {
+    public synchronized void add(Card card) {
         mCardList.add(card);
     }
 
-    public void addAll(Collection<? extends Card> cardCollection) {
+    public synchronized void addAll(Collection<? extends Card> cardCollection) {
         mCardList.addAll(cardCollection);
     }
 
-    public void clear() {
+    public synchronized void clear() {
         mCardList.clear();
     }
 

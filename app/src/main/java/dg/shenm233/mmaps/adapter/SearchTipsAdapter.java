@@ -40,7 +40,7 @@ public class SearchTipsAdapter extends BaseRecyclerViewAdapter<SearchTipsAdapter
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public void setList(List<Tip> tipList) {
+    public synchronized void setList(List<Tip> tipList) {
         //考虑到性能问题，不打算一个个地复制Tip
         mTipsList = tipList;
     }
