@@ -28,6 +28,12 @@
 
 -keep class dg.shenm233.mmaps.widget.**{*;}
 
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
 #3D 地图
 -keep class com.amap.api.mapcore.**{*;}
 -keep class com.amap.api.maps.**{*;}

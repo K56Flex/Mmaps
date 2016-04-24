@@ -40,6 +40,10 @@ import android.widget.Toast;
 import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapProvince;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +51,7 @@ import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.OfflineCityListAdapter;
 import dg.shenm233.mmaps.adapter.OfflineDownloadListAdapter;
 import dg.shenm233.mmaps.adapter.ViewPagerAdapter;
-import dg.shenm233.mmaps.service.IOfflineMapCallback;
+import dg.shenm233.mmaps.service.OfflineMapEvent;
 import dg.shenm233.mmaps.service.OfflineMapService;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 import dg.shenm233.mmaps.viewholder.OnViewLongClickListener;
@@ -74,8 +78,7 @@ public class OfflineMapActivity extends BaseActivity {
             mBinder = binder = (OfflineMapService.ServiceBinder) service;
             isServiceBound = true;
 
-            binder.addCallback(mCallback);
-            binder.initOfflineMapManager(mCallback);
+            binder.initOfflineMapManager();
         }
 
         @Override
@@ -138,6 +141,7 @@ public class OfflineMapActivity extends BaseActivity {
     public void onStart() {
         super.onStart();
         showProgressDialog();
+        EventBus.getDefault().register(this);
         Intent intent = new Intent(this, OfflineMapService.class);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
     }
@@ -149,9 +153,9 @@ public class OfflineMapActivity extends BaseActivity {
 
     @Override
     public void onStop() {
+        EventBus.getDefault().unregister(this);
         super.onStop();
         if (isServiceBound) {
-            mBinder.removeCallback(mCallback);
             unbindService(mConnection);
             isServiceBound = false;
             mBinder = null;
@@ -183,44 +187,60 @@ public class OfflineMapActivity extends BaseActivity {
         downloadListPager.notifyDataSetChanged();
     }
 
-    private IOfflineMapCallback mCallback = new IOfflineMapCallback() {
-        @Override
-        public void onOfflineMapManagerReady() {
-            if (mProgressDialog != null) {
-                mProgressDialog.dismiss();
-            }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOfflineMapManagerReady(OfflineMapEvent event) {
+        if (!OfflineMapEvent.MANAGER_READY_EVENT.equals(event.eventType)) {
+            return;
+        }
+
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+        }
+
+        refreshDownloadList();
+        mCityListPager.setOfflineProvinceList(mBinder.getOfflineMapProvinceList());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownload(OfflineMapEvent event) {
+        if (!OfflineMapEvent.DOWNLOAD_EVENT.equals(event.eventType)) {
+            return;
+        }
+
+        if (DEBUG) {
+            Log.d("OfflineMapActivity", String.format("download %s %d", event.name, event.completeCode));
+        }
+        mDownloadListPager.notifySingleItemChanged(event.name);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCheckUpdate(OfflineMapEvent event) {
+        if (!OfflineMapEvent.CHECK_UPDATE_EVENT.equals(event.eventType)) {
+            return;
+        }
+
+        if (DEBUG) {
+            Log.d("OfflineMapActivity", String.format("checkUpdate %s %b", event.name, event.hasUpdate));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRemove(OfflineMapEvent event) {
+        if (!OfflineMapEvent.REMOVE_EVENT.equals(event.eventType)) {
+            return;
+        }
+
+        if (DEBUG) {
+            Log.d("OfflineMapActivity", String.format("remove %s %b %s",
+                    event.name, event.removeSuccess, event.description));
+        }
+        if (event.removeSuccess) {
             refreshDownloadList();
-            mCityListPager.setOfflineProvinceList(mBinder.getOfflineMapProvinceList());
         }
 
-        @Override
-        public void onDownload(int status, int completeCode, String name) {
-            if (DEBUG) {
-                Log.d("OfflineMapActivity", String.format("download %s %d", name, completeCode));
-            }
-            mDownloadListPager.notifySingleItemChanged(name);
-        }
-
-        @Override
-        public void onCheckUpdate(boolean hasNew, String name) {
-            if (DEBUG) {
-                Log.d("OfflineMapActivity", String.format("checkUpdate %s %b", name, hasNew));
-            }
-        }
-
-        @Override
-        public void onRemove(boolean success, String name, String describe) {
-            if (DEBUG) {
-                Log.d("OfflineMapActivity", String.format("remove %s %b %s", name, success, describe));
-            }
-            if (success) {
-                refreshDownloadList();
-            }
-
-            onRemoveMaps(success, name, describe);
-        }
-    };
+        onRemoveMaps(event.removeSuccess, event.name, event.description);
+    }
 
     private void onRemoveMaps(boolean success, String name, String describe) {
         String s = success ? getString(R.string.remove_maps_success, name) :

@@ -19,9 +19,7 @@ package dg.shenm233.mmaps.service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 
 import com.amap.api.maps.AMapException;
@@ -31,6 +29,8 @@ import com.amap.api.maps.offlinemap.OfflineMapManager.OfflineMapDownloadListener
 import com.amap.api.maps.offlinemap.OfflineMapProvince;
 import com.amap.api.maps.offlinemap.OfflineMapServiceStub;
 import com.amap.api.maps.offlinemap.OfflineMapStatus;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,6 @@ public class OfflineMapService extends OfflineMapServiceStub {
     final public static String DOWHAT_CHECK_UPDATE_MAP = "checkMap";
 
     private ServiceBinder mBinder;
-    private List<IOfflineMapCallback> mCallbacks = new ArrayList<>();
 
     private boolean isDownloading = false;
 
@@ -130,11 +129,11 @@ public class OfflineMapService extends OfflineMapServiceStub {
             } else {
                 isDownloading = false;
             }
-            for (IOfflineMapCallback callback : mCallbacks) {
-                if (callback != null) {
-                    callback.onDownload(status, completeCode, name);
-                }
-            }
+            OfflineMapEvent event = new OfflineMapEvent(OfflineMapEvent.DOWNLOAD_EVENT);
+            event.name = name;
+            event.statusCode = status;
+            event.completeCode = completeCode;
+            EventBus.getDefault().post(event);
         }
 
         /**
@@ -147,11 +146,10 @@ public class OfflineMapService extends OfflineMapServiceStub {
             if (DEBUG) {
                 Log.d("OfflineMapService", String.format("checkUpdate %s %b", name, hasNew));
             }
-            for (IOfflineMapCallback callback : mCallbacks) {
-                if (callback != null) {
-                    callback.onCheckUpdate(hasNew, name);
-                }
-            }
+            OfflineMapEvent event = new OfflineMapEvent(OfflineMapEvent.CHECK_UPDATE_EVENT);
+            event.name = name;
+            event.hasUpdate = hasNew;
+            EventBus.getDefault().post(event);
         }
 
         /**
@@ -166,26 +164,22 @@ public class OfflineMapService extends OfflineMapServiceStub {
             if (DEBUG) {
                 Log.d("OfflineMapService", String.format("remove %s %b %s", name, success, describe));
             }
-            for (IOfflineMapCallback callback : mCallbacks) {
-                if (callback != null) {
-                    callback.onRemove(success, name, describe);
-                }
-            }
+            OfflineMapEvent event = new OfflineMapEvent(OfflineMapEvent.REMOVE_EVENT);
+            event.name = name;
+            event.removeSuccess = success;
+            event.description = describe;
+            EventBus.getDefault().post(event);
         }
     };
-
-    private static Handler mMainThreadHandler = new Handler(Looper.getMainLooper());
 
     public class ServiceBinder extends Binder {
         private ServiceBinder() {
         }
 
         /**
-         * 开始初始化OfflineMapManager，完成后会调用回调的onOfflineMapManagerReady()
-         *
-         * @param callback 初始化完成后调用的回调
+         * 开始初始化OfflineMapManager，完成后通过EventBus发布OfflineMapEvent消息
          */
-        public void initOfflineMapManager(final IOfflineMapCallback callback) {
+        public void initOfflineMapManager() {
             if (mMapManager == null) {
                 /* OfflineMapManager只能在主线程创建
                 new Thread(new Runnable() {
@@ -199,37 +193,14 @@ public class OfflineMapService extends OfflineMapServiceStub {
                     Log.d("OfflineMapService", "OfflineMapManager construction method takes "
                             + (System.currentTimeMillis() - t) + " ms");
                 }
-                mMainThreadHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onOfflineMapManagerReady();
-                    }
-                });
+                EventBus.getDefault().post(new OfflineMapEvent(OfflineMapEvent.MANAGER_READY_EVENT));
                 /*
                     }
                 }).start();
                 */
             } else {
-                callback.onOfflineMapManagerReady();
+                EventBus.getDefault().post(new OfflineMapEvent(OfflineMapEvent.MANAGER_READY_EVENT));
             }
-        }
-
-        /**
-         * 添加监听下载进度的回调
-         *
-         * @param callback 用于监听下载进度的回调
-         */
-        public void addCallback(IOfflineMapCallback callback) {
-            mCallbacks.add(callback);
-        }
-
-        /**
-         * 删除监听下载进度的回调
-         *
-         * @param callback 用于监听下载进度的回调
-         */
-        public void removeCallback(IOfflineMapCallback callback) {
-            mCallbacks.remove(callback);
         }
 
         /**
