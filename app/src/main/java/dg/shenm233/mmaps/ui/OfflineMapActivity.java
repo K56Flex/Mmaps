@@ -47,12 +47,12 @@ import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.OfflineCityListAdapter;
 import dg.shenm233.mmaps.adapter.OfflineDownloadListAdapter;
 import dg.shenm233.mmaps.adapter.ViewPagerAdapter;
-import dg.shenm233.mmaps.model.BasePager;
-import dg.shenm233.mmaps.model.offlinemap.ProvinceListItem;
 import dg.shenm233.mmaps.service.IOfflineMapCallback;
 import dg.shenm233.mmaps.service.OfflineMapService;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 import dg.shenm233.mmaps.viewholder.OnViewLongClickListener;
+import dg.shenm233.mmaps.viewmodel.BasePager;
+import dg.shenm233.mmaps.viewmodel.offlinemap.ProvinceListItem;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dg.shenm233.mmaps.model.card;
+package dg.shenm233.mmaps.viewmodel.card;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

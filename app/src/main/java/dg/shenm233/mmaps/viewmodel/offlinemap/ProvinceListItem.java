@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dg.shenm233.mmaps.model.offlinemap;
+package dg.shenm233.mmaps.viewmodel.offlinemap;
 
 import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapProvince;

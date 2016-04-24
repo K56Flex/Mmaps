@@ -35,9 +35,9 @@ import com.bignerdranch.expandablerecyclerview.ViewHolder.ParentViewHolder;
 import java.util.List;
 
 import dg.shenm233.mmaps.R;
-import dg.shenm233.mmaps.model.offlinemap.ProvinceListItem;
 import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
+import dg.shenm233.mmaps.viewmodel.offlinemap.ProvinceListItem;
 
 public class OfflineCityListAdapter
         extends ExpandableRecyclerAdapter<OfflineCityListAdapter.ProvinceVH, OfflineCityListAdapter.CityVH> {

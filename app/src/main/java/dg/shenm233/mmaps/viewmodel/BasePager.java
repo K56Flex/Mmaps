@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dg.shenm233.mmaps.model;
+package dg.shenm233.mmaps.viewmodel;
 
 import android.content.Context;
 import android.view.View;

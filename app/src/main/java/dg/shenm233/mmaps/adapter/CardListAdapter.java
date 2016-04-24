@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import dg.shenm233.mmaps.model.card.Card;
+import dg.shenm233.mmaps.viewmodel.card.Card;
 
 public class CardListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Card> mCardList = new ArrayList<>();

@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import dg.shenm233.mmaps.model.BasePager;
+import dg.shenm233.mmaps.viewmodel.BasePager;
 
 public class ViewPagerAdapter extends PagerAdapter {
     private List<BasePager> mPagers = new ArrayList<>();

@@ -47,13 +47,13 @@ import dg.shenm233.mmaps.adapter.BusStepsAdapter;
 import dg.shenm233.mmaps.adapter.CardListAdapter;
 import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
 import dg.shenm233.mmaps.model.MyPath;
-import dg.shenm233.mmaps.model.card.BusRouteCard;
-import dg.shenm233.mmaps.model.card.Card;
-import dg.shenm233.mmaps.model.card.HeaderCard;
-import dg.shenm233.mmaps.model.card.MsgCard;
 import dg.shenm233.mmaps.ui.NaviActivity;
 import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
+import dg.shenm233.mmaps.viewmodel.card.BusRouteCard;
+import dg.shenm233.mmaps.viewmodel.card.Card;
+import dg.shenm233.mmaps.viewmodel.card.HeaderCard;
+import dg.shenm233.mmaps.viewmodel.card.MsgCard;
 
 public class DirectionsPresenter {
     private Context mContext;
