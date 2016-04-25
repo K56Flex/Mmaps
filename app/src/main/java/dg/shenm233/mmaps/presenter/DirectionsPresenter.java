@@ -24,6 +24,7 @@ import android.view.View;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusRouteResult;
@@ -54,6 +55,11 @@ import dg.shenm233.mmaps.viewmodel.card.BusRouteCard;
 import dg.shenm233.mmaps.viewmodel.card.Card;
 import dg.shenm233.mmaps.viewmodel.card.HeaderCard;
 import dg.shenm233.mmaps.viewmodel.card.MsgCard;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class DirectionsPresenter {
     private Context mContext;
@@ -77,7 +83,7 @@ public class DirectionsPresenter {
         mMapsModule = mapsModule;
         mDirectionsView = directionsView;
 
-        mDirectionsInteractor = new DirectionsInteractor(context, new ResultListener());
+        mDirectionsInteractor = new DirectionsInteractor(context);
     }
 
     private void setStartingPoint(LatLonPoint startingPoint) {
@@ -88,20 +94,157 @@ public class DirectionsPresenter {
         mDestinationPoint = destinationPoint;
     }
 
-    public void queryDriveRoute(LatLonPoint startPoint, LatLonPoint endPoint, int drivingMode) {
+    private Subscription mCurQueryRoute;
+
+    public void queryDriveRoute(final LatLonPoint startPoint, final LatLonPoint endPoint,
+                                int drivingMode) {
         clearAllOverlays();
-        mDirectionsInteractor.queryDriveRouteAsync(startPoint, endPoint, drivingMode);
+        stopCurRouteQuery();
+        mCurQueryRoute = mDirectionsInteractor.queryDriveRouteAsync(startPoint, endPoint, drivingMode)
+                .observeOn(Schedulers.computation())
+                .map(new Func1<DriveRouteResult, DrivePath>() {
+                    @Override
+                    public DrivePath call(DriveRouteResult driveRouteResult) {
+                        return getPathAndAddOverlay(driveRouteResult);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<DrivePath>() {
+                    @Override
+                    public void onCompleted() {
+                        mDirectionsView.showPathOnMap();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showError(((AMapException) e).getErrorCode(), true);
+                    }
+
+                    @Override
+                    public void onNext(DrivePath drivePath) {
+                        if (isUnsubscribed()) {
+                            return;
+                        }
+
+                        if (drivePath == null) {
+                            showError(0, true);
+                            return;
+                        }
+
+                        IDirectionsView directionsView = mDirectionsView;
+                        DriveWalkStepsAdapter adapter = directionsView.getDriveWalkStepsAdapter();
+                        adapter.setStartingPoint(startPoint);
+                        adapter.setDestPoint(endPoint);
+                        adapter.setDriveStepList(drivePath.getSteps());
+
+                        setStartingPoint(startPoint);
+                        setDestinationPoint(endPoint);
+
+                        String s = mContext.getString(R.string.duration_and_distance,
+                                CommonUtils.getFriendlyDuration(drivePath.getDuration()),
+                                CommonUtils.getFriendlyLength((int) drivePath.getDistance()));
+                        directionsView.setDistanceTextOnAbstractView(s);
+                        directionsView.setEtcTextOnAbstractView(getPartialRoads(drivePath));
+                    }
+                });
     }
 
     public void queryBusRoute(final LatLonPoint startPoint, final LatLonPoint endPoint,
                               final int busMode, final boolean nightBus) {
         clearAllOverlays();
-        mDirectionsInteractor.queryBusRouteAsync(startPoint, endPoint, busMode, nightBus);
+        stopCurRouteQuery();
+        mCurQueryRoute = mDirectionsInteractor.queryBusRouteAsync(startPoint, endPoint, busMode, nightBus)
+                .observeOn(Schedulers.computation())
+                .map(new Func1<BusRouteResult, List<BusPath>>() {
+                    @Override
+                    public List<BusPath> call(BusRouteResult busRouteResult) {
+                        return getPathListAndAddResults(busRouteResult);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<BusPath>>() {
+                    @Override
+                    public void onCompleted() {
+                        mDirectionsView.showRouteList();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showError(((AMapException) e).getErrorCode(), true);
+                    }
+
+                    @Override
+                    public void onNext(List<BusPath> busPaths) {
+                        if (isUnsubscribed()) {
+                            return;
+                        }
+
+                        if (busPaths == null) {
+                            showError(0, true);
+                            return;
+                        }
+                    }
+                });
     }
 
-    public void queryWalkRoute(LatLonPoint startPoint, LatLonPoint endPoint, int walkMode) {
+    public void queryWalkRoute(final LatLonPoint startPoint, final LatLonPoint endPoint,
+                               int walkMode) {
         clearAllOverlays();
-        mDirectionsInteractor.queryWalkRouteAsync(startPoint, endPoint, walkMode);
+        stopCurRouteQuery();
+        mCurQueryRoute = mDirectionsInteractor.queryWalkRouteAsync(startPoint, endPoint, walkMode)
+                .observeOn(Schedulers.computation())
+                .map(new Func1<WalkRouteResult, WalkPath>() {
+                    @Override
+                    public WalkPath call(WalkRouteResult walkRouteResult) {
+                        return getPathAndAddOverlay(walkRouteResult);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<WalkPath>() {
+                    @Override
+                    public void onCompleted() {
+                        mDirectionsView.showPathOnMap();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showError(((AMapException) e).getErrorCode(), true);
+                    }
+
+                    @Override
+                    public void onNext(WalkPath walkPath) {
+                        if (isUnsubscribed()) {
+                            return;
+                        }
+
+                        if (walkPath == null) {
+                            showError(0, true);
+                            return;
+                        }
+
+                        IDirectionsView directionsView = mDirectionsView;
+                        DriveWalkStepsAdapter adapter = directionsView.getDriveWalkStepsAdapter();
+                        adapter.setStartingPoint(startPoint);
+                        adapter.setDestPoint(endPoint);
+                        adapter.setWalkStepList(walkPath.getSteps());
+
+                        setStartingPoint(startPoint);
+                        setDestinationPoint(endPoint);
+
+                        String s = mContext.getString(R.string.duration_and_distance,
+                                CommonUtils.getFriendlyDuration(walkPath.getDuration()),
+                                CommonUtils.getFriendlyLength((int) walkPath.getDistance()));
+                        directionsView.setDistanceTextOnAbstractView(s);
+                        directionsView.setEtcTextOnAbstractView(getPartialRoads(walkPath));
+                    }
+                });
+    }
+
+    private void stopCurRouteQuery() {
+        if (mCurQueryRoute != null) {
+            mCurQueryRoute.unsubscribe();
+            mCurQueryRoute = null;
+        }
     }
 
     public void showBusPath(MyPath myPath) {
@@ -227,7 +370,7 @@ public class DirectionsPresenter {
     }
 
     public void exit() {
-        mDirectionsInteractor.stopQueryingRoute();
+        stopCurRouteQuery();
         clearAllOverlays();
 
         IDirectionsView directionsView = mDirectionsView;
@@ -254,203 +397,152 @@ public class DirectionsPresenter {
         mContext.startActivity(intent);
     }
 
-    private class ResultListener extends OnDirectionsResultListener {
-        @Override
-        public void onBusRouteSearched(BusRouteResult busRouteResult, int rCode) {
-            final CardListAdapter adapter = mDirectionsView.getResultAdapter();
-            adapter.clear();
-            if (rCode != 0) {
-                showError(rCode, true);
-                return;
-            }
-            List<BusPath> busPaths = busRouteResult.getPaths();
-            final int length = busPaths.size();
-            if (length <= 0) {
-                showError(rCode, true);
-                return;
-            }
-
-            List<Card> cards = new ArrayList<>(length);
-
-            final Card.OnCardClickListener listener = new Card.OnCardClickListener() {
-                @Override
-                public void onClick(View view, Card card) {
-                    MyPath path = (MyPath) card.getTag();
-                    if (path != null) {
-                        DirectionsPresenter.this.showBusPath(path);
-                    }
-                }
-            };
-
-            final Context context = mContext;
-            final Resources res = context.getResources();
-            String header = res.getStringArray(R.array.route_options_bus)[mDirectionsView.getBusRouteMode()];
-
-            HeaderCard headerCard = new HeaderCard(context);
-            headerCard.setType(0);
-            headerCard.setHeader(header);
-            cards.add(headerCard);
-
-            for (int i = 0; i < length; i++) {
-                final BusPath busPath = busPaths.get(i);
-
-                BusRouteCard card = new BusRouteCard(context);
-                card.setType(1);
-                card.setBusPath(AMapUtils.convertBusPathToText(busPath));
-                card.setDuration(busPath.getDuration());
-                card.setFirstStationDuration(AMapUtils.getFirstStationDuration(busPath));
-                card.setIncludeNightBus(busPath.isNightBus());
-                card.setTag(new MyPath(busPath,
-                        busRouteResult.getStartPos(), busRouteResult.getTargetPos()));
-                card.setOnClickListener(listener);
-                cards.add(card);
-            }
-            adapter.addAll(cards);
-            mDirectionsView.showRouteList();
+    private DrivePath getPathAndAddOverlay(DriveRouteResult result) {
+        List<DrivePath> drivePaths = result.getPaths();
+        if (drivePaths.size() == 0) {
+            return null;
         }
 
-        @Override
-        public void onDriveRouteSearched(DriveRouteResult driveRouteResult, int rCode) {
-            if (rCode != 0) {
-                showError(rCode, true);
-                return;
-            }
-            List<DrivePath> drivePaths = driveRouteResult.getPaths();
-            if (drivePaths.size() <= 0) {
-                showError(rCode, true);
-                return;
-            }
+        DrivePath drivePath = drivePaths.get(0);
+        LatLonPoint startPoint = result.getStartPos();
+        LatLonPoint destPoint = result.getTargetPos();
 
-            DrivePath drivePath = drivePaths.get(0);
-            LatLonPoint startPoint = driveRouteResult.getStartPos();
-            LatLonPoint destPoint = driveRouteResult.getTargetPos();
+        DrivingRouteOverlayS overlay =
+                mMapsModule.addDrivingRouteOverlay(drivePath, startPoint, destPoint, false);
+        mDrivingRouteOverlays.add(overlay);
+        return drivePath;
+    }
 
-            DrivingRouteOverlayS drivingRouteOverlay = mMapsModule.addDrivingRouteOverlay(drivePath,
-                    startPoint, destPoint, false);
-            mDrivingRouteOverlays.add(drivingRouteOverlay);
-
-            IDirectionsView directionsView = mDirectionsView;
-
-            DriveWalkStepsAdapter adapter = directionsView.getDriveWalkStepsAdapter();
-            adapter.setStartingPoint(startPoint);
-            adapter.setDestPoint(destPoint);
-            adapter.setDriveStepList(drivePath.getSteps());
-
-            setStartingPoint(startPoint);
-            setDestinationPoint(destPoint);
-
-            String s = mContext.getString(R.string.duration_and_distance,
-                    CommonUtils.getFriendlyDuration(drivePath.getDuration()),
-                    CommonUtils.getFriendlyLength((int) drivePath.getDistance()));
-            directionsView.setDistanceTextOnAbstractView(s);
-            directionsView.setEtcTextOnAbstractView(getPartialRoads(drivePath));
-            directionsView.showPathOnMap();
+    private WalkPath getPathAndAddOverlay(WalkRouteResult result) {
+        List<WalkPath> walkPaths = result.getPaths();
+        if (walkPaths.size() == 0) {
+            return null;
         }
 
-        @Override
-        public void onWalkRouteSearched(WalkRouteResult walkRouteResult, int rCode) {
-            if (rCode != 0) {
-                showError(rCode, true);
-                return;
-            }
-            List<WalkPath> walkPaths = walkRouteResult.getPaths();
-            if (walkPaths.size() <= 0) {
-                showError(rCode, true);
-                return;
-            }
+        WalkPath walkPath = walkPaths.get(0);
+        LatLonPoint startPoint = result.getStartPos();
+        LatLonPoint destPoint = result.getTargetPos();
 
-            WalkPath walkPath = walkPaths.get(0);
-            LatLonPoint startPoint = walkRouteResult.getStartPos();
-            LatLonPoint destPoint = walkRouteResult.getTargetPos();
+        WalkRouteOverlayS overlay = mMapsModule.addWalkRouteOverlay(walkPath,
+                startPoint, destPoint, false);
+        mWalkRouteOverlays.add(overlay);
+        return walkPath;
+    }
 
-            WalkRouteOverlayS walkRouteOverlay = mMapsModule.addWalkRouteOverlay(walkPath,
-                    startPoint, destPoint, false);
-            mWalkRouteOverlays.add(walkRouteOverlay);
+    public List<BusPath> getPathListAndAddResults(BusRouteResult busRouteResult) {
+        final CardListAdapter adapter = mDirectionsView.getResultAdapter();
+        adapter.clear();
 
-            IDirectionsView directionsView = mDirectionsView;
-
-            DriveWalkStepsAdapter adapter = directionsView.getDriveWalkStepsAdapter();
-            adapter.setStartingPoint(startPoint);
-            adapter.setDestPoint(destPoint);
-            adapter.setWalkStepList(walkPath.getSteps());
-
-            setStartingPoint(startPoint);
-            setDestinationPoint(destPoint);
-
-            String s = mContext.getString(R.string.duration_and_distance,
-                    CommonUtils.getFriendlyDuration(walkPath.getDuration()),
-                    CommonUtils.getFriendlyLength((int) walkPath.getDistance()));
-            directionsView.setDistanceTextOnAbstractView(s);
-            directionsView.setEtcTextOnAbstractView(getPartialRoads(walkPath));
-            directionsView.showPathOnMap();
+        List<BusPath> busPaths = busRouteResult.getPaths();
+        final int length = busPaths.size();
+        if (length == 0) {
+            return null;
         }
 
-        private String getPartialRoads(DrivePath path) {
-            List<DriveStep> steps = path.getSteps();
+        List<Card> cards = new ArrayList<>(length);
 
-            final int maxCount = 10;
-            StringBuilder sb = new StringBuilder();
-            for (int length = steps.size(), i = 0; i < length; i++) {
-                if (length == maxCount) {
-                    break;
+        final Card.OnCardClickListener listener = new Card.OnCardClickListener() {
+            @Override
+            public void onClick(View view, Card card) {
+                MyPath path = (MyPath) card.getTag();
+                if (path != null) {
+                    DirectionsPresenter.this.showBusPath(path);
                 }
+            }
+        };
 
-                String road = steps.get(i).getRoad();
-                if (CommonUtils.isStringEmpty(road)) {
-                    continue;
-                }
+        final Context context = mContext;
+        final Resources res = context.getResources();
+        String header = res.getStringArray(R.array.route_options_bus)[mDirectionsView.getBusRouteMode()];
 
-                sb.append(road).append("\\");
+        HeaderCard headerCard = new HeaderCard(context);
+        headerCard.setType(0);
+        headerCard.setHeader(header);
+        cards.add(headerCard);
+
+        for (int i = 0; i < length; i++) {
+            final BusPath busPath = busPaths.get(i);
+
+            BusRouteCard card = new BusRouteCard(context);
+            card.setType(1);
+            card.setBusPath(AMapUtils.convertBusPathToText(busPath));
+            card.setDuration(busPath.getDuration());
+            card.setFirstStationDuration(AMapUtils.getFirstStationDuration(busPath));
+            card.setIncludeNightBus(busPath.isNightBus());
+            card.setTag(new MyPath(busPath,
+                    busRouteResult.getStartPos(), busRouteResult.getTargetPos()));
+            card.setOnClickListener(listener);
+            cards.add(card);
+        }
+        adapter.addAll(cards);
+        return busPaths;
+    }
+
+    private String getPartialRoads(DrivePath path) {
+        List<DriveStep> steps = path.getSteps();
+
+        final int maxCount = 10;
+        StringBuilder sb = new StringBuilder();
+        for (int length = steps.size(), i = 0; i < length; i++) {
+            if (length == maxCount) {
+                break;
             }
 
-            return mContext.getString(R.string.via_roads, removeLastSlash(sb));
+            String road = steps.get(i).getRoad();
+            if (CommonUtils.isStringEmpty(road)) {
+                continue;
+            }
+
+            sb.append(road).append("\\");
         }
 
-        private String getPartialRoads(WalkPath path) {
-            List<WalkStep> steps = path.getSteps();
+        return mContext.getString(R.string.via_roads, removeLastSlash(sb));
+    }
 
-            final int maxCount = 10;
-            StringBuilder sb = new StringBuilder();
-            for (int length = steps.size(), i = 0; i < length; i++) {
-                if (length == maxCount) {
-                    break;
-                }
+    private String getPartialRoads(WalkPath path) {
+        List<WalkStep> steps = path.getSteps();
 
-                String road = steps.get(i).getRoad();
-                if (CommonUtils.isStringEmpty(road)) {
-                    continue;
-                }
-
-                sb.append(road).append("\\");
+        final int maxCount = 10;
+        StringBuilder sb = new StringBuilder();
+        for (int length = steps.size(), i = 0; i < length; i++) {
+            if (length == maxCount) {
+                break;
             }
 
-            return mContext.getString(R.string.via_roads, removeLastSlash(sb));
+            String road = steps.get(i).getRoad();
+            if (CommonUtils.isStringEmpty(road)) {
+                continue;
+            }
+
+            sb.append(road).append("\\");
         }
 
-        private String removeLastSlash(StringBuilder sb) {
-            int length = sb.length();
-            if (length <= 1) {
-                return sb.toString();
-            }
-            if (sb.charAt(length - 1) == '\\') {
-                sb.deleteCharAt(length - 1);
-            }
+        return mContext.getString(R.string.via_roads, removeLastSlash(sb));
+    }
+
+    private String removeLastSlash(StringBuilder sb) {
+        int length = sb.length();
+        if (length <= 1) {
             return sb.toString();
         }
-
-        private void showError(int rCode, boolean isEmptyResult) {
-            final CardListAdapter adapter = mDirectionsView.getResultAdapter();
-            adapter.clear();
-            MsgCard card = new MsgCard(mContext);
-            String s;
-            if (rCode == 0 && isEmptyResult) {
-                s = mContext.getString(R.string.no_result);
-            } else {
-                s = AMapUtils.convertErrorCodeToText(rCode);
-            }
-            card.setText(s);
-            adapter.add(card);
-            mDirectionsView.showRouteList();
+        if (sb.charAt(length - 1) == '\\') {
+            sb.deleteCharAt(length - 1);
         }
+        return sb.toString();
+    }
+
+    private void showError(int rCode, boolean isEmptyResult) {
+        final CardListAdapter adapter = mDirectionsView.getResultAdapter();
+        adapter.clear();
+        MsgCard card = new MsgCard(mContext);
+        String s;
+        if (rCode == 0 && isEmptyResult) {
+            s = mContext.getString(R.string.no_result);
+        } else {
+            s = AMapUtils.convertErrorCodeToText(rCode);
+        }
+        card.setText(s);
+        adapter.add(card);
+        mDirectionsView.showRouteList();
     }
 }
