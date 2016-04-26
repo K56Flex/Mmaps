@@ -32,11 +32,15 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps.offlinemap.OfflineMapStatus;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.WalkPath;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -47,6 +51,7 @@ import dg.shenm233.api.maps.overlay.WalkRouteOverlayS;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.model.Compass;
 import dg.shenm233.mmaps.model.LocationManager;
+import dg.shenm233.mmaps.service.OfflineMapEvent;
 
 public class MapsModule implements AMap.OnMarkerClickListener,
         AMap.OnMapClickListener, AMap.OnMapTouchListener {
@@ -82,6 +87,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
 
         mLocationListener = new AMapLocationListener();
         mAMap.setLocationSource(mLocationListener); // 设置定位监听
+        mAMap.setLoadOfflineData(true);
 
         UiSettings uiSettings = mAMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(false);
@@ -98,13 +104,31 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     }
 
     public void onResume() {
+        EventBus.getDefault().register(this);
         mCompass.start();
     }
 
     public void onPause() {
+        EventBus.getDefault().unregister(this);
         LocationManager.getInstance(mContext).stopLocationFor(mLocationListener);
         setMyLocationEnabled(false);
         mCompass.stop();
+    }
+
+    /**
+     * 重新加载地图数据
+     */
+    @Subscribe()
+    public void reloadOfflineMaps(OfflineMapEvent event) {
+        if (!OfflineMapEvent.DOWNLOAD_EVENT.equals(event.eventType)) {
+            return;
+        }
+
+        if (event.statusCode != OfflineMapStatus.SUCCESS) {
+            return;
+        }
+        mAMap.setLoadOfflineData(false);
+        mAMap.setLoadOfflineData(true);
     }
 
     public void setMapType(int type) {
