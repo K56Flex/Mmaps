@@ -31,17 +31,14 @@ import android.view.ViewGroup;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.Marker;
-import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.help.Tip;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
-import dg.shenm233.mmaps.presenter.SearchMapsPresenter;
 import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.view.Directions;
 import dg.shenm233.mmaps.ui.maps.view.PoiItems;
@@ -315,20 +312,11 @@ public class MapsFragment extends Fragment
     }
 
     private void showPoiItems(Tip tip) {
-        SearchMapsPresenter presenter = new SearchMapsPresenter(getContext(), mMapsModule);
-        presenter.searchPoi(tip.getName(), tip.getAdcode(),
-                new SearchMapsPresenter.OnPoiSearchListener() {
-                    @Override
-                    public void onSearchPoiResult(@Nullable List<PoiItem> poiItems) {
-                        if (poiItems != null) {
-                            Map<String, Object> args = new HashMap<>();
-                            args.put(PoiItems.POI_ITEM_LIST, poiItems);
-                            getViewContainerManager().putViewContainer(new PoiItems(mViewContainer, MapsFragment.this),
-                                    args, true, PoiItems.ID);
-                        }
-                    }
-                }
-        );
+        Map<String, Object> args = new HashMap<>();
+        args.put(PoiItems.SEARCH_KEYWORD, tip.getName());
+        args.put(PoiItems.SEARCH_CITY, tip.getAdcode());
+        getViewContainerManager().putViewContainer(new PoiItems(mViewContainer, MapsFragment.this),
+                args, true, PoiItems.ID);
     }
 
     /**

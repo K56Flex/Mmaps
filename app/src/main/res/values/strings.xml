@@ -132,4 +132,5 @@
     <string name="navi_voice_navigation">Voice Navigation</string>
     <string name="navi_voice_navigation_enable">Enable Voice Navigation</string>
 
+    <string name="show_list">Show list</string>
 </resources>

@@ -33,7 +33,8 @@ import java.util.List;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.SearchTipsAdapter;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
-import dg.shenm233.mmaps.presenter.SearchMapsPresenter;
+import dg.shenm233.mmaps.presenter.ISearchBox;
+import dg.shenm233.mmaps.presenter.SearchBoxPresenter;
 import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.ViewContainer;
 import dg.shenm233.mmaps.util.AnimUtils;
@@ -41,7 +42,8 @@ import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
 public class SearchBox extends ViewContainer
-        implements View.OnClickListener {
+        implements ISearchBox, View.OnClickListener {
+
     public interface OnSearchItemClickListener {
         void onSearchItemClick(Tip tip);
     }
@@ -53,7 +55,7 @@ public class SearchBox extends ViewContainer
 
     private Context mContext;
     private IMapsFragment mMapsFragment;
-    private SearchMapsPresenter mSearchMapsPresenter;
+    private SearchBoxPresenter mSearchBoxPresenter;
 
     private ViewGroup rootView;
     private ViewGroup mSearchBox;
@@ -78,7 +80,7 @@ public class SearchBox extends ViewContainer
         mContext = context;
 
         mMapsFragment = mapsFragment;
-        mSearchMapsPresenter = new SearchMapsPresenter(context, mapsFragment.getMapsModule());
+        mSearchBoxPresenter = new SearchBoxPresenter(context, this, mapsFragment.getMapsModule());
 
         onCreateView();
     }
@@ -119,7 +121,7 @@ public class SearchBox extends ViewContainer
                 }
                 if (enableTextTip) {
                     String str = s.toString().trim();
-                    mSearchMapsPresenter.requestInputTips(str, "");
+                    mSearchBoxPresenter.requestInputTips(str, "");
                 }
             }
         });
@@ -146,14 +148,6 @@ public class SearchBox extends ViewContainer
                     enableTextTip = true;
                 }
                 ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
-            }
-        });
-
-        mSearchMapsPresenter.setOnTipsListener(new SearchMapsPresenter.OnTipsListener() {
-            @Override
-            public void onGetInputTips(List<Tip> tipList) {
-                mResultAdapter.setList(tipList);
-                mResultAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -238,6 +232,12 @@ public class SearchBox extends ViewContainer
             }
         }
         return false;
+    }
+
+    @Override
+    public void onGetInputTips(List<Tip> tipList) {
+        mResultAdapter.setList(tipList);
+        mResultAdapter.notifyDataSetChanged();
     }
 
     @Override
