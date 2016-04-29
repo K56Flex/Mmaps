@@ -34,6 +34,10 @@
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
+#RxJava
+-dontwarn sun.misc.**
+-keep class rx.**{*;}
+
 #3D 地图
 -keep class com.amap.api.mapcore.**{*;}
 -keep class com.amap.api.maps.**{*;}
