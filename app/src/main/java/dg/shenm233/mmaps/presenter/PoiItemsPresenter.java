@@ -122,6 +122,12 @@ public class PoiItemsPresenter {
         }
     }
 
+    public void reAddPoiMarkers() {
+        for (PoiOverlayS poiOverlay : mPoiOverlayList) {
+            poiOverlay.addToMap();
+        }
+    }
+
     private void stopCurPoiQuery() {
         if (mCurPoiQuery != null) {
             mCurPoiQuery.unsubscribe();

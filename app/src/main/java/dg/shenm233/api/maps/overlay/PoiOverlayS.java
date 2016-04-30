@@ -63,6 +63,7 @@ public class PoiOverlayS {
             Marker marker = mMarkers.get(i);
             marker.destroy();
         }
+        mMarkers.clear();
     }
 
     public void zoomToSpan() {

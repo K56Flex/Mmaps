@@ -108,9 +108,23 @@ public class PoiItems extends ViewContainer
         searchBox.show();
         mSearchBox = (SearchBox) searchBox;
 
-        searchKeyword(0);
+        prepareData();
         switchToPoiListView();
         rootView.addView(mBottomSheet);
+    }
+
+    /**
+     * PoiItems界面第一次显示时需要加载数据，如果再次显示时，不重新加载数据
+     */
+    private boolean needToLoadData = true;
+
+    private void prepareData() {
+        if (needToLoadData) { // PoiItems界面第一次显示时需要加载数据
+            searchKeyword(0);
+            needToLoadData = false;
+        } else { // 如果再次显示时，不重新加载数据，只需重新添加Marker
+            mPresenter.reAddPoiMarkers();
+        }
     }
 
     @Override
