@@ -24,7 +24,9 @@ import com.amap.api.services.help.Tip;
 
 import java.util.List;
 
+import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.util.AMapUtils;
+import dg.shenm233.mmaps.util.CommonUtils;
 
 public class SearchBoxPresenter {
     private Context mContext;
@@ -43,6 +45,9 @@ public class SearchBoxPresenter {
         if (mInputTips == null)
             mInputTips = new Inputtips(mContext, inputTipsListener);
         try {
+            if (CommonUtils.isStringEmpty(city)) {
+                city = LocationManager.getInstance(mContext).getLastKnownLocation().getCity();
+            }
             mInputTips.requestInputtips(string, city);
         } catch (AMapException e) {
             //

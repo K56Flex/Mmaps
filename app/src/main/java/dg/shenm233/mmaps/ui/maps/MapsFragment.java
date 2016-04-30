@@ -37,12 +37,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.view.Directions;
 import dg.shenm233.mmaps.ui.maps.view.PoiItems;
 import dg.shenm233.mmaps.ui.maps.view.SearchBox;
+import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.util.PermissionUtils;
 
 public class MapsFragment extends Fragment
@@ -314,7 +316,12 @@ public class MapsFragment extends Fragment
     private void showPoiItems(Tip tip) {
         Map<String, Object> args = new HashMap<>();
         args.put(PoiItems.SEARCH_KEYWORD, tip.getName());
-        args.put(PoiItems.SEARCH_CITY, tip.getAdcode());
+        if (CommonUtils.isStringEmpty(tip.getAdcode())) {
+            String city = LocationManager.getInstance(getActivity()).getLastKnownLocation().getCity();
+            args.put(PoiItems.SEARCH_CITY, city);
+        } else {
+            args.put(PoiItems.SEARCH_CITY, tip.getAdcode());
+        }
         getViewContainerManager().putViewContainer(new PoiItems(mViewContainer, MapsFragment.this),
                 args, true, PoiItems.ID);
     }
