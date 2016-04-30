@@ -85,6 +85,10 @@ public class LocationManager {
         }
     }
 
+    public AMapLocation getLastKnownLocation() {
+        return mLocationManagerProxy.getLastKnownLocation();
+    }
+
     private void removeAllListener() {
         mLocationListeners.clear();
     }
