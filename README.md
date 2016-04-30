@@ -13,6 +13,10 @@ AndroidSlidingUpPanel - Anton Lopyrev
 
 Expandable RecyclerView - Big Nerd Ranch
 
+RxJava/RxAndroid - Netflix,RxAndroid authors
+
+EventBus - greenrobot
+
 ### 开源协议
  Copyright 2016 Shen Zhang
 
