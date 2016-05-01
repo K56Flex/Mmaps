@@ -139,6 +139,13 @@ public class RecentSearchTips implements Table {
         return tipList;
     }
 
+    public void clearRecent() {
+        synchronized (this) {
+            SQLiteDatabase db = BaseDB.getInstance().getWritableDatabase();
+            db.delete(TABLE_NAME, null, null);
+        }
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(createTable);

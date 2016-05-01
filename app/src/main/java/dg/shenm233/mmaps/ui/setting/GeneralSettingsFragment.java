@@ -31,6 +31,7 @@ import dg.shenm233.mmaps.BuildConfig;
 import dg.shenm233.mmaps.CrashHandler;
 import dg.shenm233.mmaps.MainApplication;
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.database.RecentSearchTips;
 import dg.shenm233.mmaps.ui.LicenseActivity;
 import dg.shenm233.mmaps.util.CommonUtils;
 
@@ -39,6 +40,7 @@ public class GeneralSettingsFragment extends PreferenceFragment
     private static final String source_code = "https://github.com/shenm233/Mmaps";
 
     private static final String navi_settings = "navi_settings";
+    private static final String clear_recent_search = "clear_recent_search";
     private static final String version = "version";
     private static final String license = "license";
     private static final String feedback = "feedback";
@@ -49,6 +51,7 @@ public class GeneralSettingsFragment extends PreferenceFragment
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preference_general);
         findPreference(navi_settings).setOnPreferenceClickListener(this);
+        findPreference(clear_recent_search).setOnPreferenceClickListener(this);
         findPreference(version).setSummary(BuildConfig.VERSION_NAME);
         findPreference(license).setOnPreferenceClickListener(this);
         findPreference(feedback).setOnPreferenceClickListener(this);
@@ -68,6 +71,14 @@ public class GeneralSettingsFragment extends PreferenceFragment
             ft.addToBackStack(null);
             ft.commit();
             return true;
+        } else if (clear_recent_search.equals(key)) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    RecentSearchTips.getInstance().clearRecent();
+                }
+            }).start();
+            Toast.makeText(getActivity(), "xiu~xiu~", Toast.LENGTH_SHORT).show();
         } else if (license.equals(key)) {
             Intent intent = new Intent(getActivity(), LicenseActivity.class);
             startActivity(intent);

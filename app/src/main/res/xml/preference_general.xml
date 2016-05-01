@@ -6,6 +6,10 @@
         android:key="navi_settings"
         android:title="@string/navi_settings" />
 
+    <Preference
+        android:key="clear_recent_search"
+        android:title="@string/clear_recent_search" />
+
     <PreferenceCategory android:title="@string/about">
 
         <Preference
