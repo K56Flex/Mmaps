@@ -76,6 +76,34 @@ public class AMapUtils {
     }
 
     /**
+     * 将LatLonPoint转换为String，样式为 纬度,经度
+     *
+     * @param latLonPoint 要转换的LatLonPoint
+     * @return 形如 40.081577,116.587922 的经纬度
+     */
+    public static String convertLatLonPointToString(LatLonPoint latLonPoint) {
+        return latLonPoint.getLatitude() + "," + latLonPoint.getLongitude();
+    }
+
+    /**
+     * 将特定格式的经纬度转换为LatLonPoint，要求格式为 纬度,经度
+     *
+     * @param latLonStr 要转换的经纬度，形如 40.081577,116.587922
+     * @return 对应的LatLonPoint。对于不符合格式的，返回null。
+     */
+    public static LatLonPoint convertToLatLonPoint(String latLonStr) {
+        if (latLonStr == null) {
+            return null;
+        }
+        String[] latLong = latLonStr.trim().split(",");
+        if (latLong.length != 2) {
+            return null;
+        }
+        return new LatLonPoint(Double.valueOf(latLong[0]),
+                Double.valueOf(latLong[1]));
+    }
+
+    /**
      * 把驾车多个选项(省钱，避免拥堵，不走高速) 转换成高德sdk对应模式
      * boolean[0] ... 省钱
      * boolean[1] ... 避免拥堵

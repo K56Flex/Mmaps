@@ -25,6 +25,7 @@ import com.amap.api.maps.MapsInitializer;
 import java.io.File;
 import java.io.IOException;
 
+import dg.shenm233.mmaps.database.BaseDB;
 import dg.shenm233.mmaps.util.OffLineMapUtils;
 
 public class MainApplication extends Application {
@@ -41,6 +42,7 @@ public class MainApplication extends Application {
         if (!sdFilesDir.isEmpty()) {
             MapsInitializer.sdcardDir = sdFilesDir;
         }
+        BaseDB.getInstance(); // init database
 
         File crash = new File(MainApplication.getCrashReportsPath() + "/crashed");
         if (crash.exists()) {

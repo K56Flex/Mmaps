@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dg.shenm233.mmaps.R;
+import dg.shenm233.mmaps.database.RecentSearchTips;
 import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
@@ -283,7 +284,16 @@ public class MapsFragment extends Fragment
     }
 
     @Override
-    public void onSearchItemClick(Tip tip) {
+    public void onSearchItemClick(final Tip tip) {
+        if (!CommonUtils.isStringEmpty(tip.getName())) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    RecentSearchTips.getInstance().insertTip(tip);
+                }
+            }).start();
+        }
+
         final ViewContainerManager vm = mViewContainerManager;
         // 优先给其他调用过SearchBox/ChooseOnMap的ViewContainer处理
         if (vm.getViewContainer(Directions.ID) != null) { // 栈中有Directions这个ViewContainer,直接给它处理
