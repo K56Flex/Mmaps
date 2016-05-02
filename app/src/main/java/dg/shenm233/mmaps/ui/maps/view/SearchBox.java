@@ -32,6 +32,7 @@ import java.util.List;
 
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.SearchTipsAdapter;
+import dg.shenm233.mmaps.database.RecentSearchTips;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.ISearchBox;
 import dg.shenm233.mmaps.presenter.SearchBoxPresenter;
@@ -141,11 +142,19 @@ public class SearchBox extends ViewContainer
         searchTipsAdapter.setOnViewClickListener(new OnViewClickListener() {
             @Override
             public void onClick(View v, Object data) {
-                Tip tip = (Tip) data;
+                final Tip tip = (Tip) data;
                 if (getOnlySearchBox()) {
                     enableTextTip = false;
                     mSearchEditText.setText(tip.getName());
                     enableTextTip = true;
+                }
+                if (!CommonUtils.isStringEmpty(tip.getName())) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            RecentSearchTips.getInstance().insertTip(tip);
+                        }
+                    }).start();
                 }
                 ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
             }
