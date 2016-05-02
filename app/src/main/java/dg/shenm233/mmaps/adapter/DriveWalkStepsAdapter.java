@@ -83,6 +83,30 @@ public class DriveWalkStepsAdapter extends BaseRecyclerViewAdapter<DriveWalkStep
         mWalkStepList = null;
     }
 
+    public DriveStep getNextStep(DriveStep driveStep) {
+        if (driveStep == null || mDriveStepList == null) {
+            return null;
+        }
+
+        int p = mDriveStepList.indexOf(driveStep);
+        if (p == -1 || p >= mDriveStepList.size() - 1) {
+            return null;
+        }
+        return mDriveStepList.get(p + 1);
+    }
+
+    public WalkStep getNextStep(WalkStep walkStep) {
+        if (walkStep == null || mWalkStepList == null) {
+            return null;
+        }
+
+        int p = mWalkStepList.indexOf(walkStep);
+        if (p == -1 || p >= mWalkStepList.size() - 1) {
+            return null;
+        }
+        return mWalkStepList.get(p + 1);
+    }
+
     /**
      * 根据item位置返回对应DriveStep
      *

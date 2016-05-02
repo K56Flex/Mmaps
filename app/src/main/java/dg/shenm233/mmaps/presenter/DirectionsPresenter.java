@@ -24,6 +24,8 @@ import android.view.View;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.NavigateArrow;
+import com.amap.api.maps.model.NavigateArrowOptions;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusPath;
@@ -77,6 +79,7 @@ public class DirectionsPresenter {
     private LatLonPoint mDestinationPoint;
 
     private Marker mDirectionMarker;
+    private NavigateArrow mNavigateArrow;
 
     public DirectionsPresenter(Context context, IDirectionsView directionsView, MapsModule mapsModule) {
         mContext = context;
@@ -278,10 +281,8 @@ public class DirectionsPresenter {
         }
 
         DriveStep driveStep = (DriveStep) step;
-        final List<LatLonPoint> polyLine = driveStep.getPolyline();
-        LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
-        mMapsModule.moveCamera(latLng, 20);
-        addMarker(latLng, R.drawable.pin_directionscard);
+        DriveStep next = mDirectionsView.getDriveWalkStepsAdapter().getNextStep(driveStep);
+        addNavigateArrow(AMapUtils.getNavigateArrow(driveStep, next));
     }
 
     public void moveCameraToWalkStep(Object step) {
@@ -292,10 +293,8 @@ public class DirectionsPresenter {
         }
 
         WalkStep walkStep = (WalkStep) step;
-        final List<LatLonPoint> polyLine = walkStep.getPolyline();
-        LatLng latLng = AMapUtils.convertToLatLng(polyLine.get(polyLine.size() - 1));
-        mMapsModule.moveCamera(latLng, 20);
-        addMarker(latLng, R.drawable.pin_directionscard);
+        WalkStep next = mDirectionsView.getDriveWalkStepsAdapter().getNextStep(walkStep);
+        addNavigateArrow(AMapUtils.getNavigateArrow(walkStep, next));
     }
 
     public void moveCameraToBusStep(Object step) {
@@ -324,7 +323,20 @@ public class DirectionsPresenter {
     private void moveCameraToLatLonPoint(LatLonPoint point) {
         LatLng latLng = AMapUtils.convertToLatLng(point);
         mMapsModule.moveCamera(latLng, 20);
+        destroyNavigateArrow();
         destroyMarker();
+    }
+
+    private void addNavigateArrow(NavigateArrowOptions arrowOptions) {
+        destroyNavigateArrow();
+        mNavigateArrow = mMapsModule.addNavigateArrow(arrowOptions);
+    }
+
+    private void destroyNavigateArrow() {
+        if (mNavigateArrow != null) {
+            mNavigateArrow.remove();
+            mNavigateArrow = null;
+        }
     }
 
     private void addMarker(LatLng position, int resId) {
@@ -354,6 +366,7 @@ public class DirectionsPresenter {
 
     public void clearAllOverlays() {
         destroyMarker();
+        destroyNavigateArrow();
 
         for (DrivingRouteOverlayS overlay : mDrivingRouteOverlays) {
             overlay.removeFromMap();

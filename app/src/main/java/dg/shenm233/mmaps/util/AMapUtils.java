@@ -19,6 +19,7 @@ package dg.shenm233.mmaps.util;
 import android.content.Context;
 
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.NavigateArrowOptions;
 import com.amap.api.navi.AMapNavi;
 import com.amap.api.navi.model.NaviLatLng;
 import com.amap.api.services.busline.BusLineItem;
@@ -26,9 +27,11 @@ import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusPath;
 import com.amap.api.services.route.BusStep;
+import com.amap.api.services.route.DriveStep;
 import com.amap.api.services.route.RouteBusLineItem;
 import com.amap.api.services.route.RouteBusWalkItem;
 import com.amap.api.services.route.RouteSearch;
+import com.amap.api.services.route.WalkStep;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +104,49 @@ public class AMapUtils {
         }
         return new LatLonPoint(Double.valueOf(latLong[0]),
                 Double.valueOf(latLong[1]));
+    }
+
+    public static NavigateArrowOptions getNavigateArrow(DriveStep step, DriveStep next) {
+
+        final List<LatLonPoint> a = step != null ? step.getPolyline() : null;
+        final List<LatLonPoint> b = next != null ? next.getPolyline() : null;
+        return getNavigateArrow(a, b);
+    }
+
+    public static NavigateArrowOptions getNavigateArrow(WalkStep step, WalkStep next) {
+        final List<LatLonPoint> a = step != null ? step.getPolyline() : null;
+        final List<LatLonPoint> b = next != null ? next.getPolyline() : null;
+        return getNavigateArrow(a, b);
+    }
+
+    private static NavigateArrowOptions getNavigateArrow(List<LatLonPoint> a, List<LatLonPoint> b) {
+        final int selectCount = 2;
+        NavigateArrowOptions arrowOptions = new NavigateArrowOptions();
+
+        if (a != null) {
+            LatLonPoint[] points = new LatLonPoint[selectCount];
+            int c = selectCount;
+            for (int i = a.size() - 1; i >= 0; i--) { // 倒序获取一定数量
+                if (c <= 0) {
+                    break;
+                }
+                points[--c] = a.get(i);
+            }
+            for (LatLonPoint p : points) {
+                arrowOptions.add(convertToLatLng(p));
+            }
+        }
+
+        if (b != null) {
+            for (int length = b.size(), i = 0; i < length; i++) {
+                if (i > selectCount) {
+                    break;
+                }
+                arrowOptions.add(convertToLatLng(b.get(i)));
+            }
+        }
+
+        return arrowOptions;
     }
 
     /**

@@ -28,10 +28,13 @@ import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.UiSettings;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps.model.NavigateArrow;
+import com.amap.api.maps.model.NavigateArrowOptions;
 import com.amap.api.maps.offlinemap.OfflineMapStatus;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
@@ -178,6 +181,12 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         walkRouteOverlay.addToMap();
         walkRouteOverlay.zoomToSpan();
         return walkRouteOverlay;
+    }
+
+    public NavigateArrow addNavigateArrow(NavigateArrowOptions arrowOptions) {
+        mAMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                new CameraPosition(arrowOptions.getPoints().get(0), 18f, 0.f, 0)));
+        return mAMap.addNavigateArrow(arrowOptions);
     }
 
     public void clearAnything() {
