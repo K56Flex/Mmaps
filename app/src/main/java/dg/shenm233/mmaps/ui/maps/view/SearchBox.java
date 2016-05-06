@@ -16,7 +16,7 @@
 
 package dg.shenm233.mmaps.ui.maps.view;
 
-import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +30,7 @@ import com.amap.api.services.help.Tip;
 
 import java.util.List;
 
+import dg.shenm233.library.litefragment.LiteFragment;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.SearchTipsAdapter;
 import dg.shenm233.mmaps.database.RecentSearchTips;
@@ -37,28 +38,24 @@ import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.ISearchBox;
 import dg.shenm233.mmaps.presenter.SearchBoxPresenter;
 import dg.shenm233.mmaps.ui.IDrawerView;
-import dg.shenm233.mmaps.ui.maps.ViewContainer;
-import dg.shenm233.mmaps.util.AnimUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
-public class SearchBox extends ViewContainer
+public class SearchBox extends LiteFragment
         implements ISearchBox, View.OnClickListener {
+    final static int SEARCHBOX_REQUEST_CODE = 0x2b;
 
     public interface OnSearchItemClickListener {
         void onSearchItemClick(Tip tip);
     }
 
-    public static final int ID = 0;
     public static final String ONLY_SEARCH_BOX = "only_search_box"; //boolean
     public static final String BACK_BTN_AS_DRAWER = "back_btn_as_drawer"; //boolean
     public static final String SHOW_CHOOSE_ON_MAP = "show_choose_on_map"; //boolean
 
-    private Context mContext;
     private IMapsFragment mMapsFragment;
     private SearchBoxPresenter mSearchBoxPresenter;
 
-    private ViewGroup rootView;
     private ViewGroup mSearchBox;
     private EditText mSearchEditText;
     private ImageButton mBackBtn;
@@ -75,21 +72,20 @@ public class SearchBox extends ViewContainer
      */
     private boolean isBackBtnAsDrawer = false;
 
-    public SearchBox(ViewGroup rootView, IMapsFragment mapsFragment) {
-        this.rootView = rootView;
-        Context context = rootView.getContext();
-        mContext = context;
-
+    public SearchBox(IMapsFragment mapsFragment) {
         mMapsFragment = mapsFragment;
-        mSearchBoxPresenter = new SearchBoxPresenter(context, this, mapsFragment.getMapsModule());
-
-        onCreateView();
     }
 
     @Override
-    public void onCreateView() {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        ViewGroup searchBox = (ViewGroup) inflater.inflate(R.layout.search_box, rootView, false);
+    protected void onCreate() {
+        super.onCreate();
+        mSearchBoxPresenter = new SearchBoxPresenter(getContext(), this, mMapsFragment.getMapsModule());
+    }
+
+    @Override
+    protected void onCreateView(LayoutInflater inflater, ViewGroup container) {
+        super.onCreateView(inflater, container);
+        ViewGroup searchBox = (ViewGroup) inflater.inflate(R.layout.search_box, container, false);
         mSearchBox = searchBox;
 
         ImageButton btn = (ImageButton) searchBox.findViewById(R.id.opendrawer_or_back);
@@ -128,7 +124,7 @@ public class SearchBox extends ViewContainer
         });
         searchEditText.setOnClickListener(this);
 
-        ViewGroup searchResultContainer = (ViewGroup) inflater.inflate(R.layout.search_result, rootView, false);
+        ViewGroup searchResultContainer = (ViewGroup) inflater.inflate(R.layout.search_result, container, false);
         mSearchResultContainer = searchResultContainer;
 
         ViewGroup chooseOnMapBtn = (ViewGroup) searchResultContainer.findViewById(R.id.search_choose_on_map);
@@ -136,7 +132,7 @@ public class SearchBox extends ViewContainer
         chooseOnMapBtn.setOnClickListener(this);
 
         RecyclerView resultListView = (RecyclerView) searchResultContainer.findViewById(R.id.result_listview);
-        SearchTipsAdapter searchTipsAdapter = new SearchTipsAdapter(mContext);
+        SearchTipsAdapter searchTipsAdapter = new SearchTipsAdapter(getContext());
         mResultAdapter = searchTipsAdapter;
         resultListView.setAdapter(searchTipsAdapter);
         searchTipsAdapter.setOnViewClickListener(new OnViewClickListener() {
@@ -156,7 +152,14 @@ public class SearchBox extends ViewContainer
                         }
                     }).start();
                 }
-                ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
+                if (getRequestCode() != -1) {
+                    Intent result = new Intent();
+                    result.putExtra("result", tip);
+                    setResult(ACTION_SUCCESS, result);
+                    finish();
+                } else {
+                    ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
+                }
             }
         });
     }
@@ -172,26 +175,31 @@ public class SearchBox extends ViewContainer
     private void setSearchBoxVisible(boolean visible) {
         if (visible) {
             if (!isSearchBoxVisible()) {
-                AnimUtils.viewSlideInTop(mSearchBox);
-                rootView.addView(mSearchBox);
+                getViewContainer().addView(mSearchBox);
             }
         } else {
-            rootView.removeView(mSearchBox);
+            getViewContainer().removeView(mSearchBox);
         }
     }
 
     private void setResultContainerVisible(boolean visible) {
         if (visible) {
             if (!isResultContainerVisible()) {
-                rootView.addView(mSearchResultContainer);
+                getViewContainer().addView(mSearchResultContainer);
             }
         } else {
-            rootView.removeView(mSearchResultContainer);
+            getViewContainer().removeView(mSearchResultContainer);
         }
     }
 
     @Override
-    public void show() {
+    protected void onStart() {
+        super.onStart();
+        if (hasResult()) {
+            finish();
+            return;
+        }
+
         if (getOnlySearchBox()) {
             setSearchBoxVisible(true);
             mSearchEditText.setCursorVisible(false);
@@ -206,10 +214,10 @@ public class SearchBox extends ViewContainer
         }
         if (getBackBtnAsDrawer()) {
             isBackBtnAsDrawer = true;
-            mBackBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_menu));
+            mBackBtn.setImageDrawable(getContext().getDrawable(R.drawable.ic_menu));
         } else {
             isBackBtnAsDrawer = false;
-            mBackBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_arrow_back));
+            mBackBtn.setImageDrawable(getContext().getDrawable(R.drawable.ic_arrow_back));
         }
         if (getChooseOnMap()) {
             mChooseOnMapBtn.setVisibility(View.VISIBLE);
@@ -219,17 +227,13 @@ public class SearchBox extends ViewContainer
     }
 
     @Override
-    public void exit() {
+    protected void onStop() {
+        super.onStop();
         CommonUtils.hideKeyboard(mSearchEditText);
         setResultContainerVisible(false);
         setSearchBoxVisible(false);
 
         ((IDrawerView) mMapsFragment).enableDrawer(true);
-    }
-
-    @Override
-    public void onDestroyView() {
-
     }
 
     @Override
@@ -241,6 +245,14 @@ public class SearchBox extends ViewContainer
             }
         }
         return false;
+    }
+
+    @Override
+    public void onFragmentResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != ACTION_SUCCESS) return;
+        if (requestCode == SEARCHBOX_REQUEST_CODE) {
+            setResult(ACTION_SUCCESS, data);
+        }
     }
 
     @Override
@@ -260,7 +272,7 @@ public class SearchBox extends ViewContainer
             if (getOnlySearchBox()) {
                 showOnlySearchBox();
             } else {
-                mMapsFragment.getViewContainerManager().popBackStack();
+                finish();
             }
         } else if (viewId == R.id.edit_text_clear) {
             // 只有mSearchResultContainer不可见时允许回调
@@ -273,10 +285,10 @@ public class SearchBox extends ViewContainer
             mMapsFragment.setMapViewVisibility(View.INVISIBLE);
             setResultContainerVisible(true);
             isBackBtnAsDrawer = false;
-            mBackBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_arrow_back));
+            mBackBtn.setImageDrawable(getContext().getDrawable(R.drawable.ic_arrow_back));
         } else if (viewId == R.id.search_choose_on_map) {
-            mMapsFragment.getViewContainerManager().putViewContainer(
-                    new ChooseOnMap(rootView, mMapsFragment), null, false, ChooseOnMap.ID);
+            ChooseOnMap chooseOnMap = new ChooseOnMap(mMapsFragment);
+            startLiteFragmentForResult(SEARCHBOX_REQUEST_CODE, chooseOnMap, null);
         }
     }
 
@@ -285,18 +297,18 @@ public class SearchBox extends ViewContainer
     }
 
     private boolean getOnlySearchBox() {
-        Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
-        return arg != null && (boolean) arg;
+        boolean arg = getArguments().getBoolean(SearchBox.ONLY_SEARCH_BOX);
+        return arg;
     }
 
     private boolean getBackBtnAsDrawer() {
-        Object arg = args.get(SearchBox.BACK_BTN_AS_DRAWER);
-        return arg != null && (boolean) arg;
+        boolean arg = getArguments().getBoolean(SearchBox.BACK_BTN_AS_DRAWER);
+        return arg;
     }
 
     private boolean getChooseOnMap() {
-        Object arg = args.get(SearchBox.SHOW_CHOOSE_ON_MAP);
-        return arg != null && (boolean) arg;
+        boolean arg = getArguments().getBoolean(SearchBox.SHOW_CHOOSE_ON_MAP);
+        return arg;
     }
 
     private void showOnlySearchBox() {
@@ -305,10 +317,10 @@ public class SearchBox extends ViewContainer
         mMapsFragment.setMapViewVisibility(View.VISIBLE);
         if (getBackBtnAsDrawer()) {
             isBackBtnAsDrawer = true;
-            mBackBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_menu));
+            mBackBtn.setImageDrawable(getContext().getDrawable(R.drawable.ic_menu));
         } else {
             isBackBtnAsDrawer = false;
-            mBackBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_arrow_back));
+            mBackBtn.setImageDrawable(getContext().getDrawable(R.drawable.ic_arrow_back));
         }
         mSearchEditText.setCursorVisible(false);
     }

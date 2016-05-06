@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package dg.shenm233.mmaps.presenter;
+package dg.shenm233.library.litefragment;
 
-import com.amap.api.maps.model.Marker;
+import android.content.Intent;
 
-public interface IMapsFragment {
-    void onMarkerClick(Marker marker);
-
-    void changeMyLocationBtnState(int state);
-
-    MapsModule getMapsModule();
-
-    void onClearSearchText();
-
-    void setMapViewVisibility(int visibility);
-
-    void setDirectionsBtnVisibility(int visibility);
-
-    void setStatusBarColor(int color);
+public interface OnLiteFragmentResult {
+    void onFragmentResult(int requestCode, int resultCode, Intent data);
 }

@@ -16,7 +16,8 @@
 
 package dg.shenm233.mmaps.ui.maps.view;
 
-import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -30,40 +31,31 @@ import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.services.help.Tip;
 
+import dg.shenm233.library.litefragment.LiteFragment;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.ui.IDrawerView;
-import dg.shenm233.mmaps.ui.maps.ViewContainer;
 import dg.shenm233.mmaps.util.AMapUtils;
-import dg.shenm233.mmaps.util.AnimUtils;
 
-public class ChooseOnMap extends ViewContainer
+public class ChooseOnMap extends LiteFragment
         implements View.OnClickListener {
-    public static final int ID = 2;
-
-    private Context mContext;
     private IMapsFragment mMapsFragment;
 
-    private ViewGroup rootView;
     private ViewGroup titleView;
     private ViewGroup buttonBarView;
 
     private Marker marker;
 
-    public ChooseOnMap(ViewGroup rootView, IMapsFragment mapsFragment) {
-        this.rootView = rootView;
-        mContext = rootView.getContext();
+    public ChooseOnMap(IMapsFragment mapsFragment) {
         mMapsFragment = mapsFragment;
-
-        onCreateView();
     }
 
     @Override
-    public void onCreateView() {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        titleView = (ViewGroup) inflater.inflate(R.layout.search_choose_on_map_title, rootView, false);
+    protected void onCreateView(LayoutInflater inflater, ViewGroup container) {
+        super.onCreateView(inflater, container);
+        titleView = (ViewGroup) inflater.inflate(R.layout.search_choose_on_map_title, container, false);
 
-        ViewGroup buttonBarView = (ViewGroup) inflater.inflate(R.layout.button_bar, rootView, false);
+        ViewGroup buttonBarView = (ViewGroup) inflater.inflate(R.layout.button_bar, container, false);
         ((CoordinatorLayout.LayoutParams) buttonBarView.getLayoutParams()).gravity = Gravity.BOTTOM;
         this.buttonBarView = buttonBarView;
         buttonBarView.findViewById(R.id.action_ok).setOnClickListener(this);
@@ -72,46 +64,45 @@ public class ChooseOnMap extends ViewContainer
     }
 
     @Override
-    public void show() {
+    protected void onStart() {
+        super.onStart();
+        ViewGroup container = getViewContainer();
+        Resources res = getContext().getResources();
         ((IDrawerView) mMapsFragment).enableDrawer(false);
 
-        ViewGroup rootView = this.rootView;
-        AnimUtils.viewSlideInTop(titleView);
-        rootView.addView(titleView);
-        rootView.addView(buttonBarView);
+        container.addView(titleView);
+        container.addView(buttonBarView);
 
-        mMapsFragment.setStatusBarColor(mContext.getResources().getColor(R.color.primary_color));
+        mMapsFragment.setStatusBarColor(res.getColor(R.color.primary_color));
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mMapsFragment.setMapViewVisibility(View.VISIBLE);
 
         Marker marker = mMapsFragment.getMapsModule().addMarker();
         marker.setIcon(BitmapDescriptorFactory
-                .fromBitmap(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.pin)));
+                .fromBitmap(BitmapFactory.decodeResource(res, R.drawable.pin)));
         marker.setDraggable(false);
         this.marker = marker;
 
         Rect rect = new Rect();
-        rootView.getGlobalVisibleRect(rect);
+        container.getGlobalVisibleRect(rect);
         //TODO: 输入法出现时会导致marker不能居中,另外暂时不考虑使用屏幕分辨率来确定
         marker.setPositionByPixels(rect.centerX(), rect.centerY()); // 设置marker的位置为"居中"
     }
 
     @Override
-    public void exit() {
+    protected void onStop() {
+        super.onStop();
+        ViewGroup container = getViewContainer();
+
         marker.destroy();
         mMapsFragment.setStatusBarColor(Color.TRANSPARENT);
         mMapsFragment.setMapViewVisibility(View.INVISIBLE);
-        AnimUtils.viewSlideOutTop(titleView);
-        rootView.removeView(titleView);
-        rootView.removeView(buttonBarView);
+
+        container.removeView(titleView);
+        container.removeView(buttonBarView);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
 
         ((IDrawerView) mMapsFragment).enableDrawer(true);
-    }
-
-    @Override
-    public void onDestroyView() {
-
     }
 
     @Override
@@ -125,10 +116,13 @@ public class ChooseOnMap extends ViewContainer
         if (id == R.id.action_ok) {
             Tip tip = new Tip();
             tip.setPostion(AMapUtils.convertToLatLonPoint(marker.getPosition()));
-            tip.setName(mContext.getText(R.string.chosen_on_map).toString());
-            ((SearchBox.OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
+            tip.setName(getContext().getText(R.string.chosen_on_map).toString());
+            Intent result = new Intent();
+            result.putExtra("result", tip);
+            setResult(ACTION_SUCCESS, result);
+            finish();
         } else if (id == R.id.action_back) {
-            mMapsFragment.getViewContainerManager().popBackStack();
+            finish();
         }
     }
 }

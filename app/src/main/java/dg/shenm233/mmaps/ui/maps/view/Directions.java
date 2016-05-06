@@ -18,13 +18,14 @@ package dg.shenm233.mmaps.ui.maps.view;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,10 +40,8 @@ import android.widget.Toast;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.help.Tip;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import dg.shenm233.drag2expandview.Drag2ExpandView;
+import dg.shenm233.library.litefragment.LiteFragment;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.BusStepsAdapter;
 import dg.shenm233.mmaps.adapter.CardListAdapter;
@@ -50,18 +49,11 @@ import dg.shenm233.mmaps.adapter.DriveWalkStepsAdapter;
 import dg.shenm233.mmaps.presenter.DirectionsPresenter;
 import dg.shenm233.mmaps.presenter.IDirectionsView;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
-import dg.shenm233.mmaps.ui.maps.ViewContainer;
-import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
-import dg.shenm233.mmaps.util.AnimUtils;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
-import static dg.shenm233.mmaps.BuildConfig.DEBUG;
-
-public class Directions extends ViewContainer
-        implements IDirectionsView, SearchBox.OnSearchItemClickListener {
-    public final static int ID = 1;
-    public final static String CLEAR_ALL = "clear_all"; // boolean
+public class Directions extends LiteFragment
+        implements IDirectionsView {
     public final static String STARTING_POINT = "starting_point"; // TIP
     public final static String DESTINATION = "destination"; // TIP
 
@@ -69,8 +61,6 @@ public class Directions extends ViewContainer
     private final static int ROUTE_BUS = 1;
     private final static int ROUTE_WALK = 2;
 
-    private Context mContext;
-    private ViewGroup rootView;
     private IMapsFragment mMapsFragment;
 
     private DirectionsPresenter mDirectionsPresenter;
@@ -82,8 +72,6 @@ public class Directions extends ViewContainer
     private TextView destinationText;
     private ImageButton mMoreBtn;
     private ImageButton mSwapBtn;
-
-    private TextView curProcessingText; // 记录当前正在接受回调设置的TextView,为 startingPointText 或 destinationText
 
     private ViewGroup mResultViewContainer;
     private ProgressBar mProgressBar;
@@ -104,31 +92,21 @@ public class Directions extends ViewContainer
     private TextView mEtcTextView;
     private RecyclerView mStepListView;
 
-    public Directions(ViewGroup rootView, IMapsFragment mapsFragment) {
-        long t = System.currentTimeMillis();
-
-        Context context = rootView.getContext();
-        mContext = context;
-        this.rootView = rootView;
+    public Directions(IMapsFragment mapsFragment) {
         mMapsFragment = mapsFragment;
-
-        onCreateView();
-
-        mDirectionsPresenter = new DirectionsPresenter(context, this, mapsFragment.getMapsModule());
-        initAdapters();
-
-        if (DEBUG) {
-            Log.d("DirectionsView", "Construction method takes "
-                    + (System.currentTimeMillis() - t) + " ms");
-        }
     }
 
     @Override
-    public void onCreateView() {
-        ViewGroup rootView = this.rootView;
-        Context context = mContext;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        ViewGroup directionsBoxView = (ViewGroup) inflater.inflate(R.layout.directions_box, rootView, false);
+    protected void onCreate() {
+        super.onCreate();
+        mDirectionsPresenter = new DirectionsPresenter(getContext(), this, mMapsFragment.getMapsModule());
+        initAdapters();
+    }
+
+    @Override
+    protected void onCreateView(LayoutInflater inflater, ViewGroup container) {
+        super.onCreateView(inflater, container);
+        ViewGroup directionsBoxView = (ViewGroup) inflater.inflate(R.layout.directions_box, container, false);
         mDirectionsBoxView = directionsBoxView;
         CustomOnClickListener onClickListener = new CustomOnClickListener();
 
@@ -189,18 +167,18 @@ public class Directions extends ViewContainer
     }
 
     private void initResultViewContainer(LayoutInflater inflater) {
-        ViewGroup resultViewContainer = (ViewGroup) inflater.inflate(R.layout.directions_result, rootView, false);
+        ViewGroup resultViewContainer = (ViewGroup) inflater.inflate(R.layout.directions_result, getViewContainer(), false);
         mResultViewContainer = resultViewContainer;
         mProgressBar = (ProgressBar) resultViewContainer.findViewById(R.id.progress_bar);
         RecyclerView listView = (RecyclerView) resultViewContainer.findViewById(R.id.route_listview);
         mRouteResultListView = listView;
-        listView.setLayoutManager(new LinearLayoutManager(mContext));
+        listView.setLayoutManager(new LinearLayoutManager(getContext()));
         listView.setAdapter(mResultAdapter = new CardListAdapter());
     }
 
     private void initRouteAbstractView(LayoutInflater inflater) {
         Drag2ExpandView view = (Drag2ExpandView)
-                inflater.inflate(R.layout.route_abstract, rootView, false);
+                inflater.inflate(R.layout.route_abstract, getViewContainer(), false);
         view.setVisibility(View.GONE);
         mRouteAbstractView = view;
 
@@ -217,7 +195,7 @@ public class Directions extends ViewContainer
         });
 
         mStepListView = (RecyclerView) view.findViewById(R.id.route_steps_listview);
-        mStepListView.setLayoutManager(new LinearLayoutManager(mContext));
+        mStepListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         view.setOnDragListener(new Drag2ExpandView.OnDragListener() {
             @Override
@@ -240,8 +218,10 @@ public class Directions extends ViewContainer
     }
 
     private void initAdapters() {
-        mDriveWalkStepsAdapter = new DriveWalkStepsAdapter(mContext);
-        mBusStepsAdapter = new BusStepsAdapter(mContext);
+        Context context = getContext();
+
+        mDriveWalkStepsAdapter = new DriveWalkStepsAdapter(context);
+        mBusStepsAdapter = new BusStepsAdapter(context);
         OnViewClickListener listener = new OnViewClickListener() {
             @Override
             public void onClick(View v, Object data) {
@@ -262,48 +242,37 @@ public class Directions extends ViewContainer
     }
 
     @Override
-    public void show() {
-        if (getClearAll()) {
-            startingPointText.setText("");
-            startingPointText.setTag(null);
-            destinationText.setText("");
-            destinationText.setTag(null);
-            mResultAdapter.clear();
-            mResultAdapter.notifyDataSetChanged();
-        }
+    protected void onStart() {
+        super.onStart();
+        ViewGroup container = getViewContainer();
 
         setStartingPointFromArgs();
         setDestPointFromArgs();
 
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
-        mMapsFragment.setStatusBarColor(mContext.getResources().getColor(R.color.primary_color));
+        mMapsFragment.setStatusBarColor(getContext().getResources().getColor(R.color.primary_color));
 //        mDirectionsBoxView.setVisibility(View.VISIBLE);
         mResultViewContainer.setVisibility(View.VISIBLE);
-        AnimUtils.viewSlideInTop(mDirectionsBoxView);
-        rootView.addView(mDirectionsBoxView);
-        rootView.addView(mResultViewContainer);
-        rootView.addView(mRouteAbstractView);
+        container.addView(mDirectionsBoxView);
+        container.addView(mResultViewContainer);
+        container.addView(mRouteAbstractView);
 
         queryRoute();
     }
 
     @Override
-    public void exit() {
+    protected void onStop() {
+        super.onStop();
+        ViewGroup container = getViewContainer();
         mDirectionsPresenter.exit();
         restoreViewState();
 //        mDirectionsBoxView.setVisibility(View.GONE);
 //        mResultViewContainer.setVisibility(View.GONE);
-        AnimUtils.viewSlideOutTop(mDirectionsBoxView);
-        rootView.removeView(mDirectionsBoxView);
-        rootView.removeView(mResultViewContainer);
-        rootView.removeView(mRouteAbstractView);
+        container.removeView(mDirectionsBoxView);
+        container.removeView(mResultViewContainer);
+        container.removeView(mRouteAbstractView);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
         mMapsFragment.setStatusBarColor(Color.TRANSPARENT);
-    }
-
-    @Override
-    public void onDestroyView() {
-
     }
 
     @Override
@@ -321,13 +290,8 @@ public class Directions extends ViewContainer
         return false;
     }
 
-    private boolean getClearAll() {
-        Object arg = args.get(CLEAR_ALL);
-        return arg != null && (boolean) arg;
-    }
-
     private void setStartingPointFromArgs() {
-        Tip tip = (Tip) args.get(STARTING_POINT);
+        Tip tip = getArguments().getParcelable(STARTING_POINT);
         if (tip != null) {
             startingPointText.setText(tip.getName());
             startingPointText.setTag(tip.getPoint());
@@ -335,7 +299,7 @@ public class Directions extends ViewContainer
     }
 
     private void setDestPointFromArgs() {
-        Tip tip = (Tip) args.get(DESTINATION);
+        Tip tip = getArguments().getParcelable(DESTINATION);
         if (tip != null) {
             destinationText.setText(tip.getName());
             destinationText.setTag(tip.getPoint());
@@ -397,7 +361,7 @@ public class Directions extends ViewContainer
     }
 
     private void startNavigation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(true)
                 .setTitle(R.string.navi_attention)
                 .setMessage(R.string.navi_attention_msg)
@@ -416,13 +380,13 @@ public class Directions extends ViewContainer
         } else if (curSelectedTab == ROUTE_WALK) {
             mDirectionsPresenter.startWalkNavigation(curWalkRouteMode);
         } else {
-            Toast.makeText(mContext, "sorry,not supported", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "sorry,not supported", Toast.LENGTH_SHORT).show();
         }
     }
 
     //TODO: 这部分涉及硬编码，注意一下高德sdk的更新
     private void showRouteOptions() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.route_options);
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -486,13 +450,14 @@ public class Directions extends ViewContainer
         }
     }
 
-    /*处理回调*/
     @Override
-    public void onSearchItemClick(Tip tip) {
-        curProcessingText.setText(tip.getName());
-        curProcessingText.setTag(tip.getPoint());
-        if (startingPointText.getTag() != null && destinationText.getTag() != null)
-            queryRoute();
+    public void onFragmentResult(int requestCode, int resultCode, Intent data) {
+        Tip tip = data.getParcelableExtra("result");
+        if (requestCode == R.id.maps_directions_from) {
+            getArguments().putParcelable(STARTING_POINT, tip);
+        } else if (requestCode == R.id.maps_directions_to) {
+            getArguments().putParcelable(DESTINATION, tip);
+        }
     }
 
     @Override
@@ -571,26 +536,19 @@ public class Directions extends ViewContainer
         @Override
         public void onClick(View v) {
             int viewId = v.getId();
-            ViewContainerManager vm = mMapsFragment.getViewContainerManager();
             if (viewId == R.id.action_back) {
-                vm.popBackStack();
+                finish();
             } else if (viewId == R.id.maps_directions_swap) {
                 swapDirections();
             } else if (viewId == R.id.maps_directions_from || viewId == R.id.maps_directions_to) {
-                switch (viewId) {
-                    case R.id.maps_directions_from:
-                        curProcessingText = startingPointText;
-                        break;
-                    case R.id.maps_directions_to:
-                        curProcessingText = destinationText;
-                }
-                ViewContainer searchBox = new SearchBox(rootView, mMapsFragment);
-                exit();
-                Map<String, Object> args = new HashMap<>();
-                args.put(SearchBox.SHOW_CHOOSE_ON_MAP, true);
-                vm.putViewContainer(searchBox, args, true, SearchBox.ID);
+                Bundle args = new Bundle();
+                args.putBoolean(SearchBox.SHOW_CHOOSE_ON_MAP, true);
+                SearchBox searchBox = new SearchBox(mMapsFragment);
+                searchBox.setArguments(args);
+                int requestCode = viewId;
+                startLiteFragmentForResult(requestCode, searchBox, null);
             } else if (viewId == R.id.action_more) {
-                PopupMenu popupMenu = new PopupMenu(mContext, mMoreBtn);
+                PopupMenu popupMenu = new PopupMenu(getContext(), mMoreBtn);
                 popupMenu.inflate(R.menu.directions_more);
                 popupMenu.setOnMenuItemClickListener(this);
                 popupMenu.show();

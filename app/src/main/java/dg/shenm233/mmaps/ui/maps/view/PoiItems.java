@@ -16,9 +16,9 @@
 
 package dg.shenm233.mmaps.ui.maps.view;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,32 +33,26 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.help.Tip;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import dg.shenm233.drag2expandview.Drag2ExpandView;
+import dg.shenm233.library.litefragment.LiteFragment;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.PoiItemsAdapter;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.IPoiItemsView;
 import dg.shenm233.mmaps.presenter.PoiItemsPresenter;
-import dg.shenm233.mmaps.ui.maps.ViewContainer;
-import dg.shenm233.mmaps.ui.maps.ViewContainerManager;
 import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 import dg.shenm233.mmaps.widget.EndlessRecyclerOnScrollListener;
 
-public class PoiItems extends ViewContainer
+public class PoiItems extends LiteFragment
         implements IPoiItemsView, AMap.OnMarkerClickListener {
-    public static final int ID = 3;
     public static final String SEARCH_KEYWORD = "search_keyword";
     public static final String SEARCH_CATEGORY = "search_category";
     public static final String SEARCH_CITY = "search_city";
 
-    private ViewGroup rootView;
-    private Context mContext;
     private IMapsFragment mMapsFragment;
     private PoiItemsPresenter mPresenter;
 
@@ -74,18 +68,20 @@ public class PoiItems extends ViewContainer
 
     private SearchBox mSearchBox;
 
-    public PoiItems(ViewGroup rootView, IMapsFragment mapsFragment) {
-        this.rootView = rootView;
-        mContext = rootView.getContext();
+    public PoiItems(IMapsFragment mapsFragment) {
         mMapsFragment = mapsFragment;
-        mPresenter = new PoiItemsPresenter(mContext, this, mapsFragment.getMapsModule());
-        onCreateView();
     }
 
     @Override
-    public void onCreateView() {
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        mBottomSheet = (Drag2ExpandView) inflater.inflate(R.layout.poi_detail_base, rootView, false);
+    protected void onCreate() {
+        super.onCreate();
+        mPresenter = new PoiItemsPresenter(getContext(), this, mMapsFragment.getMapsModule());
+    }
+
+    @Override
+    protected void onCreateView(LayoutInflater inflater, ViewGroup container) {
+        super.onCreateView(inflater, container);
+        mBottomSheet = (Drag2ExpandView) inflater.inflate(R.layout.poi_detail_base, container, false);
         mMainContent = (ViewGroup) mBottomSheet.findViewById(R.id.main_content);
         mPoiListView = new PoiListView();
         mSinglePoiDetailView = new SinglePoiDetailView();
@@ -95,22 +91,23 @@ public class PoiItems extends ViewContainer
 
     @SuppressWarnings("unchecked")
     @Override
-    public void show() {
-        IMapsFragment mapsFragment = mMapsFragment;
-        mapsFragment.setDirectionsBtnVisibility(View.GONE);
+    protected void onStart() {
+        super.onStart();
+        ViewGroup container = getViewContainer();
+        mMapsFragment.setDirectionsBtnVisibility(View.GONE);
 
         // Hack: 显示搜索条
-        ViewContainer searchBox =
-                mapsFragment.getViewContainerManager().getViewContainer(SearchBox.ID);
+        SearchBox searchBox = (SearchBox) getLiteFragmentManager()
+                .findLiteFragmentByTag(SearchBox.class.getSimpleName());
 //        Map<String, Object> searchBoxArguments = searchBox.getArguments();
 //        searchBoxArguments.put(SearchBox.BACK_BTN_AS_DRAWER, true);
 //        searchBoxArguments.put(SearchBox.ONLY_SEARCH_BOX, true);
-        searchBox.show();
-        mSearchBox = (SearchBox) searchBox;
+        searchBox.onStart();
+        mSearchBox = searchBox;
 
         prepareData();
         switchToPoiListView();
-        rootView.addView(mBottomSheet);
+        container.addView(mBottomSheet);
     }
 
     /**
@@ -128,19 +125,16 @@ public class PoiItems extends ViewContainer
     }
 
     @Override
-    public void exit() {
+    protected void onStop() {
+        super.onStop();
+        ViewGroup container = getViewContainer();
         destroyMarker();
         mPresenter.exit();
         // Hack: 隐藏搜索框
-        mSearchBox.exit();
+        mSearchBox.onStop();
 
-        rootView.removeView(mBottomSheet);
+        container.removeView(mBottomSheet);
         mMapsFragment.setDirectionsBtnVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onDestroyView() {
-
     }
 
     @Override
@@ -177,7 +171,7 @@ public class PoiItems extends ViewContainer
         Marker marker2 = mMarker;
         if (marker2 == null) {
             mMarker = marker2 = mMapsFragment.getMapsModule().addMarker();
-            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.pin);
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.pin);
             // BitmapDescriptor对象创建时会调用Bitmap.recycle()
             marker2.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
             marker2.setAnchor(0.5f, 1.2f);
@@ -195,22 +189,20 @@ public class PoiItems extends ViewContainer
     }
 
     private void startDirections(PoiItem poiItem) {
-        ViewContainerManager vm = mMapsFragment.getViewContainerManager();
-        Map<String, Object> args = new HashMap<>();
-        args.put(Directions.CLEAR_ALL, true);
+        Bundle args = new Bundle();
 
         Tip stip = new Tip();
-        stip.setName(mContext.getString(R.string.my_location));
+        stip.setName(getContext().getString(R.string.my_location));
         stip.setPostion(mMapsFragment.getMapsModule().getMyLatLonPoint());
-        args.put(Directions.STARTING_POINT, stip);
+        args.putParcelable(Directions.STARTING_POINT, stip);
 
         Tip dtip = new Tip();
         dtip.setName(poiItem.getTitle());
         dtip.setPostion(poiItem.getLatLonPoint());
-        args.put(Directions.DESTINATION, dtip);
-
-        vm.putViewContainer(new Directions(rootView, mMapsFragment),
-                args, false, Directions.ID);
+        args.putParcelable(Directions.DESTINATION, dtip);
+        Directions directions = new Directions(mMapsFragment);
+        directions.setArguments(args);
+        startLiteFragment(directions);
     }
 
     @Override
@@ -237,12 +229,16 @@ public class PoiItems extends ViewContainer
     }
 
     private void searchKeyword(int pageIndex) {
-        String keyword = (String) args.get(SEARCH_KEYWORD);
+        Bundle args = getArguments();
+        if (args == null) {
+            return;
+        }
+        String keyword = args.getString(SEARCH_KEYWORD);
         if (CommonUtils.isStringEmpty(keyword)) {
             return;
         }
         mPresenter.searchPoiItems(keyword,
-                (String) args.get(SEARCH_CATEGORY), (String) args.get(SEARCH_CITY), pageIndex);
+                args.getString(SEARCH_CATEGORY), args.getString(SEARCH_CITY), pageIndex);
     }
 
     private class PoiListView implements OnViewClickListener {
@@ -259,7 +255,7 @@ public class PoiItems extends ViewContainer
             headerView = mainView.findViewById(R.id.poi_detail_header);
             listView = (RecyclerView) mainView.findViewById(R.id.poi_list);
             mListView = listView;
-            listView.setAdapter(mAdapter = new PoiItemsAdapter(mContext));
+            listView.setAdapter(mAdapter = new PoiItemsAdapter(getContext()));
             listView.addOnScrollListener(onScrollListener);
             onScrollListener.setMaxPageCount(5); // 最大的查询结果页数
             mAdapter.setOnViewClickListener(this);

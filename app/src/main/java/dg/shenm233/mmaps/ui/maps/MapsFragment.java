@@ -33,9 +33,8 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.services.help.Tip;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import dg.shenm233.library.litefragment.LiteFragment;
+import dg.shenm233.library.litefragment.LiteFragmentManager;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
@@ -53,10 +52,9 @@ public class MapsFragment extends Fragment
     private MapView mMapView;
     private MapsModule mMapsModule;
 
-    private ViewContainerManager mViewContainerManager;
+    private LiteFragmentManager mLiteFragmentManager;
 
-    private ViewContainer mSearchBox;
-    private ViewContainer mDirections;
+    private LiteFragment mSearchBox;
 
     private View mMapsMask;
 
@@ -92,17 +90,15 @@ public class MapsFragment extends Fragment
         mMyLocationBtn = (FloatingActionButton) viewContainer.findViewById(R.id.action_my_location);
         mMyLocationBtn.setOnClickListener(this);
 
-        ViewContainerManager viewContainerManager = new ViewContainerManager();
-        mViewContainerManager = viewContainerManager;
+        mLiteFragmentManager = new LiteFragmentManager(getActivity(), mViewContainer);
 
-        ViewContainer searchBox = new SearchBox(viewContainer, this);
-        mSearchBox = searchBox;
-        Map<String, Object> searchBoxArgs = new HashMap<>();
-        searchBoxArgs.put(SearchBox.BACK_BTN_AS_DRAWER, true);
-        searchBoxArgs.put(SearchBox.ONLY_SEARCH_BOX, true);
-        viewContainerManager.putViewContainer(searchBox, searchBoxArgs, true, SearchBox.ID);
-
-        mDirections = new Directions(viewContainer, this);
+        mSearchBox = new SearchBox(this);
+        Bundle searchBoxArgs = new Bundle();
+        searchBoxArgs.putBoolean(SearchBox.BACK_BTN_AS_DRAWER, true);
+        searchBoxArgs.putBoolean(SearchBox.ONLY_SEARCH_BOX, true);
+        mSearchBox.setArguments(searchBoxArgs);
+        mSearchBox.setTag(SearchBox.class.getSimpleName());
+        mLiteFragmentManager.addToBackStack(mSearchBox);
     }
 
     @Override
@@ -148,18 +144,22 @@ public class MapsFragment extends Fragment
     public void onClick(View v) {
         int viewId = v.getId();
         if (viewId == R.id.action_directions) {
-            Map<String, Object> args = new HashMap<>();
-
-            Tip tip = new Tip();
-            tip.setName(getString(R.string.my_location));
-            tip.setPostion(mMapsModule.getMyLatLonPoint());
-
-            args.put(Directions.CLEAR_ALL, true);
-            args.put(Directions.STARTING_POINT, tip);
-            mViewContainerManager.putViewContainer(mDirections, args, false, Directions.ID);
+            startDirections();
         } else if (viewId == R.id.action_my_location) {
             changeMyLocationModeDummy();
         }
+    }
+
+    private void startDirections() {
+        Tip tip = new Tip();
+        tip.setName(getString(R.string.my_location));
+        tip.setPostion(mMapsModule.getMyLatLonPoint());
+
+        LiteFragment directions = new Directions(this);
+        Bundle args = new Bundle();
+        args.putParcelable(Directions.STARTING_POINT, tip);
+        directions.setArguments(args);
+        mLiteFragmentManager.addToBackStack(directions);
     }
 
 
@@ -217,22 +217,21 @@ public class MapsFragment extends Fragment
 
     @Override
     public boolean onBackKeyPressed() {
-        ViewContainerManager vm = mViewContainerManager;
-        ViewContainer v = vm.peek();
-        if (v != null && v.onBackPressed()) {
+        LiteFragment f = mLiteFragmentManager.peek();
+        if (f != null && f.onBackPressed()) {
             return true;
         } else {
             if (isMain()) {
                 return false;
             }
-            vm.popBackStack();
+            mLiteFragmentManager.pop();
             return true;
         }
     }
 
     @Override
     public void onMarkerClick(Marker marker) {
-        ViewContainer v = mViewContainerManager.peek();
+        LiteFragment v = mLiteFragmentManager.peek();
         if (v instanceof AMap.OnMarkerClickListener) {
             ((AMap.OnMarkerClickListener) v).onMarkerClick(marker);
         }
@@ -250,11 +249,6 @@ public class MapsFragment extends Fragment
             mMyLocationBtn.setImageResource(R.drawable.ic_compass_grey600);
             mMyLocationBtn.setColorFilter(getResources().getColor(R.color.primary_color));
         }
-    }
-
-    @Override
-    public ViewContainerManager getViewContainerManager() {
-        return mViewContainerManager;
     }
 
     @Override
@@ -284,57 +278,46 @@ public class MapsFragment extends Fragment
 
     @Override
     public void onSearchItemClick(final Tip tip) {
-        final ViewContainerManager vm = mViewContainerManager;
-        // 优先给其他调用过SearchBox/ChooseOnMap的ViewContainer处理
-        if (vm.getViewContainer(Directions.ID) != null) { // 栈中有Directions这个ViewContainer,直接给它处理
-            vm.popBackStack(Directions.ID);
-            ((SearchBox.OnSearchItemClickListener) vm.peek()).onSearchItemClick(tip);
-            return;
-        }
-
-        ViewContainer v = vm.peek();
+        LiteFragment f = mLiteFragmentManager.peek();
         if (isMain()) {
-            Map<String, Object> args = v.getArguments();
-            args.put(SearchBox.BACK_BTN_AS_DRAWER, true);
-            v.show();
             showPoiItems(tip);
-        } else if (v instanceof PoiItems) {
-            vm.popBackStack();
+        } else if (f instanceof PoiItems) {
+            mLiteFragmentManager.pop();
             showPoiItems(tip);
         }
     }
 
     @Override
     public void onClearSearchText() {
-        ViewContainerManager vm = mViewContainerManager;
-        ViewContainer v = vm.peek();
-        if (v instanceof PoiItems) {
-            vm.popBackStack();
+        LiteFragment f = mLiteFragmentManager.peek();
+        if (f instanceof PoiItems) {
+            mLiteFragmentManager.pop();
         }
     }
 
     private void showPoiItems(Tip tip) {
-        Map<String, Object> args = new HashMap<>();
-        args.put(PoiItems.SEARCH_KEYWORD, tip.getName());
+        Bundle args = new Bundle();
+        args.putString(PoiItems.SEARCH_KEYWORD, tip.getName());
         if (CommonUtils.isStringEmpty(tip.getAdcode())) {
             String city = LocationManager.getInstance(getActivity()).getLastKnownLocation().getCity();
-            args.put(PoiItems.SEARCH_CITY, city);
+            args.putString(PoiItems.SEARCH_CITY, city);
         } else {
-            args.put(PoiItems.SEARCH_CITY, tip.getAdcode());
+            args.putString(PoiItems.SEARCH_CITY, tip.getAdcode());
         }
-        getViewContainerManager().putViewContainer(new PoiItems(mViewContainer, MapsFragment.this),
-                args, true, PoiItems.ID);
+        LiteFragment f = new PoiItems(this);
+        f.setArguments(args);
+        mLiteFragmentManager.addToBackStack(f);
     }
 
     /**
      * 判断是否为主界面
      */
     private boolean isMain() {
-        ViewContainer v = mViewContainerManager.peek();
-        if (v instanceof SearchBox) { // 只显示搜索框，一般认为当前是主界面
-            Map<String, Object> args = v.getArguments();
-            Object arg = args.get(SearchBox.ONLY_SEARCH_BOX);
-            return arg != null && (boolean) arg;
+        LiteFragment f = mLiteFragmentManager.peek();
+        if (f instanceof SearchBox) { // 只显示搜索框，一般认为当前是主界面
+            Bundle args = f.getArguments();
+            boolean arg = args.getBoolean(SearchBox.ONLY_SEARCH_BOX, false);
+            return arg;
         }
         return false;
     }
