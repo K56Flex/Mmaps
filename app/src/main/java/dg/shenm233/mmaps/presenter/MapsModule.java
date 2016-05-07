@@ -17,12 +17,15 @@
 package dg.shenm233.mmaps.presenter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
@@ -55,9 +58,13 @@ import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.model.Compass;
 import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.service.OfflineMapEvent;
+import dg.shenm233.mmaps.util.AMapUtils;
+import dg.shenm233.mmaps.util.CommonUtils;
 
 public class MapsModule implements AMap.OnMarkerClickListener,
         AMap.OnMapClickListener, AMap.OnMapTouchListener {
+    private final static String KEY_LASTKNOWN_LOCATION = "last_known_location";
+
     public final static int MY_LOCATION_LOCATE = 0;
     public final static int MY_LOCATION_FOLLOW = 1;
     public final static int MY_LOCATION_ROTATE = 2;
@@ -88,6 +95,11 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         mAMap.setOnMarkerClickListener(this);
         mAMap.setOnMapTouchListener(this);
 
+        LatLng lastLocation = getLastSavedLocation();
+        if (lastLocation != null) {
+            mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLocation, 15.0f));
+        }
+
         mLocationListener = new AMapLocationListener();
         mAMap.setLocationSource(mLocationListener); // 设置定位监听
         mAMap.setLoadOfflineData(true);
@@ -112,10 +124,29 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     }
 
     public void onPause() {
+        saveLastKnownLocation();
         EventBus.getDefault().unregister(this);
         LocationManager.getInstance(mContext).stopLocationFor(mLocationListener);
         setMyLocationEnabled(false);
         mCompass.stop();
+    }
+
+    private LatLng getLastSavedLocation() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String location = preferences.getString(KEY_LASTKNOWN_LOCATION, null);
+        if (!CommonUtils.isStringEmpty(location)) {
+            return AMapUtils.convertToLatLng(AMapUtils.convertToLatLonPoint(location));
+        }
+        return null;
+    }
+
+    private void saveLastKnownLocation() {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+        AMapLocation l = LocationManager.getInstance(mContext).getLastKnownLocation();
+        LatLonPoint latLonPoint = new LatLonPoint(l.getLatitude(), l.getLongitude());
+        String location = AMapUtils.convertLatLonPointToString(latLonPoint);
+        editor.putString(KEY_LASTKNOWN_LOCATION, location);
+        editor.apply();
     }
 
     /**
