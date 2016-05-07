@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.UiSettings;
@@ -105,7 +106,8 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         mAMap.setLoadOfflineData(true);
 
         UiSettings uiSettings = mAMap.getUiSettings();
-        uiSettings.setZoomControlsEnabled(false);
+        uiSettings.setZoomControlsEnabled(true);
+        uiSettings.setZoomPosition(AMapOptions.ZOOM_POSITION_RIGHT_CENTER);
         uiSettings.setScaleControlsEnabled(true); // 显示比例尺
         mCompass.registerListener(new Compass.OnRotateListener() {
             @Override
