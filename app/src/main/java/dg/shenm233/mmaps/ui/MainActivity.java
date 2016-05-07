@@ -83,9 +83,11 @@ public class MainActivity extends BaseActivity implements IDrawerView {
                         mapsModule.setMapType(MapsModule.MAP_TYPE_NORMAL);
                     }
                     item.setChecked(!isChecked);
+                    mDrawerLayout.closeDrawers();
                 } else if (itemId == R.id.navigation_traffic) {
                     mapsModule.setTrafficEnabled(!isChecked);
                     item.setChecked(!isChecked);
+                    mDrawerLayout.closeDrawers();
                 } else if (itemId == R.id.navigation_offline) {
                     Intent intent = new Intent(MainActivity.this, OfflineMapActivity.class);
                     startActivity(intent);
