@@ -45,7 +45,9 @@
         android:layout_alignLeft="@id/step_departure"
         android:layout_below="@id/step_departure"
         android:background="@color/grey_background_light"
-        android:gravity="center_vertical" />
+        android:ellipsize="marquee"
+        android:gravity="center_vertical"
+        android:singleLine="true" />
 
     <LinearLayout
         android:id="@+id/bus_expandable"
