@@ -145,6 +145,9 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     private void saveLastKnownLocation() {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
         AMapLocation l = LocationManager.getInstance(mContext).getLastKnownLocation();
+        if (l == null) {
+            return;
+        }
         LatLonPoint latLonPoint = new LatLonPoint(l.getLatitude(), l.getLongitude());
         String location = AMapUtils.convertLatLonPointToString(latLonPoint);
         editor.putString(KEY_LASTKNOWN_LOCATION, location);
