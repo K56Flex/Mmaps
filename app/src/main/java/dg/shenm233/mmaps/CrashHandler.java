@@ -83,8 +83,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             try {
                 writer = new PrintWriter(crashReport);
 
-                writer.append("Android version : " + Build.VERSION.SDK_INT + "\n")
-                        .append("Sdk version : " + Build.VERSION.RELEASE + "\n")
+                writer.append("Android version : " + Build.VERSION.RELEASE + "\n")
+                        .append("Sdk version : " + Build.VERSION.SDK_INT + "\n")
                         .append("App version name : " + BuildConfig.VERSION_NAME + "\n")
                         .append("App version code : " + BuildConfig.VERSION_CODE + "\n")
                         .append("CPU ABI : " + Arrays.toString(Build.SUPPORTED_ABIS) + "\n")
