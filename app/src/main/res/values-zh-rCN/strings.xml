@@ -91,6 +91,8 @@
     <string name="already_downloaded">已下载</string>
 
     <string name="offline_map_download">离线地图下载</string>
+    <string name="offline_map_download_complete">离线地图下载完成</string>
+    <string name="offline_map_download_failed">离线地图下载失败</string>
     <string name="download_list">下载列表</string>
     <string name="city_list">城市列表</string>
     <string name="really_remove_offline_map">真的要删除该城市的离线地图？</string>

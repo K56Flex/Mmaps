@@ -90,6 +90,8 @@
     <string name="already_downloaded">Already downloaded</string>
 
     <string name="offline_map_download">Offline Map Download</string>
+    <string name="offline_map_download_complete">Offline Map Download complete</string>
+    <string name="offline_map_download_failed">Offline Map Download failed</string>
     <string name="download_list">Download list</string>
     <string name="city_list">City list</string>
     <string name="really_remove_offline_map">Really remove this city\'s offline map?</string>

@@ -16,10 +16,13 @@
 
 package dg.shenm233.mmaps.service;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.amap.api.maps.AMapException;
@@ -35,6 +38,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import dg.shenm233.mmaps.R;
+
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
 public class OfflineMapService extends OfflineMapServiceStub {
@@ -44,9 +49,11 @@ public class OfflineMapService extends OfflineMapServiceStub {
     final public static String DOWHAT_REMOVE_MAP = "removeMap";
     final public static String DOWHAT_CHECK_UPDATE_MAP = "checkMap";
     final public static String DOWHAT_CHECK_ALL_UPDATE = "checkAll";
+    final private static int NOTIFY_ID = 0x2b;
 
     private ServiceBinder mBinder;
-
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mNotifyBuilder;
     private boolean isDownloading = false;
 
     public OfflineMapService() {
@@ -56,6 +63,13 @@ public class OfflineMapService extends OfflineMapServiceStub {
     public void onCreate() {
         mBinder = new ServiceBinder();
         super.onCreate();
+        if (mNotifyManager == null) {
+            mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        if (mNotifyBuilder == null) {
+            mNotifyBuilder = new NotificationCompat.Builder(this);
+            mNotifyBuilder.setSmallIcon(R.drawable.ic_file_download_black_24dp);
+        }
     }
 
     @Override
@@ -134,10 +148,33 @@ public class OfflineMapService extends OfflineMapServiceStub {
             if (DEBUG) {
                 Log.d("OfflineMapService", String.format("download %s %d", name, completeCode));
             }
+            isDownloading = (status == OfflineMapStatus.LOADING);
+            boolean notify = false;
             if (status == OfflineMapStatus.LOADING) {
-                isDownloading = true;
-            } else {
-                isDownloading = false;
+                mNotifyBuilder.setContentTitle(getString(R.string.offline_map_download));
+                mNotifyBuilder.setContentText(name);
+                mNotifyBuilder.setProgress(100, completeCode, false);
+                notify = true;
+            } else if (status == OfflineMapStatus.UNZIP) {
+                mNotifyBuilder.setContentTitle(getString(R.string.offline_map_download));
+                mNotifyBuilder.setContentText(name);
+                mNotifyBuilder.setProgress(100, completeCode, false);
+                notify = true;
+            } else if (status == OfflineMapStatus.SUCCESS) {
+                mNotifyBuilder.setContentText(name);
+                mNotifyBuilder.setContentTitle(getString(R.string.offline_map_download_complete));
+                mNotifyBuilder.setProgress(0, 0, false);
+                notify = true;
+            } else if (status != OfflineMapStatus.START_DOWNLOAD_FAILD
+                    && status != OfflineMapStatus.CHECKUPDATES
+                    && status != OfflineMapStatus.WAITING) {
+                mNotifyBuilder.setContentText(name);
+                mNotifyBuilder.setContentTitle(getString(R.string.offline_map_download_failed));
+                mNotifyBuilder.setProgress(0, 0, false);
+                notify = true;
+            }
+            if (notify) {
+                mNotifyManager.notify(NOTIFY_ID, mNotifyBuilder.build());
             }
             OfflineMapEvent event = new OfflineMapEvent(OfflineMapEvent.DOWNLOAD_EVENT);
             event.name = name;
