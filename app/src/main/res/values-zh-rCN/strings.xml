@@ -76,6 +76,7 @@
 
     <string name="action_download_start">开始下载</string>
     <string name="action_download_pause">暂停下载</string>
+    <string name="action_check_update">检测并更新</string>
 
     <string name="download">下载</string>
     <string name="downloaded">已下载</string>

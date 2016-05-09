@@ -43,6 +43,7 @@ public class OfflineMapService extends OfflineMapServiceStub {
     final public static String DOWHAT_ADD_MAP = "addMap";
     final public static String DOWHAT_REMOVE_MAP = "removeMap";
     final public static String DOWHAT_CHECK_UPDATE_MAP = "checkMap";
+    final public static String DOWHAT_CHECK_ALL_UPDATE = "checkAll";
 
     private ServiceBinder mBinder;
 
@@ -95,6 +96,15 @@ public class OfflineMapService extends OfflineMapServiceStub {
                 }
             } catch (AMapException e) {
                 Log.e("POI", "[OfflineMapService] check update " + name + " Exception!");
+            }
+        } else if (DOWHAT_CHECK_ALL_UPDATE.equals(dowhat)) {
+            List<OfflineMapCity> cityList = mMapManager.getDownloadOfflineMapCityList();
+            for (OfflineMapCity city : cityList) {
+                try {
+                    mMapManager.updateOfflineCityByName(city.getCity());
+                } catch (AMapException e) {
+
+                }
             }
         }
 

@@ -57,6 +57,7 @@ public class OfflineDownloadListAdapter extends BaseRecyclerViewAdapter<OfflineD
         holder.mSize.setText(CommonUtils.getFriendlyBytes(city.getSize()));
         holder.mState.setText(
                 OffLineMapUtils.convertStateToText(city.getState(), city.getcompleteCode()));
+        holder.mVersion.setText(city.getVersion());
         holder.setTag(city);
     }
 
@@ -73,12 +74,14 @@ public class OfflineDownloadListAdapter extends BaseRecyclerViewAdapter<OfflineD
         TextView mCity;
         TextView mSize;
         TextView mState;
+        TextView mVersion;
 
         public DownloadVH(ViewGroup itemView) {
             super(itemView);
             mCity = (TextView) itemView.findViewById(R.id.offline_city);
             mSize = (TextView) itemView.findViewById(R.id.offline_size);
             mState = (TextView) itemView.findViewById(R.id.offline_state);
+            mVersion = (TextView) itemView.findViewById(R.id.offline_version);
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {

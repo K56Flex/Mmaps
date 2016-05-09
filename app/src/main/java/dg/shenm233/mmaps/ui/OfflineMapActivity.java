@@ -223,6 +223,9 @@ public class OfflineMapActivity extends BaseActivity {
         if (DEBUG) {
             Log.d("OfflineMapActivity", String.format("checkUpdate %s %b", event.name, event.hasUpdate));
         }
+        if (event.hasUpdate) {
+            startDownload(OfflineMapService.TYPE_CITY, event.name);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -246,6 +249,15 @@ public class OfflineMapActivity extends BaseActivity {
         String s = success ? getString(R.string.remove_maps_success, name) :
                 getString(R.string.remove_maps_failed, name) + "\n" + describe;
         Snackbar.make(mMainContentVG, s, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void startDownload(String type, String name) {
+        Intent intent = new Intent();
+        intent.setClass(this, OfflineMapService.class);
+        intent.putExtra("name", name);
+        intent.putExtra("type", type);
+        intent.putExtra("dowhat", OfflineMapService.DOWHAT_ADD_MAP);
+        OfflineMapActivity.this.startService(intent);
     }
 
     private class DownloadListPager extends BasePager
@@ -329,6 +341,8 @@ public class OfflineMapActivity extends BaseActivity {
 
             Button pauseBtn = (Button) view.findViewById(R.id.action_download_pause);
             pauseBtn.setOnClickListener(this);
+            Button checkBtn = (Button) view.findViewById(R.id.action_check_update);
+            checkBtn.setOnClickListener(this);
 
             RecyclerView listView = (RecyclerView) view.findViewById(R.id.offline_down_list);
             listView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -358,6 +372,11 @@ public class OfflineMapActivity extends BaseActivity {
                     return;
                 }
                 binder.pause();
+            } else if (id == R.id.action_check_update) {
+                Intent intent = new Intent();
+                intent.setClass(mContext, OfflineMapService.class);
+                intent.putExtra("dowhat", OfflineMapService.DOWHAT_CHECK_ALL_UPDATE);
+                OfflineMapActivity.this.startService(intent);
             }
         }
 
@@ -438,12 +457,7 @@ public class OfflineMapActivity extends BaseActivity {
                     Toast.makeText(mContext, city.getCity(), Toast.LENGTH_SHORT).show();
                 }
 
-                Intent intent = new Intent();
-                intent.setClass(mContext, OfflineMapService.class);
-                intent.putExtra("name", city.getCity());
-                intent.putExtra("type", OfflineMapService.TYPE_CITY);
-                intent.putExtra("dowhat", OfflineMapService.DOWHAT_ADD_MAP);
-                OfflineMapActivity.this.startService(intent);
+                startDownload(OfflineMapService.TYPE_CITY, city.getCity());
             } else if (id == R.id.download_province) {
                 OfflineMapProvince province = (OfflineMapProvince) data;
 
@@ -451,12 +465,7 @@ public class OfflineMapActivity extends BaseActivity {
                     Toast.makeText(mContext, province.getProvinceName(), Toast.LENGTH_SHORT).show();
                 }
 
-                Intent intent = new Intent();
-                intent.setClass(mContext, OfflineMapService.class);
-                intent.putExtra("name", province.getProvinceName());
-                intent.putExtra("type", OfflineMapService.TYPE_PROVINCE);
-                intent.putExtra("dowhat", OfflineMapService.DOWHAT_ADD_MAP);
-                OfflineMapActivity.this.startService(intent);
+                startDownload(OfflineMapService.TYPE_PROVINCE, province.getProvinceName());
             }
         }
     }

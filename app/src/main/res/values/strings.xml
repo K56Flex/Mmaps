@@ -75,6 +75,7 @@
 
     <string name="action_download_start">start</string>
     <string name="action_download_pause">pause</string>
+    <string name="action_check_update">check&amp;update</string>
 
     <string name="download">Download</string>
     <string name="downloaded">Downloaded</string>
