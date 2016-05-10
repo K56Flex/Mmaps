@@ -18,6 +18,7 @@ package dg.shenm233.mmaps.model;
 
 import android.content.Context;
 import android.location.LocationListener;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -27,14 +28,18 @@ import com.amap.api.location.AMapLocationListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dg.shenm233.mmaps.BuildConfig.DEBUG;
+
 public class LocationManager {
     private static LocationManager mLocationManager;
+    private Context mContext;
     private List<LocationListener> mLocationListeners = new ArrayList<>();
 
     private AMapLocationClient mLocationManagerProxy;
     private AMapLocationClientOption mOption;
 
     private LocationManager(Context context) {
+        mContext = context.getApplicationContext();
         mLocationManagerProxy = new AMapLocationClient(context);
         mLocationManagerProxy.setLocationOption(mOption = new AMapLocationClientOption());
         setupLocationOption();
@@ -52,6 +57,9 @@ public class LocationManager {
         AMapLocationClientOption option = mOption;
         option.setOnceLocation(false);
         option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        option.setGpsFirst(true);
+        option.setKillProcess(true);
+        option.setInterval(5000);
     }
 
     public static void destroy() {
@@ -96,6 +104,10 @@ public class LocationManager {
     private AMapLocationListener mInternalListener = new AMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
+            if (DEBUG) {
+                Toast.makeText(mContext, aMapLocation.toStr(), Toast.LENGTH_SHORT).show();
+            }
+
             for (LocationListener l : mLocationListeners) {
                 l.onLocationChanged(aMapLocation);
             }

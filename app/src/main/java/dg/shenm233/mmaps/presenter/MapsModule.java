@@ -336,6 +336,10 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         // LocationListener
         @Override
         public void onLocationChanged(Location location) {
+            if (((AMapLocation) location).getErrorCode() != AMapLocation.LOCATION_SUCCESS) {
+                return;
+            }
+
             if (mListenerForAMapInternal != null) {
                 mListenerForAMapInternal.onLocationChanged(location);
             }
