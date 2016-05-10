@@ -17,6 +17,7 @@
 package dg.shenm233.mmaps.service;
 
 import android.app.NotificationManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
@@ -30,7 +31,6 @@ import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapManager;
 import com.amap.api.maps.offlinemap.OfflineMapManager.OfflineMapDownloadListener;
 import com.amap.api.maps.offlinemap.OfflineMapProvince;
-import com.amap.api.maps.offlinemap.OfflineMapServiceStub;
 import com.amap.api.maps.offlinemap.OfflineMapStatus;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,7 +42,7 @@ import dg.shenm233.mmaps.R;
 
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
-public class OfflineMapService extends OfflineMapServiceStub {
+public class OfflineMapService extends Service {
     final public static String TYPE_PROVINCE = "province";
     final public static String TYPE_CITY = "city";
     final public static String DOWHAT_ADD_MAP = "addMap";
@@ -51,6 +51,7 @@ public class OfflineMapService extends OfflineMapServiceStub {
     final public static String DOWHAT_CHECK_ALL_UPDATE = "checkAll";
     final private static int NOTIFY_ID = 0x2b;
 
+    private OfflineMapManager mMapManager;
     private ServiceBinder mBinder;
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mNotifyBuilder;
