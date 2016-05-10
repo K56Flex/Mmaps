@@ -293,16 +293,26 @@ public class Directions extends LiteFragment
     private void setStartingPointFromArgs() {
         Tip tip = getArguments().getParcelable(STARTING_POINT);
         if (tip != null) {
+            LatLonPoint point = tip.getPoint();
+            // 检查出发点/终点是否相同
+            if (point != null && point.equals(destinationText.getTag())) {
+                return;
+            }
             startingPointText.setText(tip.getName());
-            startingPointText.setTag(tip.getPoint());
+            startingPointText.setTag(point);
         }
     }
 
     private void setDestPointFromArgs() {
         Tip tip = getArguments().getParcelable(DESTINATION);
         if (tip != null) {
+            LatLonPoint point = tip.getPoint();
+            // 检查出发点/终点是否相同
+            if (point != null && point.equals(startingPointText.getTag())) {
+                return;
+            }
             destinationText.setText(tip.getName());
-            destinationText.setTag(tip.getPoint());
+            destinationText.setTag(point);
         }
     }
 
@@ -314,14 +324,12 @@ public class Directions extends LiteFragment
     private void swapDirections() {
         Object from_tag = startingPointText.getTag();
         Object to_tag = destinationText.getTag();
-        if (from_tag != null && to_tag != null) {
-            startingPointText.setTag(to_tag);
-            destinationText.setTag(from_tag);
-            CharSequence tmp = startingPointText.getText();
-            startingPointText.setText(destinationText.getText());
-            destinationText.setText(tmp);
-            queryRoute();
-        }
+        startingPointText.setTag(to_tag);
+        destinationText.setTag(from_tag);
+        CharSequence tmp = startingPointText.getText();
+        startingPointText.setText(destinationText.getText());
+        destinationText.setText(tmp);
+        queryRoute();
     }
 
     private void queryRoute() {
