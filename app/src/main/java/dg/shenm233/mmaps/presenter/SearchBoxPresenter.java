@@ -18,6 +18,7 @@ package dg.shenm233.mmaps.presenter;
 
 import android.content.Context;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.help.Inputtips;
 import com.amap.api.services.help.Tip;
@@ -65,7 +66,10 @@ public class SearchBoxPresenter {
         }
         try {
             if (CommonUtils.isStringEmpty(city)) {
-                city = LocationManager.getInstance(mContext).getLastKnownLocation().getCity();
+                AMapLocation curLoc = LocationManager.getInstance(mContext).getLastKnownLocation();
+                if (curLoc != null) {
+                    city = curLoc.getCity();
+                }
             }
             mInputTips.requestInputtips(string, city);
         } catch (AMapException e) {
