@@ -213,13 +213,13 @@ public class NaviActivity extends Activity {
         }
 
         @Override
-        public void onCalculateRouteFailure(int i) {
+        public void onCalculateRouteFailure(int errorInfo) {
             promptNoteAndExit(R.string.navi_failure);
         }
 
         @Override
-        public void onGpsOpenStatus(boolean b) {
-            if (!b) {
+        public void onGpsOpenStatus(boolean enabled) {
+            if (!enabled) {
                 Toast.makeText(NaviActivity.this, R.string.navi_please_enable_gps, Toast.LENGTH_LONG)
                         .show();
             }

@@ -22,6 +22,8 @@ import com.amap.api.navi.model.AMapNaviCross;
 import com.amap.api.navi.model.AMapNaviInfo;
 import com.amap.api.navi.model.AMapNaviLocation;
 import com.amap.api.navi.model.AMapNaviTrafficFacilityInfo;
+import com.amap.api.navi.model.AimLessModeCongestionInfo;
+import com.amap.api.navi.model.AimLessModeStat;
 import com.amap.api.navi.model.NaviInfo;
 import com.autonavi.tbt.TrafficFacilityInfo;
 
@@ -37,7 +39,7 @@ public abstract class AMapNaviListenerS implements AMapNaviListener {
     }
 
     @Override
-    public void onStartNavi(int i) {
+    public void onStartNavi(int type) {
 
     }
 
@@ -52,7 +54,7 @@ public abstract class AMapNaviListenerS implements AMapNaviListener {
     }
 
     @Override
-    public void onGetNavigationText(int i, String s) {
+    public void onGetNavigationText(int type, String text) {
 
     }
 
@@ -72,7 +74,7 @@ public abstract class AMapNaviListenerS implements AMapNaviListener {
     }
 
     @Override
-    public void onCalculateRouteFailure(int i) {
+    public void onCalculateRouteFailure(int errorInfo) {
 
     }
 
@@ -87,15 +89,16 @@ public abstract class AMapNaviListenerS implements AMapNaviListener {
     }
 
     @Override
-    public void onArrivedWayPoint(int i) {
+    public void onArrivedWayPoint(int wayID) {
 
     }
 
     @Override
-    public void onGpsOpenStatus(boolean b) {
+    public void onGpsOpenStatus(boolean enabled) {
 
     }
 
+    @Deprecated
     @Override
     public void onNaviInfoUpdated(AMapNaviInfo aMapNaviInfo) {
 
@@ -106,13 +109,15 @@ public abstract class AMapNaviListenerS implements AMapNaviListener {
 
     }
 
+    @Deprecated
     @Override
-    public void OnUpdateTrafficFacility(TrafficFacilityInfo trafficFacilityInfo) {
+    public void OnUpdateTrafficFacility(TrafficFacilityInfo info) {
 
     }
 
+    @Deprecated
     @Override
-    public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo aMapNaviTrafficFacilityInfo) {
+    public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo info) {
 
     }
 
@@ -127,7 +132,7 @@ public abstract class AMapNaviListenerS implements AMapNaviListener {
     }
 
     @Override
-    public void showLaneInfo(AMapLaneInfo[] aMapLaneInfos, byte[] bytes, byte[] bytes1) {
+    public void showLaneInfo(AMapLaneInfo[] laneInfos, byte[] laneBackgroundInfo, byte[] laneRecommendedInfo) {
 
     }
 
@@ -137,12 +142,27 @@ public abstract class AMapNaviListenerS implements AMapNaviListener {
     }
 
     @Override
-    public void onCalculateMultipleRoutesSuccess(int[] ints) {
+    public void onCalculateMultipleRoutesSuccess(int[] routeIds) {
 
     }
 
     @Override
-    public void notifyParallelRoad(int i) {
+    public void notifyParallelRoad(int parallelRoadType) {
+
+    }
+
+    @Override
+    public void updateAimlessModeCongestionInfo(AimLessModeCongestionInfo info){
+
+    }
+
+    @Override
+    public void updateAimlessModeStatistics(AimLessModeStat aimLessModeStat){
+
+    }
+
+    @Override
+    public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo[] infos){
 
     }
 }

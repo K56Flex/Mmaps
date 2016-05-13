@@ -20,12 +20,13 @@ import android.content.Context;
 import android.util.Log;
 
 import com.amap.api.navi.AMapNavi;
-import com.amap.api.navi.AMapNaviListener;
 import com.amap.api.navi.model.AMapLaneInfo;
 import com.amap.api.navi.model.AMapNaviCross;
 import com.amap.api.navi.model.AMapNaviInfo;
 import com.amap.api.navi.model.AMapNaviLocation;
 import com.amap.api.navi.model.AMapNaviTrafficFacilityInfo;
+import com.amap.api.navi.model.AimLessModeCongestionInfo;
+import com.amap.api.navi.model.AimLessModeStat;
 import com.amap.api.navi.model.NaviInfo;
 import com.amap.api.navi.model.NaviLatLng;
 import com.autonavi.tbt.TrafficFacilityInfo;
@@ -101,7 +102,7 @@ public class NaviPresenter {
         }
     }
 
-    private AMapNaviListener mAMapNaviListener = new AMapNaviListener() {
+    private AMapNaviListenerS mAMapNaviListener = new AMapNaviListenerS() {
         @Override
         public void onInitNaviFailure() {
             Log.i("NaviPresenter", "[AMapNavi] onInitNaviFailure");
@@ -119,10 +120,10 @@ public class NaviPresenter {
         }
 
         @Override
-        public void onStartNavi(int i) {
-            Log.i("NaviPresenter", "[AMapNavi] onStartNavi " + i);
+        public void onStartNavi(int type) {
+            Log.i("NaviPresenter", "[AMapNavi] onStartNavi " + type);
             if (mAMapNaviListenerS != null) {
-                mAMapNaviListenerS.onStartNavi(i);
+                mAMapNaviListenerS.onStartNavi(type);
             }
             speakText("开始导航");
         }
@@ -142,11 +143,11 @@ public class NaviPresenter {
         }
 
         @Override
-        public void onGetNavigationText(int i, String s) {
+        public void onGetNavigationText(int type, String text) {
             if (mAMapNaviListenerS != null) {
-                mAMapNaviListenerS.onGetNavigationText(i, s);
+                mAMapNaviListenerS.onGetNavigationText(type, text);
             }
-            speakText(s);
+            speakText(text);
         }
 
         @Override
@@ -173,9 +174,9 @@ public class NaviPresenter {
         }
 
         @Override
-        public void onCalculateRouteFailure(int i) {
+        public void onCalculateRouteFailure(int errorInfo) {
             if (mAMapNaviListenerS != null) {
-                mAMapNaviListenerS.onCalculateRouteFailure(i);
+                mAMapNaviListenerS.onCalculateRouteFailure(errorInfo);
             }
             speakText("路线规划失败，请检查网络或输入参数");
         }
@@ -197,16 +198,16 @@ public class NaviPresenter {
         }
 
         @Override
-        public void onArrivedWayPoint(int i) {
+        public void onArrivedWayPoint(int wayID) {
             if (mAMapNaviListenerS != null) {
-                mAMapNaviListenerS.onArrivedWayPoint(i);
+                mAMapNaviListenerS.onArrivedWayPoint(wayID);
             }
         }
 
         @Override
-        public void onGpsOpenStatus(boolean b) {
+        public void onGpsOpenStatus(boolean enabled) {
             if (mAMapNaviListenerS != null) {
-                mAMapNaviListenerS.onGpsOpenStatus(b);
+                mAMapNaviListenerS.onGpsOpenStatus(enabled);
             }
         }
 
@@ -226,42 +227,79 @@ public class NaviPresenter {
 
         @Override
         public void OnUpdateTrafficFacility(TrafficFacilityInfo trafficFacilityInfo) {
-
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.OnUpdateTrafficFacility(trafficFacilityInfo);
+            }
         }
 
         @Override
         public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo aMapNaviTrafficFacilityInfo) {
-
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.OnUpdateTrafficFacility(aMapNaviTrafficFacilityInfo);
+            }
         }
 
         @Override
         public void showCross(AMapNaviCross aMapNaviCross) {
-
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.showCross(aMapNaviCross);
+            }
         }
 
         @Override
         public void hideCross() {
-
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.hideCross();
+            }
         }
 
         @Override
-        public void showLaneInfo(AMapLaneInfo[] aMapLaneInfos, byte[] bytes, byte[] bytes1) {
-
+        public void showLaneInfo(AMapLaneInfo[] laneInfos, byte[] laneBackgroundInfo, byte[] laneRecommendedInfo) {
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.showLaneInfo(laneInfos, laneBackgroundInfo, laneRecommendedInfo);
+            }
         }
 
         @Override
         public void hideLaneInfo() {
-
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.hideLaneInfo();
+            }
         }
 
         @Override
-        public void onCalculateMultipleRoutesSuccess(int[] ints) {
-
+        public void onCalculateMultipleRoutesSuccess(int[] routeIds) {
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.onCalculateMultipleRoutesSuccess(routeIds);
+            }
         }
 
         @Override
-        public void notifyParallelRoad(int i) {
+        public void notifyParallelRoad(int parallelRoadType) {
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.notifyParallelRoad(parallelRoadType);
+            }
+        }
 
+        @Override
+        public void updateAimlessModeCongestionInfo(AimLessModeCongestionInfo info) {
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.updateAimlessModeCongestionInfo(info);
+            }
+        }
+
+        @Override
+        public void updateAimlessModeStatistics(AimLessModeStat aimLessModeStat) {
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.updateAimlessModeStatistics(aimLessModeStat);
+            }
+        }
+
+        @Override
+        public void OnUpdateTrafficFacility(AMapNaviTrafficFacilityInfo[] infos) {
+            if (mAMapNaviListenerS != null) {
+                mAMapNaviListenerS.OnUpdateTrafficFacility(infos);
+            }
         }
     };
 }
