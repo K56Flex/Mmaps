@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.services.help.Tip;
 
@@ -49,7 +50,7 @@ import dg.shenm233.mmaps.util.PermissionUtils;
 public class MapsFragment extends Fragment
         implements IMapsFragment, IDrawerView, View.OnClickListener, SearchBox.OnSearchItemClickListener {
     private CoordinatorLayout mViewContainer;
-    private MapView mMapView;
+    private TextureMapView mMapView;
     private MapsModule mMapsModule;
 
     private LiteFragmentManager mLiteFragmentManager;
@@ -75,7 +76,7 @@ public class MapsFragment extends Fragment
     public void onViewCreated(View rootView, @Nullable Bundle savedInstanceState) {
 //        mStatusBarView = (StatusBarView) rootView.findViewById(R.id.status_bar_view);
 
-        mMapView = (MapView) rootView.findViewById(R.id.mapview);
+        mMapView = (TextureMapView) rootView.findViewById(R.id.mapview);
         mMapView.onCreate(savedInstanceState);
         mMapsModule = new MapsModule(getActivity(), this, mMapView.getMap());
 
