@@ -21,6 +21,7 @@ import android.content.Context;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.NavigateArrowOptions;
 import com.amap.api.navi.AMapNavi;
+import com.amap.api.navi.enums.PathPlanningStrategy;
 import com.amap.api.navi.model.NaviLatLng;
 import com.amap.api.services.busline.BusLineItem;
 import com.amap.api.services.core.AMapException;
@@ -251,11 +252,11 @@ public class AMapUtils {
     public static int convertDriveModeForNavi(int mode) {
         switch (mode) {
             case RouteSearch.DrivingDefault:
-                return AMapNavi.DrivingDefault;
+                return PathPlanningStrategy.DRIVING_DEFAULT;
             case RouteSearch.DrivingSaveMoney:
-                return AMapNavi.DrivingSaveMoney;
+                return PathPlanningStrategy.DRIVING_SAVE_MONEY;
             case RouteSearch.DrivingAvoidCongestion:
-                return AMapNavi.DrivingAvoidCongestion;
+                return PathPlanningStrategy.DRIVING_AVOID_CONGESTION; // 规避拥堵且不走收费道路
             /*
             case RouteSearch.DrivingNoHighWay:
                 return AMapNavi.DrivingNoHighWay;
@@ -267,9 +268,9 @@ public class AMapUtils {
                 return AMapNavi.DrivingNoHighAvoidCongestionSaveMoney;
             */
             case RouteSearch.DrivingShortDistance:
-                return AMapNavi.DrivingShortDistance;
+                return PathPlanningStrategy.DRIVING_SHORT_DISTANCE;
             case RouteSearch.DrivingNoExpressways:
-                return AMapNavi.DrivingNoExpressways;
+                return PathPlanningStrategy.DRIVING_NO_EXPRESS_WAYS; // 普通路优先(不走快速路，包含高速路)
         }
 
         // TODO: AMapNavi.DrivingFastestTime (时间优先，躲避拥堵)
