@@ -300,7 +300,7 @@ public class MapsFragment extends Fragment
         Bundle args = new Bundle();
         args.putString(PoiItems.SEARCH_KEYWORD, tip.getName());
         if (CommonUtils.isStringEmpty(tip.getAdcode())) {
-            String city = LocationManager.getInstance(getActivity()).getLastKnownLocation().getCity();
+            String city = LocationManager.getInstance().getLastKnownLocation().getCity();
             args.putString(PoiItems.SEARCH_CITY, city);
         } else {
             args.putString(PoiItems.SEARCH_CITY, tip.getAdcode());

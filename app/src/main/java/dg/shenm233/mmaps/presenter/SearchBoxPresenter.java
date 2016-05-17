@@ -66,7 +66,7 @@ public class SearchBoxPresenter {
         }
         try {
             if (CommonUtils.isStringEmpty(city)) {
-                AMapLocation curLoc = LocationManager.getInstance(mContext).getLastKnownLocation();
+                AMapLocation curLoc = LocationManager.getInstance().getLastKnownLocation();
                 if (curLoc != null) {
                     city = curLoc.getCity();
                 }

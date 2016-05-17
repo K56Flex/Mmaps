@@ -128,7 +128,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     public void onPause() {
         saveLastKnownLocation();
         EventBus.getDefault().unregister(this);
-        LocationManager.getInstance(mContext).stopLocationFor(mLocationListener);
+        LocationManager.getInstance().stopLocationFor(mLocationListener);
         setMyLocationEnabled(false);
         mCompass.stop();
     }
@@ -144,7 +144,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
 
     private void saveLastKnownLocation() {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
-        AMapLocation l = LocationManager.getInstance(mContext).getLastKnownLocation();
+        AMapLocation l = LocationManager.getInstance().getLastKnownLocation();
         if (l == null) {
             return;
         }
@@ -324,13 +324,13 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         @Override
         public void activate(OnLocationChangedListener onLocationChangedListener) {
             mListenerForAMapInternal = onLocationChangedListener;
-            LocationManager.getInstance(mContext).startLocationFor(this);
+            LocationManager.getInstance().startLocationFor(this);
         }
 
         @Override
         public void deactivate() {
             mListenerForAMapInternal = null;
-            LocationManager.getInstance(mContext).stopLocationFor(this);
+            LocationManager.getInstance().stopLocationFor(this);
         }
 
         // LocationListener

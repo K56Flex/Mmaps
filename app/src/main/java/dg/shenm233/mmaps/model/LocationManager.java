@@ -28,6 +28,8 @@ import com.amap.api.location.AMapLocationListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import dg.shenm233.mmaps.MainApplication;
+
 import static dg.shenm233.mmaps.BuildConfig.DEBUG;
 
 public class LocationManager {
@@ -46,9 +48,9 @@ public class LocationManager {
         mLocationManagerProxy.setLocationListener(mInternalListener);
     }
 
-    public static LocationManager getInstance(Context context) {
+    public static LocationManager getInstance() {
         if (mLocationManager == null) {
-            mLocationManager = new LocationManager(context.getApplicationContext());
+            mLocationManager = new LocationManager(MainApplication.getAppContext());
         }
         return mLocationManager;
     }
