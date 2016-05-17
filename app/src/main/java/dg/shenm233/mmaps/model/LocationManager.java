@@ -68,10 +68,11 @@ public class LocationManager {
         if (mLocationManager == null) {
             return;
         }
-
+/*
         if (mLocationManager.mLocationListeners.size() > 0) { // 如果有正在监听的监听器，阻止销毁
             return;
         }
+*/
 
         AMapLocationClient client = mLocationManager.mLocationManagerProxy;
 
