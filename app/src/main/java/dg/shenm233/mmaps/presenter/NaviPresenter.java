@@ -50,7 +50,7 @@ public class NaviPresenter {
     public void onDestroy() {
         stopNavi();
         mAMapNavi.destroy();
-        TTSManager.getInstance(mContext).destroy();
+        TTSManager.getInstance().destroy();
     }
 
     public boolean calculateDriveRoute(List<NaviLatLng> to,
@@ -98,7 +98,7 @@ public class NaviPresenter {
 
     private void speakText(String s) {
         if (enableTTS) {
-            TTSManager.getInstance(mContext).speakText(s);
+            TTSManager.getInstance().speakText(s);
         }
     }
 

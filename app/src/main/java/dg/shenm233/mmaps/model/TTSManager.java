@@ -25,6 +25,8 @@ import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.SynthesizerListener;
 
+import dg.shenm233.mmaps.MainApplication;
+
 public class TTSManager {
     private static TTSManager mTTSManger;
 
@@ -55,9 +57,9 @@ public class TTSManager {
         mSpeechSynthesizer.setParameter(SpeechConstant.PITCH, "50");
     }
 
-    public static TTSManager getInstance(Context context) {
+    public static TTSManager getInstance() {
         if (mTTSManger == null) {
-            mTTSManger = new TTSManager(context);
+            mTTSManger = new TTSManager(MainApplication.getAppContext());
         }
         return mTTSManger;
     }
@@ -65,7 +67,9 @@ public class TTSManager {
     public void destroy() {
         if (mSpeechSynthesizer != null) {
             mSpeechSynthesizer.stopSpeaking();
+            mSpeechSynthesizer.destroy();
         }
+        mTTSManger = null;
     }
 
     public void speakText(String s) {
