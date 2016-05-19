@@ -107,9 +107,11 @@ public class LocationManager {
     private AMapLocationListener mInternalListener = new AMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation aMapLocation) {
+            /*
             if (DEBUG) {
                 Toast.makeText(mContext, aMapLocation.toStr(), Toast.LENGTH_SHORT).show();
             }
+            */
 
             for (LocationListener l : mLocationListeners) {
                 l.onLocationChanged(aMapLocation);
