@@ -28,6 +28,7 @@ import android.widget.ImageButton;
 
 import com.amap.api.services.help.Tip;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dg.shenm233.library.litefragment.LiteFragment;
@@ -52,6 +53,7 @@ public class SearchBox extends LiteFragment
     public static final String ONLY_SEARCH_BOX = "only_search_box"; //boolean
     public static final String BACK_BTN_AS_DRAWER = "back_btn_as_drawer"; //boolean
     public static final String SHOW_CHOOSE_ON_MAP = "show_choose_on_map"; //boolean
+    public static final String HIDE_POI_WITHOUT_LOC = "hide_poi_without_loc"; //boolean
 
     private IMapsFragment mMapsFragment;
     private SearchBoxPresenter mSearchBoxPresenter;
@@ -71,6 +73,11 @@ public class SearchBox extends LiteFragment
      * 标记当前的Back按钮是否用于Drawer
      */
     private boolean isBackBtnAsDrawer = false;
+
+    /**
+     * 隐藏部分没有具体位置的Poi关键词
+     */
+    private boolean hidePoiWithoutLoc = false;
 
     public SearchBox(IMapsFragment mapsFragment) {
         mMapsFragment = mapsFragment;
@@ -200,6 +207,7 @@ public class SearchBox extends LiteFragment
             return;
         }
 
+        hidePoiWithoutLoc = getHidePoiWithoutLoc();
         if (getOnlySearchBox()) {
             setSearchBoxVisible(true);
             mSearchEditText.setCursorVisible(false);
@@ -257,6 +265,15 @@ public class SearchBox extends LiteFragment
 
     @Override
     public void onGetInputTips(List<Tip> tipList) {
+        if (hidePoiWithoutLoc && tipList != null) {
+            List<Tip> newList = new ArrayList<>(tipList.size());
+            for (Tip tip : tipList) {
+                if (tip.getPoint() != null) {
+                    newList.add(tip);
+                }
+            }
+            tipList = newList;
+        }
         mResultAdapter.setList(tipList);
         mResultAdapter.notifyDataSetChanged();
     }
@@ -308,6 +325,11 @@ public class SearchBox extends LiteFragment
 
     private boolean getChooseOnMap() {
         boolean arg = getArguments().getBoolean(SearchBox.SHOW_CHOOSE_ON_MAP);
+        return arg;
+    }
+
+    private boolean getHidePoiWithoutLoc() {
+        boolean arg = getArguments().getBoolean(SearchBox.HIDE_POI_WITHOUT_LOC);
         return arg;
     }
 
