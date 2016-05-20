@@ -61,6 +61,9 @@ public class ChooseOnMap extends LiteFragment
         buttonBarView.findViewById(R.id.action_ok).setOnClickListener(this);
         buttonBarView.findViewById(R.id.action_back).setOnClickListener(this);
         buttonBarView.setTag(R.id.action_my_location, true);
+        setOnStartAnimation(R.anim.slide_in_top);
+        setOnStopAnimation(R.anim.slide_out_top);
+        setViewToAnimate(titleView);
     }
 
     @Override

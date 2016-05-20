@@ -19,7 +19,10 @@ package dg.shenm233.library.litefragment;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import java.util.Stack;
 
@@ -44,11 +47,12 @@ public class LiteFragmentManager {
 
     public void addToBackStack(LiteFragment fragment) {
         LiteFragment prev = peek();
-        if (prev != null) {
-            stopLiteFragmentInternal(prev, false);
-        }
         mBackStack.push(fragment);
-        startLiteFragmentInternal(fragment, true);
+        if (prev != null) {
+            stopLiteFragmentAndStartAnother(prev, false, fragment);
+        } else {
+            startLiteFragmentInternal(fragment, true);
+        }
     }
 
     public LiteFragment peek() {
@@ -63,11 +67,7 @@ public class LiteFragmentManager {
             return;
         }
         LiteFragment f = mBackStack.pop();
-        stopLiteFragmentInternal(f, true);
-        f = peek();
-        if (f != null) {
-            startLiteFragmentInternal(f, true);
-        }
+        stopLiteFragmentAndStartAnother(f, true, mBackStack.peek());
     }
 
     public void pop(String tag, boolean inclusive) {
@@ -107,10 +107,7 @@ public class LiteFragmentManager {
                 f.onFragmentResult(prev.getRequestCode(), prev.getResultCode(), resultData);
             }
         }
-        stopLiteFragmentInternal(prev, true);
-        if (f != null) {
-            startLiteFragmentInternal(f, true);
-        }
+        stopLiteFragmentAndStartAnother(prev, true, f);
     }
 
     private void startLiteFragmentInternal(LiteFragment f, boolean visibleImmediate) {
@@ -123,7 +120,48 @@ public class LiteFragmentManager {
             f.onCreateView(mLayoutInflater, mViewContainer);
         }
         if (visibleImmediate && !f.isStarted()) {
+            int startAnim = f.getOnStartAnimation();
+            final View viewToAnim = f.getViewToAnimate();
+            if (startAnim != -1 && viewToAnim != null) {
+                Animation animation = AnimationUtils.loadAnimation(mContext, startAnim);
+                viewToAnim.setAnimation(animation);
+            }
             f.onStart();
+        }
+    }
+
+    private void stopLiteFragmentAndStartAnother(final LiteFragment f, final boolean destroy,
+                                                 final LiteFragment next) {
+        int stopAnim = f.getOnStopAnimation();
+        final View viewToAnim = f.getViewToAnimate();
+        if (stopAnim != -1 && viewToAnim != null
+                // only start animation if that view is really visible.
+                && viewToAnim.getParent() != null && viewToAnim.getVisibility() == View.VISIBLE) {
+            Animation animation = AnimationUtils.loadAnimation(mContext, stopAnim);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    animation.setAnimationListener(null);
+                    stopLiteFragmentInternal(f, destroy);
+                    if (next != null) {
+                        startLiteFragmentInternal(next, true);
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            viewToAnim.startAnimation(animation);
+        } else {
+            stopLiteFragmentInternal(f, destroy);
+            startLiteFragmentInternal(next, true);
         }
     }
 

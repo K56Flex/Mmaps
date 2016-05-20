@@ -137,6 +137,9 @@ public class Directions extends LiteFragment
 //        rootView.addView(resultViewContainer);
 
         initRouteAbstractView(inflater);
+        setOnStartAnimation(R.anim.slide_in_top);
+        setOnStopAnimation(R.anim.slide_out_top);
+        setViewToAnimate(directionsBoxView);
     }
 
     private void initTabs() {

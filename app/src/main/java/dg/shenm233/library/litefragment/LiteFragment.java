@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 /**
@@ -124,6 +125,7 @@ public abstract class LiteFragment implements OnLiteFragmentResult {
      */
     protected void onDestroyView(ViewGroup container) {
         isCreatedView = false;
+        setViewToAnimate(null);
     }
 
     /**
@@ -303,5 +305,49 @@ public abstract class LiteFragment implements OnLiteFragmentResult {
      */
     protected Intent getRequestIntent() {
         return mRequestIntent;
+    }
+
+    private int mOnStartAnimResId = -1;
+    private int mOnStopAnimResId = -1;
+    private View mViewToAnimate = null;
+
+    /**
+     * set animation resource for starting LiteFragment.
+     * @param animResId set for animation,or set -1 if no animation.
+     */
+    public void setOnStartAnimation(int animResId) {
+        mOnStartAnimResId = animResId;
+    }
+
+    /**
+     * get animation resource for starting LiteFragment.
+     * @return animation resource id or -1.
+     */
+    public int getOnStartAnimation() {
+        return mOnStartAnimResId;
+    }
+
+    /**
+     * set animation resource for stopping LiteFragment.
+     * @param animResId set for animation,or set -1 if no animation.
+     */
+    public void setOnStopAnimation(int animResId) {
+        mOnStopAnimResId = animResId;
+    }
+
+    /**
+     * get animation resource for stopping LiteFragment.
+     * @return animation resource id or -1.
+     */
+    public int getOnStopAnimation() {
+        return mOnStopAnimResId;
+    }
+
+    public void setViewToAnimate(View view) {
+        mViewToAnimate = view;
+    }
+
+    public View getViewToAnimate() {
+        return mViewToAnimate;
     }
 }

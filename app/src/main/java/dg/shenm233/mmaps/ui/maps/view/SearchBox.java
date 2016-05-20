@@ -169,6 +169,9 @@ public class SearchBox extends LiteFragment
                 }
             }
         });
+        setOnStartAnimation(R.anim.slide_in_top);
+        setOnStopAnimation(R.anim.slide_out_top);
+        setViewToAnimate(searchBox);
     }
 
     private boolean isSearchBoxVisible() {
