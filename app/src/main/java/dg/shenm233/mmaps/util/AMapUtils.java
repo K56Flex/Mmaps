@@ -20,7 +20,6 @@ import android.content.Context;
 
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.NavigateArrowOptions;
-import com.amap.api.navi.AMapNavi;
 import com.amap.api.navi.enums.PathPlanningStrategy;
 import com.amap.api.navi.model.NaviLatLng;
 import com.amap.api.services.busline.BusLineItem;
@@ -270,6 +269,7 @@ public class AMapUtils {
             case RouteSearch.DrivingShortDistance:
                 return PathPlanningStrategy.DRIVING_SHORT_DISTANCE;
             case RouteSearch.DrivingNoExpressways:
+            case RouteSearch.DrivingNoHighWay:
                 return PathPlanningStrategy.DRIVING_NO_EXPRESS_WAYS; // 普通路优先(不走快速路，包含高速路)
         }
 

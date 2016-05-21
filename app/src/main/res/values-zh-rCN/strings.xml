@@ -109,7 +109,11 @@
 
     <string name="navi_please_enable_gps">请打开设备的GPS</string>
     <string name="navi_really_exit">要退出导航？</string>
-    <string name="navi_not_supported_strategy">不支持该驾驶方案，请选择其他方案</string>
+    <string name="navi_not_supported_strategy">不支持该驾驶方案，请选择其他方案
+        \n仅支持下列驾驶方案:
+        \n默认, 省钱, 避免拥堵,
+        \n距离优先,不走快速路(包括高速公路)
+    </string>
     <string name="navi_failure">导航失败</string>
     <string name="navi_permission_failed">导航需要电话和位置权限</string>
 
