@@ -39,6 +39,7 @@
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:hint="@string/search_in_maps"
+        android:imeOptions="actionSearch"
         android:singleLine="true" />
 
     <ImageButton

@@ -20,11 +20,14 @@ import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.amap.api.services.help.Tip;
 
@@ -39,6 +42,7 @@ import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.ISearchBox;
 import dg.shenm233.mmaps.presenter.SearchBoxPresenter;
 import dg.shenm233.mmaps.ui.IDrawerView;
+import dg.shenm233.mmaps.util.AMapUtils;
 import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
@@ -130,6 +134,21 @@ public class SearchBox extends LiteFragment
             }
         });
         searchEditText.setOnClickListener(this);
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String s = v.getText().toString();
+                if (CommonUtils.isStringEmpty(s)) {
+                    return false;
+                }
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    Tip tip = getTipFromKeyword(s);
+                    returnResult(tip);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         ViewGroup searchResultContainer = (ViewGroup) inflater.inflate(R.layout.search_result, container, false);
         mSearchResultContainer = searchResultContainer;
@@ -159,19 +178,36 @@ public class SearchBox extends LiteFragment
                         }
                     }).start();
                 }
-                if (getRequestCode() != -1) {
-                    Intent result = new Intent();
-                    result.putExtra("result", tip);
-                    setResult(ACTION_SUCCESS, result);
-                    finish();
-                } else {
-                    ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
-                }
+                returnResult(tip);
             }
         });
         setOnStartAnimation(R.animator.slide_in_top);
         setOnStopAnimation(R.animator.slide_out_top);
         setViewToAnimate(searchBox);
+    }
+
+    private static Tip getTipFromKeyword(String s) {
+        s = s.trim();
+        Tip tip = new Tip();
+        tip.setName(s);
+        // check it is really latitude and longitude point
+        try {
+            tip.setPostion(AMapUtils.convertToLatLonPoint(s));
+        } catch (Exception e) {
+            // maybe fail to convert
+        }
+        return tip;
+    }
+
+    private void returnResult(Tip tip) {
+        if (getRequestCode() != -1) {
+            Intent result = new Intent();
+            result.putExtra("result", tip);
+            setResult(ACTION_SUCCESS, result);
+            finish();
+        } else {
+            ((OnSearchItemClickListener) mMapsFragment).onSearchItemClick(tip);
+        }
     }
 
     private boolean isSearchBoxVisible() {
