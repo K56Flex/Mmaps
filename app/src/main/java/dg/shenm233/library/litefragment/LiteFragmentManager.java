@@ -16,6 +16,8 @@
 
 package dg.shenm233.library.litefragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -120,13 +122,15 @@ public class LiteFragmentManager {
             f.onCreateView(mLayoutInflater, mViewContainer);
         }
         if (visibleImmediate && !f.isStarted()) {
+            Animator animator=null;
             int startAnim = f.getOnStartAnimation();
             final View viewToAnim = f.getViewToAnimate();
             if (startAnim != -1 && viewToAnim != null) {
-                Animation animation = AnimationUtils.loadAnimation(mContext, startAnim);
-                viewToAnim.setAnimation(animation);
+                animator = AnimatorInflater.loadAnimator(mContext, startAnim);
+                animator.setTarget(viewToAnim);
             }
             f.onStart();
+            if(animator!=null) animator.start();
         }
     }
 
@@ -137,16 +141,16 @@ public class LiteFragmentManager {
         if (stopAnim != -1 && viewToAnim != null
                 // only start animation if that view is really visible.
                 && viewToAnim.getParent() != null && viewToAnim.getVisibility() == View.VISIBLE) {
-            Animation animation = AnimationUtils.loadAnimation(mContext, stopAnim);
-            animation.setAnimationListener(new Animation.AnimationListener() {
+            Animator animator = AnimatorInflater.loadAnimator(mContext, stopAnim);
+            animator.addListener(new Animator.AnimatorListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {
+                public void onAnimationStart(Animator animation) {
 
                 }
 
                 @Override
-                public void onAnimationEnd(Animation animation) {
-                    animation.setAnimationListener(null);
+                public void onAnimationEnd(Animator animation) {
+                    animation.removeListener(this);
                     stopLiteFragmentInternal(f, destroy);
                     if (next != null) {
                         startLiteFragmentInternal(next, true);
@@ -154,11 +158,17 @@ public class LiteFragmentManager {
                 }
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
 
                 }
             });
-            viewToAnim.startAnimation(animation);
+            animator.setTarget(viewToAnim);
+            animator.start();
         } else {
             stopLiteFragmentInternal(f, destroy);
             startLiteFragmentInternal(next, true);

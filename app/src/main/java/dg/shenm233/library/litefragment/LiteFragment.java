@@ -312,32 +312,32 @@ public abstract class LiteFragment implements OnLiteFragmentResult {
     private View mViewToAnimate = null;
 
     /**
-     * set animation resource for starting LiteFragment.
-     * @param animResId set for animation,or set -1 if no animation.
+     * set property animation resource for starting LiteFragment.
+     * @param animResId set for property animation,or set -1 if no animation.
      */
     public void setOnStartAnimation(int animResId) {
         mOnStartAnimResId = animResId;
     }
 
     /**
-     * get animation resource for starting LiteFragment.
-     * @return animation resource id or -1.
+     * get property animation resource for starting LiteFragment.
+     * @return property animation resource id or -1.
      */
     public int getOnStartAnimation() {
         return mOnStartAnimResId;
     }
 
     /**
-     * set animation resource for stopping LiteFragment.
-     * @param animResId set for animation,or set -1 if no animation.
+     * set property animation resource for stopping LiteFragment.
+     * @param animResId set for property animation,or set -1 if no animation.
      */
     public void setOnStopAnimation(int animResId) {
         mOnStopAnimResId = animResId;
     }
 
     /**
-     * get animation resource for stopping LiteFragment.
-     * @return animation resource id or -1.
+     * get property animation resource for stopping LiteFragment.
+     * @return property animation resource id or -1.
      */
     public int getOnStopAnimation() {
         return mOnStopAnimResId;

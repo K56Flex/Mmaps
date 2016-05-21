@@ -102,6 +102,7 @@ public class PoiItems extends LiteFragment
 //        Map<String, Object> searchBoxArguments = searchBox.getArguments();
 //        searchBoxArguments.put(SearchBox.BACK_BTN_AS_DRAWER, true);
 //        searchBoxArguments.put(SearchBox.ONLY_SEARCH_BOX, true);
+        searchBox.getViewToAnimate().setTranslationY(0); // restore y translation because it is changed by property animation.
         searchBox.onStart();
         mSearchBox = searchBox;
 
