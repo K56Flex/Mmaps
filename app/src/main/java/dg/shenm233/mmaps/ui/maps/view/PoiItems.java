@@ -89,7 +89,6 @@ public class PoiItems extends LiteFragment
         mSinglePoiDetailView.onCreateView(inflater);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void onStart() {
         super.onStart();
@@ -99,9 +98,6 @@ public class PoiItems extends LiteFragment
         // Hack: 显示搜索条
         SearchBox searchBox = (SearchBox) getLiteFragmentManager()
                 .findLiteFragmentByTag(SearchBox.class.getSimpleName());
-//        Map<String, Object> searchBoxArguments = searchBox.getArguments();
-//        searchBoxArguments.put(SearchBox.BACK_BTN_AS_DRAWER, true);
-//        searchBoxArguments.put(SearchBox.ONLY_SEARCH_BOX, true);
         searchBox.getViewToAnimate().setTranslationY(0); // restore y translation because it is changed by property animation.
         searchBox.onStart();
         mSearchBox = searchBox;

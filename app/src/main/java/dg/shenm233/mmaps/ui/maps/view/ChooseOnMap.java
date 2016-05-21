@@ -88,7 +88,6 @@ public class ChooseOnMap extends LiteFragment
 
         Rect rect = new Rect();
         container.getGlobalVisibleRect(rect);
-        //TODO: 输入法出现时会导致marker不能居中,另外暂时不考虑使用屏幕分辨率来确定
         marker.setPositionByPixels(rect.centerX(), rect.centerY()); // 设置marker的位置为"居中"
     }
 
