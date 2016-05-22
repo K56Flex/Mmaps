@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.MapView;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.services.help.Tip;
@@ -44,6 +43,7 @@ import dg.shenm233.mmaps.ui.IDrawerView;
 import dg.shenm233.mmaps.ui.maps.view.Directions;
 import dg.shenm233.mmaps.ui.maps.view.PoiItems;
 import dg.shenm233.mmaps.ui.maps.view.SearchBox;
+import dg.shenm233.mmaps.ui.maps.view.SinglePoi;
 import dg.shenm233.mmaps.util.CommonUtils;
 import dg.shenm233.mmaps.util.PermissionUtils;
 
@@ -282,7 +282,7 @@ public class MapsFragment extends Fragment
         LiteFragment f = mLiteFragmentManager.peek();
         if (isMain()) {
             showPoiItems(tip);
-        } else if (f instanceof PoiItems) {
+        } else if (f instanceof PoiItems || f instanceof SinglePoi) {
             mLiteFragmentManager.pop();
             showPoiItems(tip);
         }
@@ -291,22 +291,30 @@ public class MapsFragment extends Fragment
     @Override
     public void onClearSearchText() {
         LiteFragment f = mLiteFragmentManager.peek();
-        if (f instanceof PoiItems) {
+        if (f instanceof PoiItems || f instanceof SinglePoi) {
             mLiteFragmentManager.pop();
         }
     }
 
     private void showPoiItems(Tip tip) {
+        LiteFragment f;
         Bundle args = new Bundle();
-        args.putString(PoiItems.SEARCH_KEYWORD, tip.getName());
-        if (CommonUtils.isStringEmpty(tip.getAdcode())) {
-            String city = LocationManager.getInstance().getLastKnownLocation().getCity();
-            args.putString(PoiItems.SEARCH_CITY, city);
+        if (tip.getPoint() == null) {
+            args.putString(PoiItems.SEARCH_KEYWORD, tip.getName());
+            if (CommonUtils.isStringEmpty(tip.getAdcode())) {
+                String city = LocationManager.getInstance().getLastKnownLocation().getCity();
+                args.putString(PoiItems.SEARCH_CITY, city);
+            } else {
+                args.putString(PoiItems.SEARCH_CITY, tip.getAdcode());
+            }
+            f = new PoiItems(this);
+            f.setArguments(args);
         } else {
-            args.putString(PoiItems.SEARCH_CITY, tip.getAdcode());
+            args.putString(SinglePoi.POI_NAME, tip.getName());
+            args.putParcelable(SinglePoi.POI_LOCATION, tip.getPoint());
+            f = new SinglePoi(this);
+            f.setArguments(args);
         }
-        LiteFragment f = new PoiItems(this);
-        f.setArguments(args);
         mLiteFragmentManager.addToBackStack(f);
     }
 
