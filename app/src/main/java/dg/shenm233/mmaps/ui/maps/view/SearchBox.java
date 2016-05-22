@@ -143,6 +143,7 @@ public class SearchBox extends LiteFragment
                 }
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     Tip tip = getTipFromKeyword(s);
+                    tip.setID(""); // prevent null value
                     returnResult(tip);
                     return true;
                 }
@@ -170,14 +171,6 @@ public class SearchBox extends LiteFragment
                     mSearchEditText.setText(tip.getName());
                     enableTextTip = true;
                 }
-                if (!CommonUtils.isStringEmpty(tip.getName())) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            RecentSearchTips.getInstance().insertTip(tip);
-                        }
-                    }).start();
-                }
                 returnResult(tip);
             }
         });
@@ -199,7 +192,15 @@ public class SearchBox extends LiteFragment
         return tip;
     }
 
-    private void returnResult(Tip tip) {
+    private void returnResult(final Tip tip) {
+        if (!CommonUtils.isStringEmpty(tip.getName())) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    RecentSearchTips.getInstance().insertTip(tip);
+                }
+            }).start();
+        }
         if (getRequestCode() != -1) {
             Intent result = new Intent();
             result.putExtra("result", tip);
