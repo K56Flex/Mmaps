@@ -23,7 +23,7 @@
     <LinearLayout
         android:id="@+id/poi_detail_header"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:background="@drawable/panel_background"
         android:padding="10dp">
 

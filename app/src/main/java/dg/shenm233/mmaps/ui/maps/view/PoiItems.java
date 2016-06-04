@@ -260,6 +260,7 @@ public class PoiItems extends LiteFragment
 
         private void show() {
             if (!isShowed()) mMainContent.addView(mMainView);
+            mBottomSheet.setHeaderHeight(headerView.getLayoutParams().height);
             mBottomSheet.setViewToDrag(headerView);
             mBottomSheet.setScrollableView(mListView);
         }
@@ -351,6 +352,7 @@ public class PoiItems extends LiteFragment
 
         private void show(PoiItem poi) {
             if (!isShowed()) mMainContent.addView(mMainView);
+            mBottomSheet.setHeaderHeight(headerView.getLayoutParams().height);
             mBottomSheet.setViewToDrag(headerView);
             mPoiItem = poi;
             nameView.setText(poi.getTitle());
