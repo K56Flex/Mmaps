@@ -49,6 +49,8 @@ public class SinglePoi extends LiteFragment implements View.OnClickListener {
         super.onCreateView(inflater, container);
         mMainView = (ViewGroup) inflater.inflate(R.layout.poi_single, container, false);
         mMainView.setTag(R.id.action_my_location, true);
+        mMainView.setTag(R.id.zoom_in, true);
+        mMainView.setTag(R.id.zoom_out, true);
         nameView = (TextView) mMainView.findViewById(R.id.poi_name);
         typeView = (TextView) mMainView.findViewById(R.id.poi_type);
         FloatingActionButton directionBtn = (FloatingActionButton) mMainView.findViewById(R.id.action_directions);
