@@ -303,6 +303,11 @@ public class Drag2ExpandView extends ViewGroup {
         }
     }
 
+    public void setHeaderHeight(int height) {
+        mHeaderHeight = height;
+        mDragRange = getHeight() - mHeaderHeight;
+    }
+
     public int getHeaderHeight() {
         return mHeaderHeight;
     }
