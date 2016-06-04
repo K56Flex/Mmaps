@@ -17,6 +17,7 @@
 package dg.shenm233.mmaps.widget;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.util.AttributeSet;
@@ -26,8 +27,10 @@ import java.util.List;
 
 import dg.shenm233.drag2expandview.Drag2ExpandView;
 
-public class FabBehavior extends CoordinatorLayout.Behavior<FloatingActionButton> {
+public class FabBehavior extends CoordinatorLayout.Behavior<View> {
     private float mFabTranslationY;
+    private final Rect mTempRect1 = new Rect();
+    private final Rect mTempRect2 = new Rect();
 
     public FabBehavior() {
         super();
@@ -39,19 +42,18 @@ public class FabBehavior extends CoordinatorLayout.Behavior<FloatingActionButton
 
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent,
-                                   FloatingActionButton child, View dependency) {
+                                   View child, View dependency) {
         if (dependency instanceof FloatingActionButton) {
             return true;
         } else if (dependency instanceof Drag2ExpandView) {
             return true;
         }
 
-        Object depend = dependency.getTag(child.getId()); // 获取child是否应该依赖dependency?
-        return depend != null && (boolean) depend;
+        return isDepend(child, dependency);
     }
 
     @Override
-    public boolean onDependentViewChanged(CoordinatorLayout parent, FloatingActionButton child,
+    public boolean onDependentViewChanged(CoordinatorLayout parent, View child,
                                           View dependency) {
         float targetTransY = getFabTranslationYForOtherView(parent, child);
 
@@ -63,7 +65,7 @@ public class FabBehavior extends CoordinatorLayout.Behavior<FloatingActionButton
     }
 
     @Override
-    public void onDependentViewRemoved(CoordinatorLayout parent, FloatingActionButton child,
+    public void onDependentViewRemoved(CoordinatorLayout parent, View child,
                                        View dependency) {
         if (dependency instanceof Drag2ExpandView) {
             float targetTransY = getFabTranslationYForOtherView(parent, child);
@@ -75,23 +77,9 @@ public class FabBehavior extends CoordinatorLayout.Behavior<FloatingActionButton
     }
 
     @Override
-    public boolean onLayoutChild(CoordinatorLayout parent, FloatingActionButton child,
+    public boolean onLayoutChild(CoordinatorLayout parent, View child,
                                  int layoutDirection) {
-        float targetTransY = 0.0f;
-        List<View> dependencies = parent.getDependencies(child);
-        for (View v : dependencies) {
-            if (v instanceof Drag2ExpandView) {
-                targetTransY = Math.min(targetTransY,
-                        v.getTranslationY() - ((Drag2ExpandView) v).getHeaderHeight());
-            } else {
-                if (parent.doViewsOverlap(v, child)) {
-                    int bottomYMargin = ((CoordinatorLayout.LayoutParams) v.getLayoutParams()).bottomMargin;
-                    float offset = v.getTranslationY() - v.getHeight() - bottomYMargin;
-
-                    targetTransY = Math.min(targetTransY, offset);
-                }
-            }
-        }
+        float targetTransY = getFabTranslationYForOtherView(parent, child);
         parent.onLayoutChild(child, layoutDirection);
         // no need to translate Y if dependencies not require child to do
         if (targetTransY != 0.0f) {
@@ -101,13 +89,14 @@ public class FabBehavior extends CoordinatorLayout.Behavior<FloatingActionButton
         return true;
     }
 
-    private float getFabTranslationYForOtherView(CoordinatorLayout parent, FloatingActionButton fab) {
+    private float getFabTranslationYForOtherView(CoordinatorLayout parent, View fab) {
         float minOffset = 0;
         final List<View> dependencies = parent.getDependencies(fab);
         for (View v : dependencies) {
             if (v instanceof Drag2ExpandView) {
                 minOffset = v.getTranslationY() - ((Drag2ExpandView) v).getHeaderHeight();
-            } else if (parent.doViewsOverlap(v, fab)) {
+            } else if (parent.doViewsOverlap(v, fab) // || doViewOnSameXside(v, fab)
+                    || isDepend(fab, v)) {
                 int bottomYMargin = ((CoordinatorLayout.LayoutParams) v.getLayoutParams()).bottomMargin;
                 float offset = v.getTranslationY() - v.getHeight() - bottomYMargin;
 
@@ -115,5 +104,28 @@ public class FabBehavior extends CoordinatorLayout.Behavior<FloatingActionButton
             }
         }
         return minOffset;
+    }
+
+    private boolean doViewOnSameXside(View a, View b) {
+        Rect aRect = mTempRect1;
+        getChildRect(a, aRect);
+        Rect bRect = mTempRect2;
+        getChildRect(b, bRect);
+        return (aRect.left >= bRect.left && aRect.right <= bRect.right)
+                || (bRect.left >= aRect.left && bRect.right <= aRect.right);
+    }
+
+    // from CoordinatorLayout
+    private void getChildRect(View child, Rect out) {
+        if (child.isLayoutRequested() || child.getVisibility() == View.GONE) {
+            out.set(0, 0, 0, 0);
+            return;
+        }
+        out.set(child.getLeft(), child.getTop(), child.getRight(), child.getBottom());
+    }
+
+    private boolean isDepend(View child, View dependency) {
+        Object depend = dependency.getTag(child.getId()); // 获取child是否应该依赖dependency?
+        return depend != null && (boolean) depend;
     }
 }
