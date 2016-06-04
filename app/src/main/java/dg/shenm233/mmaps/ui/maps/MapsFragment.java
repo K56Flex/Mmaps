@@ -62,6 +62,8 @@ public class MapsFragment extends Fragment
     //    private StatusBarView mStatusBarView;
     private FloatingActionButton mMyLocationBtn;
     private FloatingActionButton mDirectionsBtn;
+    private View mZoomInBtn;
+    private View mZoomOutBtn;
 
     public MapsFragment() {
     }
@@ -90,6 +92,10 @@ public class MapsFragment extends Fragment
         mDirectionsBtn.setOnClickListener(this);
         mMyLocationBtn = (FloatingActionButton) viewContainer.findViewById(R.id.action_my_location);
         mMyLocationBtn.setOnClickListener(this);
+        mZoomInBtn = viewContainer.findViewById(R.id.zoom_in);
+        mZoomInBtn.setOnClickListener(this);
+        mZoomOutBtn = viewContainer.findViewById(R.id.zoom_out);
+        mZoomOutBtn.setOnClickListener(this);
 
         mLiteFragmentManager = new LiteFragmentManager(getActivity(), mViewContainer);
 
@@ -148,6 +154,10 @@ public class MapsFragment extends Fragment
             startDirections();
         } else if (viewId == R.id.action_my_location) {
             changeMyLocationModeDummy();
+        } else if (viewId == R.id.zoom_in) {
+            mMapsModule.zoomIn();
+        } else if (viewId == R.id.zoom_out) {
+            mMapsModule.zoomOut();
         }
     }
 
@@ -259,10 +269,15 @@ public class MapsFragment extends Fragment
 
     @Override
     public void setMapViewVisibility(int visibility) {
-        if (visibility == View.VISIBLE)
+        if (visibility == View.VISIBLE) {
             mMapsMask.setVisibility(View.GONE);
-        else
+            mZoomInBtn.setVisibility(View.VISIBLE);
+            mZoomOutBtn.setVisibility(View.VISIBLE);
+        } else {
             mMapsMask.setVisibility(View.VISIBLE);
+            mZoomInBtn.setVisibility(View.INVISIBLE);
+            mZoomOutBtn.setVisibility(View.INVISIBLE);
+        }
 //        mMapView.setVisibility(visibility);
     }
 

@@ -255,6 +255,7 @@ public class Directions extends LiteFragment
         mMapsFragment.setDirectionsBtnVisibility(View.GONE);
         mMapsFragment.setStatusBarColor(getContext().getResources().getColor(R.color.primary_color));
 //        mDirectionsBoxView.setVisibility(View.VISIBLE);
+        mMapsFragment.setMapViewVisibility(View.INVISIBLE);
         mResultViewContainer.setVisibility(View.VISIBLE);
         container.addView(mDirectionsBoxView);
         container.addView(mResultViewContainer);

@@ -67,6 +67,28 @@
             app:backgroundTint="@color/primary_color"
             app:elevation="0dp" />
 
+        <Button
+            android:id="@+id/zoom_in"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="left|bottom"
+            android:layout_marginBottom="80dp"
+            android:layout_marginLeft="10dp"
+            android:text="+"
+            app:elevation="0dp"
+            app:layout_behavior="dg.shenm233.mmaps.widget.FabBehavior" />
+
+        <Button
+            android:id="@+id/zoom_out"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="left|bottom"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="10dp"
+            android:text="-"
+            app:elevation="0dp"
+            app:layout_behavior="dg.shenm233.mmaps.widget.FabBehavior" />
+
     </android.support.design.widget.CoordinatorLayout>
 
 </FrameLayout>
