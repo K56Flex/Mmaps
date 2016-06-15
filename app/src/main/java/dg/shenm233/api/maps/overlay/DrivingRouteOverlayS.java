@@ -32,6 +32,7 @@ import dg.shenm233.mmaps.util.AMapUtils;
 
 public class DrivingRouteOverlayS extends RouteOverlayS {
     private DrivePath mPath;
+    private PolylineOptions mPartialRoute;
 
     public DrivingRouteOverlayS(Context context, AMap aMap, DrivePath drivePath,
                                 LatLonPoint start, LatLonPoint end) {
@@ -41,6 +42,12 @@ public class DrivingRouteOverlayS extends RouteOverlayS {
 
     @Override
     public void addToMap() {
+        if (mPartialRoute == null) {
+            mPartialRoute = new PolylineOptions()
+                    .color(getDriveColor())
+                    .width(getRouteWidth());
+        }
+
         List<DriveStep> stepList = mPath.getSteps();
         final int length = stepList.size();
         for (int i = 0; i < length; i++) {
@@ -51,13 +58,14 @@ public class DrivingRouteOverlayS extends RouteOverlayS {
                     addPolyline(startPoint, point);
                 }
 
-                linkDriveStep(step, stepList.get(i + 1));
+//                linkDriveStep(step, stepList.get(i + 1));
             } else {
                 addPolyline(AMapUtils.convertToLatLng(getEndPoint(step)), endPoint);
             }
 
             addPolyline(step);
         }
+        addPolyLine(mPartialRoute);
         addStartAndEndMarker();
     }
 
@@ -74,7 +82,7 @@ public class DrivingRouteOverlayS extends RouteOverlayS {
         LatLng aEnd = AMapUtils.convertToLatLng(getEndPoint(a));
         LatLng bStart = AMapUtils.convertToLatLng(getStartPoint(b));
         if (!aEnd.equals(bStart)) {
-            addPolyline(aEnd, bStart);
+            mPartialRoute.add(aEnd, bStart);
         }
     }
 
@@ -90,16 +98,13 @@ public class DrivingRouteOverlayS extends RouteOverlayS {
     private void addPolyline(DriveStep step) {
         List<LatLonPoint> list = step.getPolyline();
 
-        addPolyLine(new PolylineOptions().addAll(AMapUtils.convertToLatLng(list))
-                        .color(getDriveColor())
-                        .width(getRouteWidth())
-        );
+        mPartialRoute.addAll(AMapUtils.convertToLatLng(list));
     }
 
     private void addPolyline(LatLng a, LatLng b) {
         addPolyLine(new PolylineOptions().add(a, b)
-                        .color(getDriveColor())
-                        .width(getRouteWidth())
+                .color(getDriveColor())
+                .width(getRouteWidth())
         );
     }
 }
