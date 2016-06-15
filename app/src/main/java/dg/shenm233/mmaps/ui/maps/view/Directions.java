@@ -342,6 +342,7 @@ public class Directions extends LiteFragment
         if (endPoint == null || startPoint == null)
             return;
 
+        mMapsFragment.setMapViewVisibility(View.INVISIBLE);
         mRouteAbstractView.setVisibility(View.INVISIBLE);
 
         mResultViewContainer.setVisibility(View.VISIBLE);
@@ -555,7 +556,7 @@ public class Directions extends LiteFragment
             } else if (viewId == R.id.maps_directions_from || viewId == R.id.maps_directions_to) {
                 Bundle args = new Bundle();
                 args.putBoolean(SearchBox.SHOW_CHOOSE_ON_MAP, true);
-                args.putBoolean(SearchBox.HIDE_POI_WITHOUT_LOC,true);
+                args.putBoolean(SearchBox.HIDE_POI_WITHOUT_LOC, true);
                 SearchBox searchBox = new SearchBox(mMapsFragment);
                 searchBox.setArguments(args);
                 int requestCode = viewId;
