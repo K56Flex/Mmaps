@@ -26,12 +26,12 @@
 
     </com.amap.api.maps.TextureMapView>
 
-    <View
-        android:id="@+id/view_mask"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#EEEEEE"
-        android:visibility="gone" />
+    <!--<View-->
+    <!--android:id="@+id/view_mask"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="#EEEEEE"-->
+    <!--android:visibility="gone" />-->
 
     <!--<dg.shenm233.mmaps.widget.StatusBarView-->
     <!--android:id="@+id/status_bar_view"-->

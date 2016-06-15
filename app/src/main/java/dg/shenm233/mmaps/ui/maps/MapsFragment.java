@@ -82,7 +82,7 @@ public class MapsFragment extends Fragment
         mMapView.onCreate(savedInstanceState);
         mMapsModule = new MapsModule(getActivity(), this, mMapView.getMap());
 
-        mMapsMask = rootView.findViewById(R.id.view_mask);
+//        mMapsMask = rootView.findViewById(R.id.view_mask);
         CoordinatorLayout viewContainer = (CoordinatorLayout) rootView.findViewById(R.id.view_container);
         mViewContainer = viewContainer;
 
@@ -270,11 +270,13 @@ public class MapsFragment extends Fragment
     @Override
     public void setMapViewVisibility(int visibility) {
         if (visibility == View.VISIBLE) {
-            mMapsMask.setVisibility(View.GONE);
+//            mMapsMask.setVisibility(View.GONE);
+            mMapView.setVisibility(View.VISIBLE);
             mZoomInBtn.setVisibility(View.VISIBLE);
             mZoomOutBtn.setVisibility(View.VISIBLE);
         } else {
-            mMapsMask.setVisibility(View.VISIBLE);
+//            mMapsMask.setVisibility(View.VISIBLE);
+            mMapView.setVisibility(View.INVISIBLE);
             mZoomInBtn.setVisibility(View.INVISIBLE);
             mZoomOutBtn.setVisibility(View.INVISIBLE);
         }
