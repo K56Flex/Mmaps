@@ -141,4 +141,7 @@
 
     <string name="show_list">Show list</string>
     <string name="clear_recent_search">Clear recent search</string>
+
+    <string name="action_save">Save</string>
+    <string name="action_saved">Saved</string>
 </resources>

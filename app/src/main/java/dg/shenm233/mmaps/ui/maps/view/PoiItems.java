@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.amap.api.maps.AMap;
@@ -214,6 +215,38 @@ public class PoiItems extends LiteFragment
         l.setLoading(false);
     }
 
+    @Override
+    public void onPoiIsSaved(boolean saved) {
+        mSinglePoiDetailView.mPoiSaved = saved;
+        setSaveState(saved);
+    }
+
+    @Override
+    public void onPoiSave(boolean saved) {
+        mSinglePoiDetailView.mPoiSaved = saved;
+        setSaveState(saved);
+    }
+
+    @Override
+    public void onPoiDelete(boolean deleted) {
+        if (deleted) {
+            mSinglePoiDetailView.mPoiSaved = false;
+            setSaveState(false);
+        }
+    }
+
+    private void setSaveState(boolean saved) {
+        if (saved) {
+            mSinglePoiDetailView.mSaveButton.setText(R.string.action_saved);
+            mSinglePoiDetailView.mSaveButton.setCompoundDrawablesWithIntrinsicBounds(0,
+                    R.drawable.ic_star_black_24dp, 0, 0);
+        } else {
+            mSinglePoiDetailView.mSaveButton.setText(R.string.action_save);
+            mSinglePoiDetailView.mSaveButton.setCompoundDrawablesWithIntrinsicBounds(0,
+                    R.drawable.ic_star_border_black_24dp, 0, 0);
+        }
+    }
+
     private void switchToPoiListView() {
         mSinglePoiDetailView.exit();
         mPoiListView.show();
@@ -311,8 +344,10 @@ public class PoiItems extends LiteFragment
         private TextView phoneNumView;
         private TextView websiteView;
         private FloatingActionButton mDirectionsBtn;
+        private Button mSaveButton;
 
         private PoiItem mPoiItem;
+        private boolean mPoiSaved = false;
 
         private void onCreateView(LayoutInflater inflater) {
             ViewGroup mainView;
@@ -321,11 +356,13 @@ public class PoiItems extends LiteFragment
             headerView2 = mainView.findViewById(R.id.poi_detail_header2);
             nameView = (TextView) mainView.findViewById(R.id.poi_name);
             typeView = (TextView) mainView.findViewById(R.id.poi_type);
+            mSaveButton = (Button) mainView.findViewById(R.id.action_save);
             addressView = (TextView) mainView.findViewById(R.id.poi_address);
             phoneNumView = (TextView) mainView.findViewById(R.id.poi_tel_number);
             websiteView = (TextView) mainView.findViewById(R.id.poi_website);
             mDirectionsBtn = (FloatingActionButton) mainView.findViewById(R.id.action_directions);
             mDirectionsBtn.setOnClickListener(this);
+            mSaveButton.setOnClickListener(this);
             setDragListener();
         }
 
@@ -355,6 +392,7 @@ public class PoiItems extends LiteFragment
             mBottomSheet.setHeaderHeight(headerView.getLayoutParams().height);
             mBottomSheet.setViewToDrag(headerView);
             mPoiItem = poi;
+            mPresenter.checkSaved(poi);
             nameView.setText(poi.getTitle());
             typeView.setText(poi.getTypeDes());
             addressView.setText(poi.getProvinceName() + poi.getCityName() + poi.getSnippet());
@@ -389,6 +427,12 @@ public class PoiItems extends LiteFragment
             int id = v.getId();
             if (id == R.id.action_directions) {
                 startDirections(mPoiItem);
+            } else if (id == R.id.action_save) {
+                if (!mSinglePoiDetailView.mPoiSaved) {
+                    mPresenter.save(mPoiItem);
+                } else {
+                    mPresenter.delete(mPoiItem);
+                }
             }
         }
     }

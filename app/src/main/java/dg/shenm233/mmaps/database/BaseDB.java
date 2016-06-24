@@ -23,11 +23,12 @@ import android.util.Log;
 import dg.shenm233.mmaps.MainApplication;
 
 public class BaseDB extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "mmaps.db";
 
     private static Table[] TABLES = new Table[]{
-            RecentSearchTips.initTable()
+            RecentSearchTips.initTable(),
+            FavoriteLocations.initTable(),
     };
 
     private static BaseDB mInstance;

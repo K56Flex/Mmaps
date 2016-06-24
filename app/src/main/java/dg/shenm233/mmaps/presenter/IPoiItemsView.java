@@ -24,4 +24,10 @@ public interface IPoiItemsView {
     void setPoiList(List<PoiItem> poiList);
 
     void onPoiPageLoaded(boolean success);
+
+    void onPoiIsSaved(boolean saved);
+
+    void onPoiSave(boolean saved);
+
+    void onPoiDelete(boolean deleted);
 }

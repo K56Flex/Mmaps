@@ -28,10 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dg.shenm233.api.maps.overlay.PoiOverlayS;
+import dg.shenm233.mmaps.database.FavoriteLocations;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -111,6 +113,60 @@ public class PoiItemsPresenter {
                         } else {
                             mPoiItemsView.onPoiPageLoaded(false);
                         }
+                    }
+                });
+    }
+
+    public void checkSaved(final PoiItem poiItem) {
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                boolean saved = FavoriteLocations.getInstance().exists(poiItem);
+                subscriber.onNext(saved);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean result) {
+                        mPoiItemsView.onPoiIsSaved(result);
+                    }
+                });
+    }
+
+    public void save(final PoiItem poiItem) {
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                boolean saved = FavoriteLocations.getInstance().save(poiItem);
+                subscriber.onNext(saved);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean result) {
+                        mPoiItemsView.onPoiSave(result);
+                    }
+                });
+    }
+
+    public void delete(final PoiItem poiItem) {
+        Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                boolean deleted = FavoriteLocations.getInstance().remove(poiItem);
+                subscriber.onNext(deleted);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean result) {
+                        mPoiItemsView.onPoiDelete(result);
                     }
                 });
     }
