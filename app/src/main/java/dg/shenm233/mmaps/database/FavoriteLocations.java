@@ -5,7 +5,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteAbortException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import dg.shenm233.mmaps.util.AMapUtils;
 
@@ -103,6 +107,42 @@ public class FavoriteLocations implements Table {
             db.close();
             return true;
         }
+    }
+
+    public List<PoiItem> getSavedList() {
+        List<PoiItem> poiItemList = new ArrayList<>();
+        synchronized (this) {
+            SQLiteDatabase db = BaseDB.getInstance().getReadableDatabase();
+            Cursor cursor = db.query(TABLE_NAME,
+                    new String[]{COLUMN_NAME, COLUMN_DISTRICT, COLUMN_ADCODE, COLUMN_POI_ID, COLUMN_LATLONPOINT},
+                    null,
+                    null,
+                    null,
+                    null,
+                    _ID + " DESC");
+
+            if (!cursor.moveToFirst()) {
+                cursor.close();
+                db.close();
+                return poiItemList;
+            }
+            do {
+                String latLon = cursor.getString(4);
+                LatLonPoint latLonPoint = null;
+                if (latLon != null) {
+                    latLonPoint = AMapUtils.convertToLatLonPoint(latLon);
+                }
+                PoiItem poi = new PoiItem(cursor.getString(3),
+                        latLonPoint,
+                        cursor.getString(0),
+                        null);
+                poi.setAdName(cursor.getString(1));
+                poiItemList.add(poi);
+            } while (cursor.moveToNext());
+            cursor.close();
+            db.close();
+        }
+        return poiItemList;
     }
 
     @Override

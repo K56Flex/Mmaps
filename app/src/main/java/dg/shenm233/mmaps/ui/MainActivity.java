@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
@@ -31,6 +32,7 @@ import android.view.WindowManager;
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.presenter.MapsModule;
+import dg.shenm233.mmaps.ui.maps.FavoritesFragment;
 import dg.shenm233.mmaps.ui.maps.MapsFragment;
 
 public class MainActivity extends BaseActivity implements IDrawerView {
@@ -96,10 +98,22 @@ public class MainActivity extends BaseActivity implements IDrawerView {
                 } else if (itemId == R.id.navigation_settings) {
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivity(intent);
+                } else if (itemId == R.id.navigation_favorite) {
+                    mDrawerLayout.closeDrawers();
+                    switchToFavorite();
                 }
                 return true;
             }
         });
+    }
+
+    private void switchToFavorite() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.findFragmentByTag(FavoritesFragment.class.getName()) != null) return;
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.main_content, new FavoritesFragment(), FavoritesFragment.class.getName());
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
