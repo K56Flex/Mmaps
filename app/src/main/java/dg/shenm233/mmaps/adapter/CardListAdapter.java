@@ -36,6 +36,11 @@ public class CardListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         mCardList.addAll(cardCollection);
     }
 
+    //TODO: override equals(Object) in Card
+    public synchronized void remove(Card card) {
+        mCardList.remove(card);
+    }
+
     public synchronized void clear() {
         mCardList.clear();
     }
