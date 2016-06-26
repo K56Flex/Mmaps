@@ -49,6 +49,7 @@ import dg.shenm233.mmaps.util.PermissionUtils;
 
 public class MapsFragment extends Fragment
         implements IMapsFragment, IDrawerView, View.OnClickListener, SearchBox.OnSearchItemClickListener {
+    private ViewGroup mainView = null;
     private CoordinatorLayout mViewContainer;
     private TextureMapView mMapView;
     private MapsModule mMapsModule;
@@ -71,11 +72,15 @@ public class MapsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        if (mainView == null) { // prevent recreating view again
+            mainView = (ViewGroup) inflater.inflate(R.layout.fragment_main, container, false);
+        }
+        return mainView;
     }
 
     @Override
     public void onViewCreated(View rootView, @Nullable Bundle savedInstanceState) {
+        if (mainView != null && mViewContainer != null) return; // prevent recreating view again
 //        mStatusBarView = (StatusBarView) rootView.findViewById(R.id.status_bar_view);
 
         mMapView = (TextureMapView) rootView.findViewById(R.id.mapview);
