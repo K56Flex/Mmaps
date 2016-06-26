@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.help.Tip;
 
 import dg.shenm233.library.litefragment.LiteFragment;
@@ -316,6 +317,20 @@ public class MapsFragment extends Fragment
         if (f instanceof PoiItems || f instanceof SinglePoi) {
             mLiteFragmentManager.pop();
         }
+    }
+
+    public void onPoiItemResult(PoiItem poiItem) {
+        showPoiItem(poiItem);
+    }
+
+    private void showPoiItem(PoiItem poiItem) {
+        mLiteFragmentManager.pop(SearchBox.class.getSimpleName(), false);
+        SinglePoi poiView = new SinglePoi(this);
+        Bundle args = new Bundle();
+        args.putString(SinglePoi.POI_NAME, poiItem.getTitle());
+        args.putParcelable(SinglePoi.POI_LOCATION, poiItem.getLatLonPoint());
+        poiView.setArguments(args);
+        mLiteFragmentManager.addToBackStack(poiView);
     }
 
     private void showPoiItems(Tip tip) {

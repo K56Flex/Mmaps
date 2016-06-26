@@ -29,6 +29,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.amap.api.services.core.PoiItem;
+
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.presenter.MapsModule;
@@ -103,6 +105,10 @@ public class MainActivity extends BaseActivity implements IDrawerView {
                 return true;
             }
         });
+    }
+
+    public void onPoiItemResult(PoiItem poi) {
+        ((MapsFragment) getMapsFragment()).onPoiItemResult(poi);
     }
 
     private void switchToFavorite() {

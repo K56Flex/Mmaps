@@ -76,7 +76,9 @@ public class FavoritesPresenter {
                 PoiItem poiItem = (PoiItem) card.getTag();
                 if (id == R.id.favorite_item_remove) {
                     remove(poiItem, (FavoriteLocationCard) card);
+                    return;
                 }
+                mFavoriteFragment.onPoiItemResult(poiItem);
             }
         });
     }

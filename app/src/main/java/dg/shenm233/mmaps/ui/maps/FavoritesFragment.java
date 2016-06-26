@@ -10,10 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.amap.api.services.core.PoiItem;
+
 import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.adapter.CardListAdapter;
 import dg.shenm233.mmaps.presenter.FavoritesPresenter;
 import dg.shenm233.mmaps.presenter.IFavoriteFragment;
+import dg.shenm233.mmaps.ui.MainActivity;
 
 public class FavoritesFragment extends Fragment implements IFavoriteFragment {
     private FavoritesPresenter mPresenter;
@@ -54,5 +57,11 @@ public class FavoritesFragment extends Fragment implements IFavoriteFragment {
     @Override
     public CardListAdapter getResultAdapter() {
         return mFavListAdapter;
+    }
+
+    @Override
+    public void onPoiItemResult(PoiItem poi) {
+        getFragmentManager().popBackStack();
+        ((MainActivity) getActivity()).onPoiItemResult(poi);
     }
 }
