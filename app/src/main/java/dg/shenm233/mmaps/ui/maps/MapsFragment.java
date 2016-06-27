@@ -41,7 +41,9 @@ import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.presenter.IMapsFragment;
 import dg.shenm233.mmaps.presenter.MapsModule;
 import dg.shenm233.mmaps.ui.IDrawerView;
+import dg.shenm233.mmaps.ui.MainActivity;
 import dg.shenm233.mmaps.ui.maps.view.Directions;
+import dg.shenm233.mmaps.ui.maps.view.Favorites;
 import dg.shenm233.mmaps.ui.maps.view.PoiItems;
 import dg.shenm233.mmaps.ui.maps.view.SearchBox;
 import dg.shenm233.mmaps.ui.maps.view.SinglePoi;
@@ -119,6 +121,10 @@ public class MapsFragment extends Fragment
         super.onStart();
         if (PermissionUtils.checkLocationPermission(getContext())) {
             mMapsModule.setMyLocationEnabled(true);
+        }
+        LiteFragment f = mLiteFragmentManager.peek();
+        if (f instanceof Favorites) {
+            f.finish(); // 如果从其他Fragment返回，发现Favorites在栈顶，关闭它
         }
     }
 
@@ -319,8 +325,17 @@ public class MapsFragment extends Fragment
         }
     }
 
+    public void chooseFromFavorites() {
+        ((MainActivity) getActivity()).switchToFavorite();
+    }
+
     public void onPoiItemResult(PoiItem poiItem) {
-        showPoiItem(poiItem);
+        LiteFragment f = mLiteFragmentManager.peek();
+        if (f instanceof Favorites) {
+            ((Favorites) f).onFavFragmentResult(poiItem); // let favorites lite fragment handle
+        } else {
+            showPoiItem(poiItem);
+        }
     }
 
     private void showPoiItem(PoiItem poiItem) {

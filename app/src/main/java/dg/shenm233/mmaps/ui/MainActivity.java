@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity implements IDrawerView {
         ((MapsFragment) getMapsFragment()).onPoiItemResult(poi);
     }
 
-    private void switchToFavorite() {
+    public void switchToFavorite() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.findFragmentByTag(FavoritesFragment.class.getName()) != null) return;
         FragmentTransaction transaction = fragmentManager.beginTransaction();

@@ -48,7 +48,7 @@ import dg.shenm233.mmaps.viewholder.OnViewClickListener;
 
 public class SearchBox extends LiteFragment
         implements ISearchBox, View.OnClickListener {
-    final static int SEARCHBOX_REQUEST_CODE = 0x2b;
+    public final static int SEARCHBOX_REQUEST_CODE = 0x2b;
 
     public interface OnSearchItemClickListener {
         void onSearchItemClick(Tip tip);
@@ -57,6 +57,7 @@ public class SearchBox extends LiteFragment
     public static final String ONLY_SEARCH_BOX = "only_search_box"; //boolean
     public static final String BACK_BTN_AS_DRAWER = "back_btn_as_drawer"; //boolean
     public static final String SHOW_CHOOSE_ON_MAP = "show_choose_on_map"; //boolean
+    public static final String SHOW_CHOOSE_FROM_FAVORITES = "show_choose_from_favorites"; //boolean
     public static final String HIDE_POI_WITHOUT_LOC = "hide_poi_without_loc"; //boolean
 
     private IMapsFragment mMapsFragment;
@@ -68,6 +69,7 @@ public class SearchBox extends LiteFragment
 
     private ViewGroup mSearchResultContainer;
     private ViewGroup mChooseOnMapBtn;
+    private ViewGroup mChooseFromFavBtn;
 
     private SearchTipsAdapter mResultAdapter;
 
@@ -157,6 +159,9 @@ public class SearchBox extends LiteFragment
         ViewGroup chooseOnMapBtn = (ViewGroup) searchResultContainer.findViewById(R.id.search_choose_on_map);
         mChooseOnMapBtn = chooseOnMapBtn;
         chooseOnMapBtn.setOnClickListener(this);
+        ViewGroup chooseFromFavBtn = (ViewGroup) searchResultContainer.findViewById(R.id.choose_from_favorites);
+        mChooseFromFavBtn = chooseFromFavBtn;
+        chooseFromFavBtn.setOnClickListener(this);
 
         RecyclerView resultListView = (RecyclerView) searchResultContainer.findViewById(R.id.result_listview);
         SearchTipsAdapter searchTipsAdapter = new SearchTipsAdapter(getContext());
@@ -272,6 +277,11 @@ public class SearchBox extends LiteFragment
         } else {
             mChooseOnMapBtn.setVisibility(View.GONE);
         }
+        if (getChooseFromFav()) {
+            mChooseFromFavBtn.setVisibility(View.VISIBLE);
+        } else {
+            mChooseFromFavBtn.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -346,6 +356,9 @@ public class SearchBox extends LiteFragment
         } else if (viewId == R.id.search_choose_on_map) {
             ChooseOnMap chooseOnMap = new ChooseOnMap(mMapsFragment);
             startLiteFragmentForResult(SEARCHBOX_REQUEST_CODE, chooseOnMap, null);
+        } else if (viewId == R.id.choose_from_favorites) {
+            Favorites favorites = new Favorites(mMapsFragment);
+            startLiteFragmentForResult(SEARCHBOX_REQUEST_CODE, favorites, null);
         }
     }
 
@@ -365,6 +378,11 @@ public class SearchBox extends LiteFragment
 
     private boolean getChooseOnMap() {
         boolean arg = getArguments().getBoolean(SearchBox.SHOW_CHOOSE_ON_MAP);
+        return arg;
+    }
+
+    private boolean getChooseFromFav() {
+        boolean arg = getArguments().getBoolean(SearchBox.SHOW_CHOOSE_FROM_FAVORITES);
         return arg;
     }
 
