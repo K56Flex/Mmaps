@@ -257,7 +257,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         }
 
         MY_LOCATION_CUR_TYPE = myLocationCurType;
-        mMapsFragment.changeMyLocationBtnState(myLocationCurType);
+        mMapsFragment.onMyLocationStateChanged(myLocationCurType);
     }
 
     public int getMyLocationMode() {

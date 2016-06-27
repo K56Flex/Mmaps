@@ -261,7 +261,7 @@ public class MapsFragment extends Fragment
     }
 
     @Override
-    public void changeMyLocationBtnState(int state) {
+    public void onMyLocationStateChanged(int state) {
         if (state == MapsModule.MY_LOCATION_LOCATE) { //仅定位
             mMyLocationBtn.setImageResource(R.drawable.ic_my_location_grey600);
             mMyLocationBtn.clearColorFilter();

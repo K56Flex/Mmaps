@@ -21,7 +21,7 @@ import com.amap.api.maps.model.Marker;
 public interface IMapsFragment {
     void onMarkerClick(Marker marker);
 
-    void changeMyLocationBtnState(int state);
+    void onMyLocationStateChanged(int state);
 
     MapsModule getMapsModule();
 
