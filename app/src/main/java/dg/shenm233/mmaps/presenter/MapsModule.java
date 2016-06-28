@@ -18,7 +18,6 @@ package dg.shenm233.mmaps.presenter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -28,14 +27,11 @@ import android.view.MotionEvent;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.UiSettings;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
-import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.NavigateArrow;
 import com.amap.api.maps.model.NavigateArrowOptions;
 import com.amap.api.maps.offlinemap.OfflineMapStatus;
@@ -52,9 +48,9 @@ import java.util.List;
 
 import dg.shenm233.api.maps.overlay.BusRouteOverlayS;
 import dg.shenm233.api.maps.overlay.DrivingRouteOverlayS;
+import dg.shenm233.api.maps.overlay.MyLocationOverlayS;
 import dg.shenm233.api.maps.overlay.PoiOverlayS;
 import dg.shenm233.api.maps.overlay.WalkRouteOverlayS;
-import dg.shenm233.mmaps.R;
 import dg.shenm233.mmaps.model.Compass;
 import dg.shenm233.mmaps.model.LocationManager;
 import dg.shenm233.mmaps.service.OfflineMapEvent;
@@ -77,6 +73,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     private AMapLocationListener mLocationListener;
     private IMapsFragment mMapsFragment;
     private AMap mAMap;
+    private MyLocationOverlayS mMyLocationOverlay;
 
     private int MY_LOCATION_CUR_TYPE = MY_LOCATION_LOCATE;
     private boolean needZoom = true;
@@ -101,18 +98,14 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         }
 
         mLocationListener = new AMapLocationListener();
-        mAMap.setLocationSource(mLocationListener); // 设置定位监听
         mAMap.setLoadOfflineData(true);
+        mAMap.setMyLocationEnabled(false);
+        mMyLocationOverlay = new MyLocationOverlayS(mContext, mAMap);
 
         UiSettings uiSettings = mAMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(false);
         uiSettings.setScaleControlsEnabled(true); // 显示比例尺
-        mCompass.registerListener(new Compass.OnRotateListener() {
-            @Override
-            public void onRotate(float degree) {
-                mAMap.setMyLocationRotateAngle(degree);
-            }
-        }); // 设置 我的位置 的旋转角度监听器
+        mCompass.registerListener(mMyLocationOverlay); // 设置 我的位置 的旋转角度监听器
 
         setMapType(MAP_TYPE_NORMAL);
         setTrafficEnabled(false);
@@ -238,19 +231,17 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     public void changeMyLocationMode(int myLocationCurType) {
         switch (myLocationCurType) {
             case MY_LOCATION_LOCATE:
-                setMyLocationEnabled(false); // 临时屏蔽
-                mAMap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
-                setMyLocationEnabled(true);
+                mMyLocationOverlay.setMyLocationType(MyLocationOverlayS.LOCATION_TYPE_LOCATE);
                 mCompass.start();
                 break;
             case MY_LOCATION_FOLLOW:
                 needZoom = true; // 用于位置回调时自动放大地图
-                mAMap.setMyLocationType(AMap.LOCATION_TYPE_MAP_FOLLOW);
+                mMyLocationOverlay.setMyLocationType(MyLocationOverlayS.LOCATION_TYPE_MAP_FOLLOW);
                 mCompass.start();
                 break;
             case MY_LOCATION_ROTATE:
-                mCompass.stop();
-                mAMap.setMyLocationType(AMap.LOCATION_TYPE_MAP_ROTATE);
+                mMyLocationOverlay.setMyLocationType(MyLocationOverlayS.LOCATION_TYPE_MAP_ROTATE);
+                mCompass.start();
                 break;
             default:
                 break;
@@ -266,15 +257,12 @@ public class MapsModule implements AMap.OnMarkerClickListener,
 
     /*设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位*/
     public void setMyLocationEnabled(boolean enabled) {
-        mAMap.setMyLocationEnabled(enabled);
-        // 修复Activity.onStart()后导致自定义"我的位置"样式丢失
         if (enabled) {
-            final int color = Color.parseColor("#66D5E6FE");
-            MyLocationStyle mMyLocationStyle = new MyLocationStyle()
-                    .myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_qu_my_location))
-                    .radiusFillColor(color)
-                    .strokeColor(color);
-            mAMap.setMyLocationStyle(mMyLocationStyle);
+            mMyLocationOverlay.addToMap();
+            LocationManager.getInstance().startLocationFor(mLocationListener);
+        } else {
+            LocationManager.getInstance().stopLocationFor(mLocationListener);
+            mMyLocationOverlay.removeFromMap();
         }
     }
 
@@ -283,9 +271,9 @@ public class MapsModule implements AMap.OnMarkerClickListener,
     }
 
     public LatLonPoint getMyLatLonPoint() {
-        Location location = mAMap.getMyLocation();
+        LatLng location = mMyLocationOverlay.getMyLocation();
         if (location != null) {
-            return new LatLonPoint(location.getLatitude(), location.getLongitude());
+            return new LatLonPoint(location.latitude, location.longitude);
         } else {
             return null;
         }
@@ -322,23 +310,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
         }
     }
 
-    private class AMapLocationListener implements LocationSource, LocationListener {
-        // 属于AMap内部的Listener，需要通过activate(OnLocationChangedListener)获取
-        private OnLocationChangedListener mListenerForAMapInternal;
-
-        //LocationSource
-        @Override
-        public void activate(OnLocationChangedListener onLocationChangedListener) {
-            mListenerForAMapInternal = onLocationChangedListener;
-            LocationManager.getInstance().startLocationFor(this);
-        }
-
-        @Override
-        public void deactivate() {
-            mListenerForAMapInternal = null;
-            LocationManager.getInstance().stopLocationFor(this);
-        }
-
+    private class AMapLocationListener implements LocationListener {
         // LocationListener
         @Override
         public void onLocationChanged(Location location) {
@@ -346,9 +318,7 @@ public class MapsModule implements AMap.OnMarkerClickListener,
                 return;
             }
 
-            if (mListenerForAMapInternal != null) {
-                mListenerForAMapInternal.onLocationChanged(location);
-            }
+            mMyLocationOverlay.onLocationChanged(location);
 
             if (needZoom) { // 是否第一次启动，是则放大地图到一定位置
                 needZoom = false;
