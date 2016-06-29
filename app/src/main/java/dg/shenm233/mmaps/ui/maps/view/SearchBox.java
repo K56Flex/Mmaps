@@ -236,6 +236,7 @@ public class SearchBox extends LiteFragment
 
     private void setResultContainerVisible(boolean visible) {
         if (visible) {
+            mSearchBoxPresenter.loadRecentSearch();
             if (!isResultContainerVisible()) {
                 getViewContainer().addView(mSearchResultContainer);
             }
@@ -348,6 +349,7 @@ public class SearchBox extends LiteFragment
             }
             mSearchEditText.setText("");
         } else if (viewId == R.id.search_edittext) {
+            if (isResultContainerVisible()) return;
             mSearchEditText.setCursorVisible(true);
             mMapsFragment.setMapViewVisibility(View.INVISIBLE);
             setResultContainerVisible(true);

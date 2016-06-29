@@ -46,7 +46,6 @@ public class SearchBoxPresenter {
         mContext = context;
         mSearchBox = searchBox;
         mMapsModule = mapsModule;
-        loadRecentSearch();
     }
 
     /**
@@ -77,7 +76,7 @@ public class SearchBoxPresenter {
         }
     }
 
-    private void loadRecentSearch() {
+    public void loadRecentSearch() {
         Observable.create(new Observable.OnSubscribe<List<Tip>>() {
             @Override
             public void call(Subscriber<? super List<Tip>> subscriber) {
